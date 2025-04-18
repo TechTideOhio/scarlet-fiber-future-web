@@ -1,12 +1,14 @@
+
 import React from 'react';
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
 import Services from '../components/Services';
+import StatsStrip from '../components/StatsStrip';
+import ProjectGallery from '../components/ProjectGallery';
 import WhyChooseUs from '../components/WhyChooseUs';
 import Testimonials from '../components/Testimonials';
 import ContactForm from '../components/ContactForm';
 import Footer from '../components/Footer';
-import StatsStrip from '../components/StatsStrip';
 
 const Index = () => {
   return (
@@ -15,6 +17,7 @@ const Index = () => {
       <Hero />
       <Services />
       <StatsStrip />
+      <ProjectGallery />
       <WhyChooseUs />
       <Testimonials />
       <ContactForm />
