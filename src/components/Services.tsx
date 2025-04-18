@@ -1,73 +1,46 @@
 
 import React from 'react';
-import { Network, Wifi, Building, Server, ShieldCheck, Clock } from 'lucide-react';
-import CTAButton from './CTAButton';
+import { Cable, Wrench, Network } from 'lucide-react';
 
 const Services = () => {
   const services = [
     {
+      icon: <Cable size={48} className="text-buckeye-scarlet mb-4" />,
+      title: 'Structured Fiber Cabling',
+      description: 'Enterprise-grade fiber infrastructure designed for maximum reliability and future scalability.'
+    },
+    {
+      icon: <Wrench size={48} className="text-buckeye-scarlet mb-4" />,
+      title: 'Low-Voltage Installations',
+      description: 'Expert installation of voice, data, and security systems with minimal disruption to your operations.'
+    },
+    {
       icon: <Network size={48} className="text-buckeye-scarlet mb-4" />,
-      title: 'Enterprise Fiber',
-      description: 'High-capacity, dedicated fiber connectivity for mission-critical business operations.'
-    },
-    {
-      icon: <Wifi size={48} className="text-buckeye-scarlet mb-4" />,
-      title: 'Wireless Solutions',
-      description: 'Advanced wireless networking for flexible, scalable connectivity across your organization.'
-    },
-    {
-      icon: <Building size={48} className="text-buckeye-scarlet mb-4" />,
-      title: 'Building Infrastructure',
-      description: 'Complete structured cabling and infrastructure solutions for new and existing facilities.'
-    },
-    {
-      icon: <Server size={48} className="text-buckeye-scarlet mb-4" />,
-      title: 'Data Center Services',
-      description: 'Secure, redundant data center solutions with guaranteed uptime and performance.'
-    },
-    {
-      icon: <ShieldCheck size={48} className="text-buckeye-scarlet mb-4" />,
-      title: 'Network Security',
-      description: 'Enterprise-grade security services to protect your critical network infrastructure.'
-    },
-    {
-      icon: <Clock size={48} className="text-buckeye-scarlet mb-4" />,
-      title: '24/7 Support',
-      description: 'Around-the-clock monitoring and support to ensure continuous operations.'
+      title: 'AI-Driven Network Monitoring',
+      description: 'Proactive network surveillance using advanced AI to predict and prevent connectivity issues.'
     }
   ];
 
   return (
-    <section id="services" className="section-padding bg-white">
-      <div className="container mx-auto">
-        <h2 className="section-title text-center">Our Services</h2>
-        <p className="section-subtitle text-center">
-          Comprehensive connectivity solutions to power your business growth and digital transformation
-        </p>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
+    <section id="services" className="py-20 bg-gray-50">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {services.map((service, index) => (
             <div 
               key={index}
-              className="bg-white p-6 rounded-lg shadow-md border border-gray-100 hover:shadow-lg transition-shadow"
+              className="bg-white p-8 rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:shadow-buckeye-scarlet/10 hover:-translate-y-1 border border-gray-100"
             >
-              <div className="text-center mb-4">
+              <div className="text-center">
                 {service.icon}
+                <h3 className="text-2xl font-bold mb-4 text-buckeye-black">
+                  {service.title}
+                </h3>
+                <p className="text-buckeye-gray">
+                  {service.description}
+                </p>
               </div>
-              <h3 className="text-xl font-bold mb-3 text-buckeye-black text-center">
-                {service.title}
-              </h3>
-              <p className="text-buckeye-gray text-center">
-                {service.description}
-              </p>
             </div>
           ))}
-        </div>
-        
-        <div className="mt-16 text-center">
-          <CTAButton variant="primary" size="lg">
-            Explore All Services
-          </CTAButton>
         </div>
       </div>
     </section>
