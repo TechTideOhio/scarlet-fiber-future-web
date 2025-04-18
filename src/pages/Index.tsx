@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
@@ -7,6 +6,7 @@ import WhyChooseUs from '../components/WhyChooseUs';
 import Testimonials from '../components/Testimonials';
 import ContactForm from '../components/ContactForm';
 import Footer from '../components/Footer';
+import StatsStrip from '../components/StatsStrip';
 
 const Index = () => {
   return (
@@ -14,6 +14,7 @@ const Index = () => {
       <Navbar />
       <Hero />
       <Services />
+      <StatsStrip />
       <WhyChooseUs />
       <Testimonials />
       <ContactForm />
