@@ -13,7 +13,7 @@ const Hero = () => {
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-6 leading-tight animate-fade-in">
             Connecting the Future,{' '}
-            <span className="block">One Fiber Strand at a Time</span>
+            <span className="block">Powering Tomorrow.</span>
           </h1>
           
           <p className="text-lg md:text-xl text-gray-200 mb-12 animate-fade-in opacity-90 max-w-2xl mx-auto" 
