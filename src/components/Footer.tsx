@@ -12,7 +12,7 @@ const Footer = () => {
             <div className="text-buckeye-black">
               <h3 className="font-bold text-lg mb-4">Contact Us</h3>
               <ul className="space-y-3">
-                <li>123 High Street</li>
+                <li>6057 Sweetleaf Ct.</li>
                 <li>Columbus, Ohio 43215</li>
                 <li className="mt-4">(614) 555-0123</li>
                 <li>info@buckeyedatacom.com</li>
