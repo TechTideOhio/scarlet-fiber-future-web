@@ -26,8 +26,13 @@ const Hero = () => {
             <CTAButton variant="primary" size="lg">
               Get Instant Quote
             </CTAButton>
-            <CTAButton variant="outline" size="lg">
-              Learn How
+            <CTAButton 
+              variant="primary" 
+              size="lg" 
+              className="bg-[#ea384c] hover:bg-[#c52f3f]"
+              onClick={() => window.location.href = 'tel:6146792486'}
+            >
+              Call Now 614-679-2486
             </CTAButton>
           </div>
         </div>

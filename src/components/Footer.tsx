@@ -15,7 +15,7 @@ const Footer = () => {
                 <li>6057 Sweetleaf Ct</li>
                 <li>Galloway, OH 43119</li>
                 <li>United States</li>
-                <li className="mt-4">(614) 555-0123</li>
+                <li className="mt-4">(614) 679-2486</li>
                 <li>info@buckeyedatacom.com</li>
               </ul>
             </div>
