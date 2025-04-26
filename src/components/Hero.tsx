@@ -29,7 +29,7 @@ const Hero = () => {
             <CTAButton 
               variant="primary" 
               size="lg" 
-              className="bg-[#ea384c] hover:bg-[#c52f3f]"
+              className="bg-buckeye-scarlet hover:bg-buckeye-scarlet/90"
               onClick={() => window.location.href = 'tel:6146792486'}
             >
               Call Now 614-679-2486
