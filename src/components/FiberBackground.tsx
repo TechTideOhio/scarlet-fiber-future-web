@@ -1,18 +1,46 @@
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { detectWebGLCapabilities } from '../utils/webglDetection';
+
+const WebGLFiberRenderer = React.lazy(() => import('./WebGLFiberRenderer'));
 
 const FiberBackground = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [webglState, setWebglState] = useState<{
+    supported: boolean;
+    shouldUse: boolean;
+    loaded: boolean;
+    error: boolean;
+  }>({
+    supported: false,
+    shouldUse: false,
+    loaded: false,
+    error: false
+  });
+  const [userInteracted, setUserInteracted] = useState(false);
+
+  useEffect(() => {
+    // Detect WebGL capabilities on mount
+    const capabilities = detectWebGLCapabilities();
+    setWebglState(prev => ({
+      ...prev,
+      supported: capabilities.webglSupported,
+      shouldUse: capabilities.shouldUseWebGL
+    }));
+
+    console.log('WebGL Detection:', {
+      supported: capabilities.webglSupported,
+      score: capabilities.score,
+      shouldUseWebGL: capabilities.shouldUseWebGL
+    });
+  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    let mouseX = 0;
-    let mouseY = 0;
     let animationFrameId: number;
-
-    // Throttle mouse updates to 60fps
     let lastUpdate = 0;
     const throttleDelay = 1000 / 60;
 
@@ -26,23 +54,18 @@ const FiberBackground = () => {
           const fiberCenterX = rect.left + rect.width / 2;
           const fiberCenterY = rect.top + rect.height / 2;
           
-          // Calculate distance from mouse to fiber
           const distance = Math.sqrt(
-            Math.pow(mouseX - fiberCenterX, 2) + Math.pow(mouseY - fiberCenterY, 2)
+            Math.pow(mousePosition.x - fiberCenterX, 2) + Math.pow(mousePosition.y - fiberCenterY, 2)
           );
           
-          // Determine depth layer based on index
-          const layer = index % 3; // 0: near, 1: middle, 2: far
+          const layer = index % 3;
           const parallaxMultiplier = layer === 0 ? 0.02 : layer === 1 ? 0.01 : 0.005;
           
-          // Calculate parallax offset
-          const offsetX = (mouseX - window.innerWidth / 2) * parallaxMultiplier;
-          const offsetY = (mouseY - window.innerHeight / 2) * parallaxMultiplier;
+          const offsetX = (mousePosition.x - window.innerWidth / 2) * parallaxMultiplier;
+          const offsetY = (mousePosition.y - window.innerHeight / 2) * parallaxMultiplier;
           
-          // Calculate glow intensity based on distance
           const glowIntensity = distance < 100 ? Math.max(0.3, 1 - distance / 100) : 0.3;
           
-          // Update CSS custom properties
           element.style.setProperty('--mouse-offset-x', `${offsetX}px`);
           element.style.setProperty('--mouse-offset-y', `${offsetY}px`);
           element.style.setProperty('--glow-intensity', glowIntensity.toString());
@@ -55,21 +78,26 @@ const FiberBackground = () => {
     };
 
     const handleMouseMove = (e: MouseEvent) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
+      setMousePosition({ x: e.clientX, y: e.clientY });
+      
+      // Mark user interaction for WebGL loading
+      if (!userInteracted) {
+        setUserInteracted(true);
+      }
     };
 
     const handleTouchMove = (e: TouchEvent) => {
       if (e.touches.length > 0) {
-        mouseX = e.touches[0].clientX;
-        mouseY = e.touches[0].clientY;
+        setMousePosition({ x: e.touches[0].clientX, y: e.touches[0].clientY });
+        
+        if (!userInteracted) {
+          setUserInteracted(true);
+        }
       }
     };
 
-    // Start animation loop
     animationFrameId = requestAnimationFrame(updateFiberPositions);
     
-    // Add event listeners
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
     window.addEventListener('touchmove', handleTouchMove, { passive: true });
 
@@ -78,30 +106,57 @@ const FiberBackground = () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('touchmove', handleTouchMove);
     };
-  }, []);
+  }, [mousePosition, userInteracted]);
+
+  const handleWebGLLoaded = () => {
+    setWebglState(prev => ({ ...prev, loaded: true }));
+  };
+
+  const handleWebGLError = (error: Error) => {
+    console.error('WebGL enhancement failed:', error);
+    setWebglState(prev => ({ ...prev, error: true }));
+  };
+
+  const shouldLoadWebGL = webglState.supported && webglState.shouldUse && userInteracted && !webglState.error;
 
   return (
     <div ref={containerRef} className="absolute inset-0 w-full h-full bg-black overflow-hidden">
-      {/* Generate 15 animated fiber strands */}
-      {Array.from({ length: 15 }, (_, index) => (
-        <div
-          key={index}
-          className={`fiber-strand fiber-strand-${index + 1}`}
-          style={{
-            '--strand-width': `${2 + Math.random() * 2}px`,
-            '--strand-opacity': `${0.3 + Math.random() * 0.4}`,
-            '--strand-delay': `${Math.random() * 2}s`,
-            '--strand-duration': `${3 + Math.random() * 4}s`,
-            '--strand-x': `${Math.random() * 100}%`,
-            '--strand-rotate-x': `${Math.random() * 30 - 15}deg`,
-            '--strand-rotate-y': `${Math.random() * 60 - 30}deg`,
-            '--strand-translate-z': `${Math.random() * 200 - 100}px`,
-            '--mouse-offset-x': '0px',
-            '--mouse-offset-y': '0px',
-            '--glow-intensity': '0.3',
-          } as React.CSSProperties}
-        />
-      ))}
+      {/* CSS Fiber Animation - Always shown first */}
+      <div className={`absolute inset-0 transition-opacity duration-2000 ${webglState.loaded ? 'opacity-30' : 'opacity-100'}`}>
+        {/* Generate 15 animated fiber strands */}
+        {Array.from({ length: 15 }, (_, index) => (
+          <div
+            key={index}
+            className={`fiber-strand fiber-strand-${index + 1}`}
+            style={{
+              '--strand-width': `${2 + Math.random() * 2}px`,
+              '--strand-opacity': `${0.3 + Math.random() * 0.4}`,
+              '--strand-delay': `${Math.random() * 2}s`,
+              '--strand-duration': `${3 + Math.random() * 4}s`,
+              '--strand-x': `${Math.random() * 100}%`,
+              '--strand-rotate-x': `${Math.random() * 30 - 15}deg`,
+              '--strand-rotate-y': `${Math.random() * 60 - 30}deg`,
+              '--strand-translate-z': `${Math.random() * 200 - 100}px`,
+              '--mouse-offset-x': '0px',
+              '--mouse-offset-y': '0px',
+              '--glow-intensity': '0.3',
+            } as React.CSSProperties}
+          />
+        ))}
+      </div>
+
+      {/* WebGL Enhancement Layer */}
+      {shouldLoadWebGL && (
+        <React.Suspense fallback={null}>
+          <div className={`absolute inset-0 transition-opacity duration-2000 ${webglState.loaded ? 'opacity-100' : 'opacity-0'}`}>
+            <WebGLFiberRenderer
+              onLoaded={handleWebGLLoaded}
+              onError={handleWebGLError}
+              mousePosition={mousePosition}
+            />
+          </div>
+        </React.Suspense>
+      )}
       
       <style>{`
         .fiber-strand {
@@ -134,7 +189,6 @@ const FiberBackground = () => {
           transition: box-shadow 0.3s ease-out, transform 0.1s ease-out;
         }
 
-        /* Add blur to background strands for depth */
         .fiber-strand:nth-child(3n) {
           filter: blur(1px);
           opacity: 0.6;
