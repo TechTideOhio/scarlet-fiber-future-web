@@ -1,5 +1,9 @@
+
 import React, { useEffect, useRef, useCallback } from 'react';
-import { loadThreeJS } from '../utils/webglDetection';
+import { createWebGLScene, handleSceneResize, type SceneSetup } from '../utils/webglScene';
+import { createFiberCurve, createFiberGeometry } from '../utils/fiberGeometry';
+import { createFiberMaterial } from '../utils/shaderMaterials';
+import { createParticleSystem, updateParticlePositions, type ParticleSystemData } from '../utils/particleSystem';
 
 interface WebGLFiberRendererProps {
   onLoaded?: () => void;
@@ -15,154 +19,39 @@ const WebGLFiberRenderer: React.FC<WebGLFiberRendererProps> = ({
   isVisible = true
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const sceneRef = useRef<any>(null);
-  const rendererRef = useRef<any>(null);
+  const sceneSetupRef = useRef<SceneSetup | null>(null);
   const fibersRef = useRef<any[]>([]);
-  const particlesRef = useRef<any[]>([]);
+  const particlesRef = useRef<ParticleSystemData[]>([]);
   const animationIdRef = useRef<number>();
   const isAnimatingRef = useRef(false);
 
   const initWebGL = useCallback(async () => {
     try {
-      const THREE = await loadThreeJS();
       const container = containerRef.current;
       if (!container) return;
 
-      // Scene setup
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-      const renderer = new THREE.WebGLRenderer({ 
-        alpha: true, 
-        antialias: true,
-        powerPreference: 'high-performance'
-      });
-      
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setClearColor(0x000000, 0);
-      container.appendChild(renderer.domElement);
+      // Create scene setup
+      const sceneSetup = await createWebGLScene(container);
+      sceneSetupRef.current = sceneSetup;
+      const { scene } = sceneSetup;
 
-      sceneRef.current = scene;
-      rendererRef.current = renderer;
-
-      // Custom fiber shader
-      const fiberVertexShader = `
-        uniform float time;
-        uniform vec2 mousePos;
-        attribute float offset;
-        varying float vOffset;
-        varying vec3 vPosition;
-        
-        void main() {
-          vOffset = offset;
-          vPosition = position;
-          
-          vec3 pos = position;
-          
-          // Wave motion
-          pos.x += sin(time * 0.002 + offset * 0.1) * 2.0;
-          pos.y += cos(time * 0.001 + offset * 0.15) * 1.5;
-          
-          // Mouse influence
-          vec2 mouseInfluence = (mousePos - vec2(0.5)) * 20.0;
-          pos.x += mouseInfluence.x * 0.1;
-          pos.y += mouseInfluence.y * 0.1;
-          
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-        }
-      `;
-
-      const fiberFragmentShader = `
-        uniform float time;
-        uniform vec2 mousePos;
-        varying float vOffset;
-        varying vec3 vPosition;
-        
-        void main() {
-          float glow = 1.0 - abs(vPosition.x / 2.0);
-          glow = pow(glow, 2.0);
-          
-          // Mouse proximity glow
-          vec2 screenPos = gl_FragCoord.xy / vec2(1920.0, 1080.0);
-          float mouseDist = distance(screenPos, mousePos);
-          float mouseGlow = 1.0 - smoothstep(0.0, 0.3, mouseDist);
-          
-          glow += mouseGlow * 0.5;
-          
-          vec3 color = vec3(0.73, 0.0, 0.0) * glow;
-          gl_FragColor = vec4(color, glow * 0.8);
-        }
-      `;
-
-      // Create 20 curved fiber geometries
+      // Create 20 curved fiber geometries with particles
       for (let i = 0; i < 20; i++) {
-        const points = [];
-        const startX = (Math.random() - 0.5) * 40;
-        const startY = -20;
-        const startZ = (Math.random() - 0.5) * 20;
+        const curve = await createFiberCurve(i);
+        const geometry = await createFiberGeometry(curve, i);
+        const material = await createFiberMaterial();
 
-        // Create curve points
-        for (let j = 0; j <= 50; j++) {
-          const t = j / 50;
-          const x = startX + Math.sin(t * Math.PI * 2 + i) * 3;
-          const y = startY + t * 40;
-          const z = startZ + Math.cos(t * Math.PI * 3 + i) * 2;
-          points.push(new THREE.Vector3(x, y, z));
-        }
-
-        const curve = new THREE.CatmullRomCurve3(points);
-        const geometry = new THREE.BufferGeometry().setFromPoints(curve.getPoints(100));
-        
-        // Add offset attribute for shader
-        const offsets = new Float32Array(101);
-        for (let j = 0; j < 101; j++) {
-          offsets[j] = i + j * 0.01;
-        }
-        geometry.setAttribute('offset', new THREE.Float32BufferAttribute(offsets, 1));
-
-        const material = new THREE.ShaderMaterial({
-          vertexShader: fiberVertexShader,
-          fragmentShader: fiberFragmentShader,
-          uniforms: {
-            time: { value: 0 },
-            mousePos: { value: new THREE.Vector2(0.5, 0.5) }
-          },
-          transparent: true,
-          blending: THREE.AdditiveBlending
-        });
-
+        const { loadThreeJS } = await import('../utils/webglDetection');
+        const THREE = await loadThreeJS();
         const fiber = new THREE.Mesh(geometry, material);
         scene.add(fiber);
         fibersRef.current.push(fiber);
 
         // Create particle system along fiber
-        const particleCount = 20;
-        const particleGeometry = new THREE.BufferGeometry();
-        const positions = new Float32Array(particleCount * 3);
-        
-        for (let j = 0; j < particleCount; j++) {
-          const t = j / particleCount;
-          const point = curve.getPoint(t);
-          positions[j * 3] = point.x;
-          positions[j * 3 + 1] = point.y;
-          positions[j * 3 + 2] = point.z;
-        }
-        
-        particleGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-        
-        const particleMaterial = new THREE.PointsMaterial({
-          color: 0xbb0000,
-          size: 0.5,
-          transparent: true,
-          opacity: 0.6,
-          blending: THREE.AdditiveBlending
-        });
-        
-        const particles = new THREE.Points(particleGeometry, particleMaterial);
-        scene.add(particles);
-        particlesRef.current.push({ particles, curve, offset: Math.random() * Math.PI * 2 });
+        const particleData = await createParticleSystem(curve);
+        scene.add(particleData.particles);
+        particlesRef.current.push(particleData);
       }
-
-      camera.position.z = 30;
 
       onLoaded?.();
     } catch (error) {
@@ -172,13 +61,14 @@ const WebGLFiberRenderer: React.FC<WebGLFiberRendererProps> = ({
   }, [onLoaded, onError]);
 
   const animate = useCallback(() => {
-    if (!sceneRef.current || !rendererRef.current || !isVisible) {
+    if (!sceneSetupRef.current || !isVisible) {
       isAnimatingRef.current = false;
       return;
     }
 
     isAnimatingRef.current = true;
     const time = Date.now();
+    const { scene, camera, renderer } = sceneSetupRef.current;
     
     // Update fiber shaders
     fibersRef.current.forEach((fiber) => {
@@ -192,22 +82,11 @@ const WebGLFiberRenderer: React.FC<WebGLFiberRendererProps> = ({
     });
 
     // Update particle positions along curves
-    particlesRef.current.forEach(({ particles, curve, offset }, index) => {
-      const positions = particles.geometry.attributes.position.array;
-      const particleCount = positions.length / 3;
-      
-      for (let i = 0; i < particleCount; i++) {
-        const t = ((time * 0.0005 + offset + i * 0.1) % 1);
-        const point = curve.getPoint(t);
-        positions[i * 3] = point.x;
-        positions[i * 3 + 1] = point.y;
-        positions[i * 3 + 2] = point.z;
-      }
-      
-      particles.geometry.attributes.position.needsUpdate = true;
+    particlesRef.current.forEach((particleData) => {
+      updateParticlePositions(particleData, time);
     });
 
-    rendererRef.current.render(sceneRef.current, sceneRef.current.children.find((child: any) => child.isCamera) || sceneRef.current.children[0]);
+    renderer.render(scene, camera);
     animationIdRef.current = requestAnimationFrame(animate);
   }, [mousePosition, isVisible]);
 
@@ -218,14 +97,14 @@ const WebGLFiberRenderer: React.FC<WebGLFiberRendererProps> = ({
       if (animationIdRef.current) {
         cancelAnimationFrame(animationIdRef.current);
       }
-      if (rendererRef.current) {
-        rendererRef.current.dispose();
+      if (sceneSetupRef.current?.renderer) {
+        sceneSetupRef.current.renderer.dispose();
       }
     };
   }, [initWebGL]);
 
   useEffect(() => {
-    if (sceneRef.current && isVisible && !isAnimatingRef.current) {
+    if (sceneSetupRef.current && isVisible && !isAnimatingRef.current) {
       animate();
     } else if (!isVisible && animationIdRef.current) {
       cancelAnimationFrame(animationIdRef.current);
@@ -235,13 +114,8 @@ const WebGLFiberRenderer: React.FC<WebGLFiberRendererProps> = ({
 
   useEffect(() => {
     const handleResize = () => {
-      if (rendererRef.current && sceneRef.current) {
-        const camera = sceneRef.current.children.find((child: any) => child.isCamera);
-        if (camera) {
-          camera.aspect = window.innerWidth / window.innerHeight;
-          camera.updateProjectionMatrix();
-        }
-        rendererRef.current.setSize(window.innerWidth, window.innerHeight);
+      if (sceneSetupRef.current) {
+        handleSceneResize(sceneSetupRef.current.camera, sceneSetupRef.current.renderer);
       }
     };
 
