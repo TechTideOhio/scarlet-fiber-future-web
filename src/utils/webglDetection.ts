@@ -8,7 +8,7 @@ interface PerformanceScore {
 export const detectWebGLCapabilities = (): PerformanceScore => {
   // Check WebGL support
   const canvas = document.createElement('canvas');
-  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl') as WebGLRenderingContext | null;
   
   if (!gl) {
     return { webglSupported: false, score: 0, shouldUseWebGL: false };
@@ -75,7 +75,7 @@ export const loadThreeJS = async () => {
       { Scene, PerspectiveCamera, WebGLRenderer },
       { Mesh, BufferGeometry, Float32BufferAttribute },
       { ShaderMaterial, AdditiveBlending },
-      { CatmullRomCurve3, Vector3 },
+      { CatmullRomCurve3, Vector3, Vector2 },
       { Points, PointsMaterial }
     ] = await Promise.all([
       import('three'),
@@ -96,6 +96,7 @@ export const loadThreeJS = async () => {
       AdditiveBlending,
       CatmullRomCurve3,
       Vector3,
+      Vector2,
       Points,
       PointsMaterial
     };
