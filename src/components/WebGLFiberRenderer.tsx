@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useCallback } from 'react';
 import { loadThreeJS } from '../utils/webglDetection';
 
@@ -6,12 +5,14 @@ interface WebGLFiberRendererProps {
   onLoaded?: () => void;
   onError?: (error: Error) => void;
   mousePosition: { x: number; y: number };
+  isVisible?: boolean;
 }
 
 const WebGLFiberRenderer: React.FC<WebGLFiberRendererProps> = ({
   onLoaded,
   onError,
-  mousePosition
+  mousePosition,
+  isVisible = true
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<any>(null);
@@ -19,6 +20,7 @@ const WebGLFiberRenderer: React.FC<WebGLFiberRendererProps> = ({
   const fibersRef = useRef<any[]>([]);
   const particlesRef = useRef<any[]>([]);
   const animationIdRef = useRef<number>();
+  const isAnimatingRef = useRef(false);
 
   const initWebGL = useCallback(async () => {
     try {
@@ -170,8 +172,12 @@ const WebGLFiberRenderer: React.FC<WebGLFiberRendererProps> = ({
   }, [onLoaded, onError]);
 
   const animate = useCallback(() => {
-    if (!sceneRef.current || !rendererRef.current) return;
+    if (!sceneRef.current || !rendererRef.current || !isVisible) {
+      isAnimatingRef.current = false;
+      return;
+    }
 
+    isAnimatingRef.current = true;
     const time = Date.now();
     
     // Update fiber shaders
@@ -203,7 +209,7 @@ const WebGLFiberRenderer: React.FC<WebGLFiberRendererProps> = ({
 
     rendererRef.current.render(sceneRef.current, sceneRef.current.children.find((child: any) => child.isCamera) || sceneRef.current.children[0]);
     animationIdRef.current = requestAnimationFrame(animate);
-  }, [mousePosition]);
+  }, [mousePosition, isVisible]);
 
   useEffect(() => {
     initWebGL();
@@ -219,10 +225,13 @@ const WebGLFiberRenderer: React.FC<WebGLFiberRendererProps> = ({
   }, [initWebGL]);
 
   useEffect(() => {
-    if (sceneRef.current) {
+    if (sceneRef.current && isVisible && !isAnimatingRef.current) {
       animate();
+    } else if (!isVisible && animationIdRef.current) {
+      cancelAnimationFrame(animationIdRef.current);
+      isAnimatingRef.current = false;
     }
-  }, [animate]);
+  }, [animate, isVisible]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -244,7 +253,11 @@ const WebGLFiberRenderer: React.FC<WebGLFiberRendererProps> = ({
     <div 
       ref={containerRef} 
       className="absolute inset-0 w-full h-full"
-      style={{ pointerEvents: 'none' }}
+      style={{ 
+        pointerEvents: 'none',
+        contain: 'layout style paint',
+        transform: 'translate3d(0,0,0)'
+      }}
     />
   );
 };
