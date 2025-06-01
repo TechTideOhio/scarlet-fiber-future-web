@@ -36,6 +36,12 @@
     --ring: 0 100% 36.7%;
 
     --radius: 0.5rem;
+
+    /* Hero-specific variables */
+    --fiber-primary: rgba(187, 0, 0, 1);
+    --glow-intensity: 0.3;
+    --cta-primary: #BB0000;
+    --cta-hover: #990000;
   }
 
   * {
@@ -70,6 +76,37 @@
     will-change: transform;
     transform: translateZ(0);
   }
+
+  /* Enhanced animations for hero */
+  @keyframes heroFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes syncedPulse {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scale(1.02);
+    }
+  }
+
+  .hero-fade-in {
+    animation: heroFadeIn 0.8s ease-out forwards;
+  }
+
+  .synced-pulse {
+    animation: syncedPulse 2s ease-in-out infinite;
+  }
 }
 
 @layer components {
@@ -89,6 +126,23 @@
   .smooth-scroll {
     scroll-behavior: smooth;
   }
+
+  /* Enhanced button with glow effects */
+  .cta-button {
+    @apply relative bg-[var(--cta-primary)] hover:bg-[var(--cta-hover)] text-white font-bold px-12 py-5 rounded-md transition-all duration-300 hover:translate-y-[-2px] shadow-lg hover:shadow-xl;
+    box-shadow: 0 4px 20px rgba(187, 0, 0, 0.3);
+  }
+
+  .cta-button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--cta-primary);
+    opacity: 0.2;
+    animation: syncedPulse 2s ease-in-out infinite;
+    pointer-events: none;
+  }
 }
 
 /* Print styles for clean static version */
@@ -102,14 +156,12 @@
     background: linear-gradient(135deg, #f8f8f8 0%, #e8e8e8 100%) !important;
   }
   
-  /* Ensure text remains readable in print */
   .hero-content,
   .hero-content * {
     color: #000 !important;
     text-shadow: none !important;
   }
   
-  /* Hide accessibility controls in print */
   .accessibility-controls {
     display: none !important;
   }
@@ -137,5 +189,10 @@
   .fiber-strand {
     animation: none !important;
     transform: none !important;
+  }
+
+  .hero-fade-in,
+  .synced-pulse {
+    animation: none !important;
   }
 }

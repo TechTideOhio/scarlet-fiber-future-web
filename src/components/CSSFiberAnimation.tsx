@@ -36,7 +36,7 @@ const CSSFiberAnimation: React.FC<CSSFiberAnimationProps> = ({
   }
 
   // Container styles with performance optimizations
-  const containerStyles = {
+  const containerStyles: React.CSSProperties = {
     opacity,
     animationPlayState: isVisible ? 'running' : 'paused',
     transform: 'translate3d(0,0,0)', // GPU acceleration
@@ -44,7 +44,7 @@ const CSSFiberAnimation: React.FC<CSSFiberAnimationProps> = ({
   };
 
   // Mobile-specific optimizations
-  const getMobileOptimizations = () => {
+  const getMobileOptimizations = (): Record<string, string> => {
     if (!isMobile) return {};
     
     return {
@@ -69,25 +69,27 @@ const CSSFiberAnimation: React.FC<CSSFiberAnimationProps> = ({
         const baseOpacity = isMobile ? 0.25 : 0.3;
         const complexityMultiplier = isMobile ? 0.5 : 1;
         
+        const customProperties = {
+          '--strand-width': `${baseWidth + Math.random() * (quality === 'high' ? 2 : 1) * complexityMultiplier}px`,
+          '--strand-opacity': `${baseOpacity + Math.random() * (quality === 'high' ? 0.4 : 0.2) * complexityMultiplier}`,
+          '--strand-delay': `${Math.random() * 2}s`,
+          '--strand-duration': `${3 + Math.random() * (quality === 'high' ? 4 : 2) * complexityMultiplier}s`,
+          '--strand-x': `${Math.random() * 100}%`,
+          '--strand-rotate-x': `${Math.random() * (isComplexFiber ? 30 : 15) - (isComplexFiber ? 15 : 7.5)}deg`,
+          '--strand-rotate-y': `${Math.random() * (isComplexFiber ? 60 : 30) - (isComplexFiber ? 30 : 15)}deg`,
+          '--strand-translate-z': `${Math.random() * (isComplexFiber ? 200 : 100) - (isComplexFiber ? 100 : 50)}px`,
+          '--mouse-offset-x': '0px',
+          '--mouse-offset-y': '0px',
+          '--glow-intensity': isMobile ? '0.2' : '0.3',
+          willChange: enableMouseEffects && isVisible ? 'transform, box-shadow' : 'auto',
+          ...getMobileOptimizations()
+        } as React.CSSProperties;
+        
         return (
           <div
             key={index}
             className={`fiber-strand fiber-strand-${index + 1} ${enableMouseEffects ? 'interactive' : ''} ${isMobile ? 'mobile' : ''}`}
-            style={{
-              '--strand-width': `${baseWidth + Math.random() * (quality === 'high' ? 2 : 1) * complexityMultiplier}px`,
-              '--strand-opacity': `${baseOpacity + Math.random() * (quality === 'high' ? 0.4 : 0.2) * complexityMultiplier}`,
-              '--strand-delay': `${Math.random() * 2}s`,
-              '--strand-duration': `${3 + Math.random() * (quality === 'high' ? 4 : 2) * complexityMultiplier}s`,
-              '--strand-x': `${Math.random() * 100}%`,
-              '--strand-rotate-x': `${Math.random() * (isComplexFiber ? 30 : 15) - (isComplexFiber ? 15 : 7.5)}deg`,
-              '--strand-rotate-y': `${Math.random() * (isComplexFiber ? 60 : 30) - (isComplexFiber ? 30 : 15)}deg`,
-              '--strand-translate-z': `${Math.random() * (isComplexFiber ? 200 : 100) - (isComplexFiber ? 100 : 50)}px`,
-              '--mouse-offset-x': '0px',
-              '--mouse-offset-y': '0px',
-              '--glow-intensity': isMobile ? '0.2' : '0.3',
-              willChange: enableMouseEffects && isVisible ? 'transform, box-shadow' : 'auto',
-              ...getMobileOptimizations()
-            } as React.CSSProperties}
+            style={customProperties}
           />
         );
       })}
@@ -119,6 +121,7 @@ const CSSFiberAnimation: React.FC<CSSFiberAnimationProps> = ({
           contain: layout style paint;
         }
 
+        /* ... keep existing code (mobile, interactive, and animation styles) */
         .fiber-strand.mobile {
           transform: 
             perspective(500px)
@@ -189,7 +192,6 @@ const CSSFiberAnimation: React.FC<CSSFiberAnimationProps> = ({
           }
         }
 
-        /* Pause animations when not visible or reduced motion is preferred */
         @media (prefers-reduced-motion: reduce) {
           .fiber-strand {
             animation: none !important;
@@ -197,18 +199,16 @@ const CSSFiberAnimation: React.FC<CSSFiberAnimationProps> = ({
           }
         }
 
-        /* Mobile-specific touch optimizations */
         @media (max-width: 768px) {
           .fiber-strand {
-            will-change: auto; /* Reduce will-change usage on mobile */
+            will-change: auto;
           }
           
           .fiber-strand.interactive {
-            transition-duration: 0.2s; /* Faster transitions on mobile */
+            transition-duration: 0.2s;
           }
         }
 
-        /* Print styles */
         @media print {
           .fiber-strand {
             display: none !important;
