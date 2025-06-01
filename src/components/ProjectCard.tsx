@@ -1,7 +1,6 @@
-
 import React from 'react';
 
-type ProjectType = 'Data Center' | 'Smart Building' | 'Network Infrastructure' | 'IoT Systems' | 'Security Systems' | 'Cloud Integration';
+type ProjectType = 'Data Center' | 'Smart Building' | 'Network Infrastructure' | 'IoT Systems' | 'Security Systems' | 'Cloud Integration' | 'Education/Conservation';
 
 type Project = {
   id: number;

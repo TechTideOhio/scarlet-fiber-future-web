@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { X, CheckCircle } from 'lucide-react';
 
-type ProjectType = 'Data Center' | 'Smart Building' | 'Network Infrastructure' | 'IoT Systems' | 'Security Systems' | 'Cloud Integration';
+type ProjectType = 'Data Center' | 'Smart Building' | 'Network Infrastructure' | 'IoT Systems' | 'Security Systems' | 'Cloud Integration' | 'Education/Conservation';
 
 type Project = {
   id: number;
@@ -75,7 +74,10 @@ const ProjectModal = ({ project, isOpen, onClose }: ProjectModalProps) => {
             
             <div className="pt-6 border-t border-gray-200">
               <p className="text-buckeye-gray text-center">
-                Interested in a similar project? 
+                {project.title === "Columbus Zoo Network Modernization" 
+                  ? "Interested in modernizing your campus network?"
+                  : "Interested in a similar project?"
+                }
                 <span className="text-buckeye-scarlet font-medium cursor-pointer hover:underline ml-1">
                   Contact us today
                 </span>

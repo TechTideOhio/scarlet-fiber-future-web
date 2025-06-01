@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -6,7 +5,7 @@ import ProjectCard from '../components/ProjectCard';
 import ProjectModal from '../components/ProjectModal';
 import CTAButton from '../components/CTAButton';
 
-type ProjectType = 'Data Center' | 'Smart Building' | 'Network Infrastructure' | 'IoT Systems' | 'Security Systems' | 'Cloud Integration';
+type ProjectType = 'Data Center' | 'Smart Building' | 'Network Infrastructure' | 'IoT Systems' | 'Security Systems' | 'Cloud Integration' | 'Education/Conservation';
 
 type Project = {
   id: number;
@@ -82,17 +81,17 @@ const projects: Project[] = [
   },
   {
     id: 7,
-    title: "Retail Chain Network",
-    type: "Network Infrastructure",
-    description: "Multi-location network infrastructure for national retail chain",
-    image: "photo-1605810230434-7631ac76ec81",
-    details: "Deployment of standardized network infrastructure across 200+ retail locations, including point-of-sale systems, inventory management, and customer Wi-Fi. Features centralized management and real-time performance monitoring.",
-    industry: "Retail",
-    features: ["200+ Locations", "POS Integration", "Inventory Management", "Customer Wi-Fi"]
+    title: "Columbus Zoo Network Modernization",
+    type: "Education/Conservation",
+    description: "Complete infrastructure overhaul for the Columbus Zoo and Aquarium, supporting both guest experiences and critical animal care systems",
+    image: "photo-1472396961693-142e6e269027",
+    details: "Buckeye DataCom partnered with the Columbus Zoo to modernize their aging network infrastructure. The project included installing redundant fiber paths to ensure 24/7 uptime for temperature-controlled habitats, veterinary facilities, and security systems. We also implemented high-density Wi-Fi for the 2.3 million annual visitors and created a separate secure network for research and conservation data. The new infrastructure supports innovative guest experiences like interactive exhibits and mobile apps while maintaining the strict reliability required for animal care systems.",
+    industry: "Education/Conservation",
+    features: ["580-Acre Campus Coverage", "Habitat Monitoring Systems", "Interactive Guest Experiences", "Mission-Critical Reliability"]
   }
 ];
 
-const projectTypes: ProjectType[] = ['Data Center', 'Smart Building', 'Network Infrastructure', 'IoT Systems', 'Security Systems', 'Cloud Integration'];
+const projectTypes: ProjectType[] = ['Data Center', 'Smart Building', 'Network Infrastructure', 'IoT Systems', 'Security Systems', 'Cloud Integration', 'Education/Conservation'];
 
 const OurWork = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
