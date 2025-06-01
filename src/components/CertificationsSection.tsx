@@ -1,12 +1,12 @@
 
 import React from 'react';
-import { Certificate, Shield, Users, Building } from 'lucide-react';
+import { Award, Shield, Users, Building } from 'lucide-react';
 
 const CertificationsSection = () => {
   const certifications = [
     {
       category: 'Industry Certifications',
-      icon: <Certificate className="w-8 h-8 text-buckeye-scarlet" />,
+      icon: <Award className="w-8 h-8 text-buckeye-scarlet" />,
       items: [
         'BICSI Registered Communications Distribution Designer (RCDD)',
         'BICSI Outside Plant Designer (OSP)',
