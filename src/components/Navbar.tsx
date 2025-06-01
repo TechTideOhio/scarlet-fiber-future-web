@@ -40,7 +40,7 @@ const Navbar = () => {
         { name: 'AI Network Monitoring', href: '/services#ai-monitoring' }
       ]
     },
-    { name: 'Our Work', href: '#projects' },
+    { name: 'Our Work', href: '/our-work' },
     { name: 'About Us', href: '#why-choose-us' },
     { name: 'Testimonials', href: '#testimonials' },
     { name: 'Contact', href: '#contact' },
