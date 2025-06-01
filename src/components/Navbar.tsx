@@ -1,11 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { Menu, X, ChevronDown } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const location = useLocation();
   
   useEffect(() => {
     const handleScroll = () => {
@@ -27,15 +29,15 @@ const Navbar = () => {
   ];
 
   const menuItems = [
-    { name: 'Home', href: '#' },
+    { name: 'Home', href: '/' },
     { 
       name: 'Services', 
-      href: '#services',
+      href: '/services',
       hasDropdown: true,
       submenu: [
-        { name: 'Structured Fiber Cabling', href: '#services' },
-        { name: 'Low-Voltage Installations', href: '#services' },
-        { name: 'AI Network Monitoring', href: '#services' }
+        { name: 'Structured Fiber Cabling', href: '/services#fiber' },
+        { name: 'Low-Voltage Installations', href: '/services#low-voltage' },
+        { name: 'AI Network Monitoring', href: '/services#ai-monitoring' }
       ]
     },
     { name: 'Our Work', href: '#projects' },
@@ -47,11 +49,15 @@ const Navbar = () => {
   const handleMenuClick = (href: string) => {
     setIsMenuOpen(false);
     setIsServicesOpen(false);
-    // Smooth scroll to section
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    
+    // Handle internal links (sections on current page)
+    if (href.startsWith('#')) {
+      const element = document.querySelector(href);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
     }
+    // For routes like '/services', React Router will handle the navigation
   };
 
   return (
@@ -59,10 +65,10 @@ const Navbar = () => {
       <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md py-3' : 'bg-transparent py-5'}`}>
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex justify-between items-center">
-            <a href="#" className="flex items-center">
+            <Link to="/" className="flex items-center">
               <span className="text-buckeye-scarlet font-['Montserrat'] text-xl md:text-2xl font-extrabold">BUCKEYE</span>
               <span className="text-buckeye-scarlet font-['Montserrat'] text-xl md:text-2xl font-light ml-1">DATACOM</span>
-            </a>
+            </Link>
             
             {/* Desktop navigation */}
             <div className="hidden lg:flex items-center space-x-8">
@@ -118,39 +124,47 @@ const Navbar = () => {
                 <div key={item.name}>
                   {item.hasDropdown ? (
                     <div>
-                      <button
-                        onClick={() => setIsServicesOpen(!isServicesOpen)}
-                        className="flex items-center justify-between w-full text-left py-3 text-lg font-medium hover:text-buckeye-scarlet transition-colors"
-                      >
-                        {item.name}
-                        <ChevronDown 
-                          size={20} 
-                          className={`transform transition-transform duration-200 ${isServicesOpen ? 'rotate-180' : ''}`}
-                        />
-                      </button>
+                      <div className="flex items-center justify-between w-full">
+                        <Link
+                          to={item.href}
+                          onClick={() => handleMenuClick(item.href)}
+                          className="text-lg font-medium hover:text-buckeye-scarlet transition-colors"
+                        >
+                          {item.name}
+                        </Link>
+                        <button
+                          onClick={() => setIsServicesOpen(!isServicesOpen)}
+                          className="p-2 hover:text-buckeye-scarlet transition-colors"
+                        >
+                          <ChevronDown 
+                            size={20} 
+                            className={`transform transition-transform duration-200 ${isServicesOpen ? 'rotate-180' : ''}`}
+                          />
+                        </button>
+                      </div>
                       <div className={`ml-4 space-y-2 overflow-hidden transition-all duration-300 ${
                         isServicesOpen ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
                       }`}>
                         {item.submenu?.map((subItem) => (
-                          <a
+                          <Link
                             key={subItem.name}
-                            href={subItem.href}
+                            to={subItem.href}
                             onClick={() => handleMenuClick(subItem.href)}
                             className="block py-2 text-gray-300 hover:text-white transition-colors"
                           >
                             {subItem.name}
-                          </a>
+                          </Link>
                         ))}
                       </div>
                     </div>
                   ) : (
-                    <a
-                      href={item.href}
+                    <Link
+                      to={item.href.startsWith('#') ? `/${item.href}` : item.href}
                       onClick={() => handleMenuClick(item.href)}
                       className="block py-3 text-lg font-medium hover:text-buckeye-scarlet transition-colors"
                     >
                       {item.name}
-                    </a>
+                    </Link>
                   )}
                 </div>
               ))}
