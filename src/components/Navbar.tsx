@@ -1,6 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
-import CTAButton from './CTAButton';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -27,6 +27,7 @@ const Navbar = () => {
     { name: 'Why Us', href: '#why-choose-us' },
     { name: 'Testimonials', href: '#testimonials' },
     { name: 'Contact', href: '#contact' },
+    { name: 'Client Testimonials', href: '#testimonials' },
   ];
 
   return (
@@ -50,9 +51,6 @@ const Navbar = () => {
                 </a>
               ))}
             </div>
-            <CTAButton variant="primary" size="md">
-              Get a Quote
-            </CTAButton>
           </div>
           
           <div className="md:hidden">
@@ -79,9 +77,6 @@ const Navbar = () => {
                 {link.name}
               </a>
             ))}
-            <CTAButton variant="primary" size="md" className="mt-4">
-              Get a Quote
-            </CTAButton>
           </div>
         </div>
       )}
