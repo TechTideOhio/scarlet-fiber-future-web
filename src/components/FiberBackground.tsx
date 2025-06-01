@@ -1,114 +1,111 @@
 
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 
 const FiberBackground = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    // Set canvas size
-    const setCanvasSize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    setCanvasSize();
-    window.addEventListener('resize', setCanvasSize);
-
-    // Fiber strand class
-    class FiberStrand {
-      x: number;
-      y: number;
-      length: number;
-      angle: number;
-      speed: number;
-      opacity: number;
-      pulsePhase: number;
-
-      constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.length = 100 + Math.random() * 200;
-        this.angle = Math.random() * Math.PI * 2;
-        this.speed = 0.2 + Math.random() * 0.3;
-        this.opacity = 0.1 + Math.random() * 0.3;
-        this.pulsePhase = Math.random() * Math.PI * 2;
-      }
-
-      update() {
-        this.x += Math.cos(this.angle) * this.speed;
-        this.y += Math.sin(this.angle) * this.speed;
-        this.pulsePhase += 0.02;
-
-        if (this.x < -100) this.x = canvas.width + 100;
-        if (this.x > canvas.width + 100) this.x = -100;
-        if (this.y < -100) this.y = canvas.height + 100;
-        if (this.y > canvas.height + 100) this.y = -100;
-      }
-
-      draw(ctx: CanvasRenderingContext2D) {
-        const pulseOpacity = this.opacity * (0.8 + Math.sin(this.pulsePhase) * 0.2);
-        
-        const gradient = ctx.createLinearGradient(
-          this.x,
-          this.y,
-          this.x + Math.cos(this.angle) * this.length,
-          this.y + Math.sin(this.angle) * this.length
-        );
-
-        gradient.addColorStop(0, `rgba(187, 0, 0, ${pulseOpacity})`);
-        gradient.addColorStop(1, 'rgba(187, 0, 0, 0)');
-
-        ctx.beginPath();
-        ctx.strokeStyle = gradient;
-        ctx.lineWidth = 2;
-        ctx.moveTo(this.x, this.y);
-        ctx.lineTo(
-          this.x + Math.cos(this.angle) * this.length,
-          this.y + Math.sin(this.angle) * this.length
-        );
-        ctx.stroke();
-      }
-    }
-
-    // Create fiber strands
-    const strands: FiberStrand[] = Array(50)
-      .fill(null)
-      .map(() => new FiberStrand());
-
-    // Animation loop
-    let animationFrameId: number;
-    const animate = () => {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      strands.forEach(strand => {
-        strand.update();
-        strand.draw(ctx);
-      });
-
-      animationFrameId = requestAnimationFrame(animate);
-    };
-
-    animate();
-
-    // Cleanup
-    return () => {
-      window.removeEventListener('resize', setCanvasSize);
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, []);
-
   return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 w-full h-full"
-      style={{ background: 'black' }}
-    />
+    <div className="absolute inset-0 w-full h-full bg-black overflow-hidden">
+      {/* Generate 15 animated fiber strands */}
+      {Array.from({ length: 15 }, (_, index) => (
+        <div
+          key={index}
+          className={`fiber-strand fiber-strand-${index + 1}`}
+          style={{
+            '--strand-width': `${2 + Math.random() * 2}px`,
+            '--strand-opacity': `${0.3 + Math.random() * 0.4}`,
+            '--strand-delay': `${Math.random() * 2}s`,
+            '--strand-duration': `${3 + Math.random() * 4}s`,
+            '--strand-x': `${Math.random() * 100}%`,
+            '--strand-rotate-x': `${Math.random() * 30 - 15}deg`,
+            '--strand-rotate-y': `${Math.random() * 60 - 30}deg`,
+            '--strand-translate-z': `${Math.random() * 200 - 100}px`,
+          } as React.CSSProperties}
+        />
+      ))}
+      
+      <style jsx>{`
+        .fiber-strand {
+          position: absolute;
+          width: var(--strand-width);
+          height: 100vh;
+          left: var(--strand-x);
+          top: 0;
+          background: linear-gradient(
+            to bottom,
+            rgba(187, 0, 0, var(--strand-opacity)),
+            rgba(187, 0, 0, 0.1),
+            transparent
+          );
+          transform: 
+            perspective(1000px)
+            rotateX(var(--strand-rotate-x))
+            rotateY(var(--strand-rotate-y))
+            translateZ(var(--strand-translate-z));
+          animation: 
+            fiberFlow var(--strand-duration) ease-in-out infinite,
+            fiberPulse calc(var(--strand-duration) * 1.5) ease-in-out infinite;
+          animation-delay: var(--strand-delay);
+          box-shadow: 
+            0 0 10px rgba(187, 0, 0, 0.5),
+            0 0 20px rgba(187, 0, 0, 0.3);
+          will-change: transform, opacity;
+        }
+
+        /* Add blur to background strands for depth */
+        .fiber-strand:nth-child(3n) {
+          filter: blur(1px);
+          opacity: 0.6;
+        }
+
+        .fiber-strand:nth-child(5n) {
+          filter: blur(2px);
+          opacity: 0.4;
+        }
+
+        @keyframes fiberFlow {
+          0%, 100% {
+            transform: 
+              perspective(1000px)
+              rotateX(var(--strand-rotate-x))
+              rotateY(var(--strand-rotate-y))
+              translateZ(var(--strand-translate-z))
+              translateY(0px);
+          }
+          25% {
+            transform: 
+              perspective(1000px)
+              rotateX(calc(var(--strand-rotate-x) + 5deg))
+              rotateY(calc(var(--strand-rotate-y) + 10deg))
+              translateZ(calc(var(--strand-translate-z) + 20px))
+              translateY(-20px);
+          }
+          50% {
+            transform: 
+              perspective(1000px)
+              rotateX(calc(var(--strand-rotate-x) - 3deg))
+              rotateY(calc(var(--strand-rotate-y) - 8deg))
+              translateZ(calc(var(--strand-translate-z) - 15px))
+              translateY(10px);
+          }
+          75% {
+            transform: 
+              perspective(1000px)
+              rotateX(calc(var(--strand-rotate-x) + 8deg))
+              rotateY(calc(var(--strand-rotate-y) + 5deg))
+              translateZ(calc(var(--strand-translate-z) + 10px))
+              translateY(-15px);
+          }
+        }
+
+        @keyframes fiberPulse {
+          0%, 100% {
+            opacity: var(--strand-opacity);
+          }
+          50% {
+            opacity: calc(var(--strand-opacity) * 0.6);
+          }
+        }
+      `}</style>
+    </div>
   );
 };
 
