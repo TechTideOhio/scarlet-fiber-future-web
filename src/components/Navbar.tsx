@@ -24,6 +24,20 @@ const Navbar = () => {
     };
   }, []);
 
+  // Body scroll lock effect
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMenuOpen]);
+
   const navLinks = [
     { name: 'Client Testimonials', href: '#testimonials' },
   ];
@@ -57,6 +71,12 @@ const Navbar = () => {
       }
     }
     // For routes like '/services', React Router will handle the navigation
+  };
+
+  const isActiveRoute = (href: string) => {
+    if (href === '/' && location.pathname === '/') return true;
+    if (href !== '/' && location.pathname.startsWith(href)) return true;
+    return false;
   };
 
   return (
@@ -100,81 +120,117 @@ const Navbar = () => {
         </div>
       </nav>
       
-      {/* Hamburger menu overlay */}
-      <div className={`fixed inset-0 z-40 transition-opacity duration-300 ${isMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
-        <div className="absolute inset-0 bg-black bg-opacity-50" onClick={() => setIsMenuOpen(false)} />
+      {/* Full-screen overlay with smooth animations */}
+      <div className={`fixed inset-0 z-40 transition-all duration-500 ease-in-out ${
+        isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+      }`}>
+        {/* Dark backdrop */}
+        <div 
+          className={`absolute inset-0 bg-black transition-opacity duration-500 ${
+            isMenuOpen ? 'opacity-50' : 'opacity-0'
+          }`} 
+          onClick={() => setIsMenuOpen(false)} 
+        />
         
-        {/* Menu content */}
-        <div className={`absolute top-0 right-0 h-full bg-buckeye-black text-white transform transition-transform duration-300 ease-in-out ${
-          isMenuOpen ? 'translate-x-0' : 'translate-x-full'
-        } w-full md:w-96 lg:w-80`}>
-          <div className="p-6 pt-20">
-            {/* Close button */}
-            <button
-              onClick={() => setIsMenuOpen(false)}
-              className="absolute top-6 right-6 text-white hover:text-buckeye-scarlet transition-colors"
-            >
-              <X size={24} />
-            </button>
+        {/* Mobile menu content - full screen */}
+        <div className={`absolute inset-0 bg-buckeye-black text-white transform transition-all duration-500 ease-in-out ${
+          isMenuOpen ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
+        }`}>
+          <div className="h-full flex flex-col">
+            {/* Header with close button */}
+            <div className="flex items-center justify-between p-6 pt-20 border-b border-gray-700">
+              <div className="flex items-center">
+                <span className="text-buckeye-scarlet font-['Montserrat'] text-xl font-extrabold">BUCKEYE</span>
+                <span className="text-buckeye-scarlet font-['Montserrat'] text-xl font-light ml-1">DATACOM</span>
+              </div>
+              <button
+                onClick={() => setIsMenuOpen(false)}
+                className="text-white hover:text-buckeye-scarlet transition-colors p-2"
+                aria-label="Close menu"
+              >
+                <X size={28} />
+              </button>
+            </div>
             
-            {/* Menu items */}
-            <nav className="space-y-4">
-              {menuItems.map((item) => (
-                <div key={item.name}>
-                  {item.hasDropdown ? (
-                    <div>
-                      <div className="flex items-center justify-between w-full">
-                        <Link
-                          to={item.href}
-                          onClick={() => handleMenuClick(item.href)}
-                          className="text-lg font-medium hover:text-buckeye-scarlet transition-colors"
-                        >
-                          {item.name}
-                        </Link>
-                        <button
-                          onClick={() => setIsServicesOpen(!isServicesOpen)}
-                          className="p-2 hover:text-buckeye-scarlet transition-colors"
-                        >
-                          <ChevronDown 
-                            size={20} 
-                            className={`transform transition-transform duration-200 ${isServicesOpen ? 'rotate-180' : ''}`}
-                          />
-                        </button>
-                      </div>
-                      <div className={`ml-4 space-y-2 overflow-hidden transition-all duration-300 ${
-                        isServicesOpen ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
-                      }`}>
-                        {item.submenu?.map((subItem) => (
+            {/* Menu items - touch-friendly sizing */}
+            <nav className="flex-1 px-6 py-8 overflow-y-auto">
+              <div className="space-y-2">
+                {menuItems.map((item) => (
+                  <div key={item.name}>
+                    {item.hasDropdown ? (
+                      <div>
+                        <div className="flex items-center justify-between">
                           <Link
-                            key={subItem.name}
-                            to={subItem.href}
-                            onClick={() => handleMenuClick(subItem.href)}
-                            className="block py-2 text-gray-300 hover:text-white transition-colors"
+                            to={item.href}
+                            onClick={() => handleMenuClick(item.href)}
+                            className={`flex-1 py-4 px-2 text-xl font-medium transition-colors min-h-[48px] flex items-center ${
+                              isActiveRoute(item.href) 
+                                ? 'text-buckeye-scarlet border-l-4 border-buckeye-scarlet pl-4' 
+                                : 'text-white hover:text-buckeye-scarlet'
+                            }`}
                           >
-                            {subItem.name}
+                            {item.name}
                           </Link>
-                        ))}
+                          <button
+                            onClick={() => setIsServicesOpen(!isServicesOpen)}
+                            className="p-4 hover:text-buckeye-scarlet transition-colors min-h-[48px] flex items-center"
+                          >
+                            <ChevronDown 
+                              size={24} 
+                              className={`transform transition-transform duration-300 ${isServicesOpen ? 'rotate-180' : ''}`}
+                            />
+                          </button>
+                        </div>
+                        
+                        {/* Submenu with smooth animation and indentation */}
+                        <div className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                          isServicesOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'
+                        }`}>
+                          <div className="pl-8 space-y-1 border-l-2 border-gray-600 ml-2">
+                            {item.submenu?.map((subItem) => (
+                              <Link
+                                key={subItem.name}
+                                to={subItem.href}
+                                onClick={() => handleMenuClick(subItem.href)}
+                                className={`block py-3 px-4 text-lg transition-colors min-h-[48px] flex items-center ${
+                                  isActiveRoute(subItem.href)
+                                    ? 'text-buckeye-scarlet bg-buckeye-scarlet/10'
+                                    : 'text-gray-300 hover:text-white hover:bg-gray-800/50'
+                                }`}
+                              >
+                                {subItem.name}
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  ) : (
-                    <Link
-                      to={item.href}
-                      onClick={() => handleMenuClick(item.href)}
-                      className="block py-3 text-lg font-medium hover:text-buckeye-scarlet transition-colors"
-                    >
-                      {item.name}
-                    </Link>
-                  )}
-                </div>
-              ))}
+                    ) : (
+                      <Link
+                        to={item.href}
+                        onClick={() => handleMenuClick(item.href)}
+                        className={`block py-4 px-2 text-xl font-medium transition-colors min-h-[48px] flex items-center ${
+                          isActiveRoute(item.href)
+                            ? 'text-buckeye-scarlet border-l-4 border-buckeye-scarlet pl-4'
+                            : 'text-white hover:text-buckeye-scarlet'
+                        }`}
+                      >
+                        {item.name}
+                      </Link>
+                    )}
+                  </div>
+                ))}
+              </div>
             </nav>
             
-            {/* Contact info in menu */}
-            <div className="mt-12 pt-8 border-t border-gray-700">
-              <div className="space-y-2 text-gray-300">
-                <p className="text-sm">Call us today:</p>
-                <p className="text-lg font-semibold text-white">(614) 679-2486</p>
-                <p className="text-sm">info@buckeyedatacom.com</p>
+            {/* Footer contact info */}
+            <div className="px-6 py-8 border-t border-gray-700 bg-gray-900/50">
+              <div className="space-y-3">
+                <p className="text-gray-400 text-sm font-medium">Get in touch</p>
+                <div className="space-y-2">
+                  <p className="text-white text-lg font-semibold">(614) 679-2486</p>
+                  <p className="text-gray-300">info@buckeyedatacom.com</p>
+                  <p className="text-gray-400 text-sm">6057 Sweetleaf Ct, Galloway, OH 43119</p>
+                </div>
               </div>
             </div>
           </div>
