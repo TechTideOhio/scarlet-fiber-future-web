@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 type ProjectType = 'Data Center' | 'Smart Building' | 'Network Infrastructure' | 'IoT Systems' | 'Security Systems' | 'Cloud Integration' | 'Education/Conservation';
@@ -19,6 +20,11 @@ type ProjectCardProps = {
 };
 
 const ProjectCard = ({ project, onClick }: ProjectCardProps) => {
+  // Check if it's an uploaded image or Unsplash image
+  const imageUrl = project.image.startsWith('/lovable-uploads/') 
+    ? project.image 
+    : `https://images.unsplash.com/${project.image}?auto=format&fit=crop&w=600&q=80`;
+
   return (
     <div
       onClick={onClick}
@@ -26,7 +32,7 @@ const ProjectCard = ({ project, onClick }: ProjectCardProps) => {
     >
       <div className="relative overflow-hidden">
         <img
-          src={`https://images.unsplash.com/${project.image}?auto=format&fit=crop&w=600&q=80`}
+          src={imageUrl}
           alt={project.title}
           className="w-full h-48 object-cover transition-all duration-300 group-hover:scale-105 filter grayscale group-hover:grayscale-0"
         />

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { X, CheckCircle } from 'lucide-react';
@@ -24,6 +25,11 @@ type ProjectModalProps = {
 const ProjectModal = ({ project, isOpen, onClose }: ProjectModalProps) => {
   if (!project) return null;
 
+  // Check if it's an uploaded image or Unsplash image
+  const imageUrl = project.image.startsWith('/lovable-uploads/') 
+    ? project.image 
+    : `https://images.unsplash.com/${project.image}?auto=format&fit=crop&w=1200&q=90`;
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="bg-white max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -37,7 +43,7 @@ const ProjectModal = ({ project, isOpen, onClose }: ProjectModalProps) => {
         <div className="space-y-6">
           <div className="relative">
             <img
-              src={`https://images.unsplash.com/${project.image}?auto=format&fit=crop&w=1200&q=90`}
+              src={imageUrl}
               alt={project.title}
               className="w-full h-[400px] object-cover rounded-lg"
             />
