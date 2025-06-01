@@ -1,15 +1,38 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import FiberBackground from './FiberBackground';
 
 const Hero = () => {
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      <FiberBackground />
+    <div className="relative h-full flex items-center justify-center overflow-hidden">
+      <div 
+        className="absolute inset-0"
+        style={{
+          transform: `translateY(${scrollY * 0.5}px)`,
+        }}
+      >
+        <FiberBackground />
+      </div>
       
       {/* Content overlay */}
       <div className="relative z-10 container mx-auto px-4 text-center">
-        <div className="max-w-4xl mx-auto">
+        <div 
+          className="max-w-4xl mx-auto"
+          style={{
+            transform: `translateY(${scrollY * 0.2}px)`,
+          }}
+        >
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-6 leading-tight animate-fade-in">
             Connecting the Future,{' '}
             <span className="block">Powering Tomorrow.</span>

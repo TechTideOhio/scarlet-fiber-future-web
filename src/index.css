@@ -42,12 +42,33 @@
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+  }
+
   body {
     @apply bg-background text-foreground font-['Open_Sans'];
+    overflow-x: hidden;
   }
 
   h1, h2, h3, h4, h5, h6 {
     @apply font-['Montserrat'] font-bold tracking-tight;
+  }
+
+  /* Scroll snap for sections */
+  section {
+    scroll-snap-align: start;
+  }
+
+  /* Performance optimizations */
+  * {
+    will-change: auto;
+  }
+
+  .parallax-element {
+    will-change: transform;
+    transform: translateZ(0);
   }
 }
 
@@ -62,5 +83,10 @@
   
   .section-subtitle {
     @apply text-xl font-medium mb-16 text-buckeye-gray max-w-3xl mx-auto;
+  }
+
+  /* Smooth scrolling enhancement */
+  .smooth-scroll {
+    scroll-behavior: smooth;
   }
 }
