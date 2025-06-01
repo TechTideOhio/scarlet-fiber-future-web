@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -84,7 +85,7 @@ const projects: Project[] = [
     title: "Columbus Zoo Network Modernization",
     type: "Education/Conservation",
     description: "Complete infrastructure overhaul for the Columbus Zoo and Aquarium, supporting both guest experiences and critical animal care systems",
-    image: "photo-1472396961693-142e6e269027",
+    image: "/lovable-uploads/5abebf68-15fe-4395-a93d-89fa7ac4cc89.png",
     details: "Buckeye DataCom partnered with the Columbus Zoo to modernize their aging network infrastructure. The project included installing redundant fiber paths to ensure 24/7 uptime for temperature-controlled habitats, veterinary facilities, and security systems. We also implemented high-density Wi-Fi for the 2.3 million annual visitors and created a separate secure network for research and conservation data. The new infrastructure supports innovative guest experiences like interactive exhibits and mobile apps while maintaining the strict reliability required for animal care systems.",
     industry: "Education/Conservation",
     features: ["580-Acre Campus Coverage", "Habitat Monitoring Systems", "Interactive Guest Experiences", "Mission-Critical Reliability"]
