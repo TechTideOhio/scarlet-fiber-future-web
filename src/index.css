@@ -90,3 +90,52 @@
     scroll-behavior: smooth;
   }
 }
+
+/* Print styles for clean static version */
+@media print {
+  .fiber-background,
+  .static-fiber-background > *:not(.print-safe) {
+    display: none !important;
+  }
+  
+  .static-fiber-background {
+    background: linear-gradient(135deg, #f8f8f8 0%, #e8e8e8 100%) !important;
+  }
+  
+  /* Ensure text remains readable in print */
+  .hero-content,
+  .hero-content * {
+    color: #000 !important;
+    text-shadow: none !important;
+  }
+  
+  /* Hide accessibility controls in print */
+  .accessibility-controls {
+    display: none !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .fiber-strand {
+    --strand-opacity: 0.8 !important;
+  }
+  
+  .static-fiber-background {
+    background: linear-gradient(135deg, #000000 0%, #333333 100%) !important;
+  }
+}
+
+/* Battery saving mode */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01s !important;
+  }
+  
+  .fiber-strand {
+    animation: none !important;
+    transform: none !important;
+  }
+}

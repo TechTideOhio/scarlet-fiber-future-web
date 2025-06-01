@@ -56,8 +56,12 @@ export const useFiberInteraction = () => {
     };
 
     const handleTouchMove = (e: TouchEvent) => {
+      // Prevent default to avoid scrolling issues
+      e.preventDefault();
+      
       if (e.touches.length > 0) {
-        setMousePosition({ x: e.touches[0].clientX, y: e.touches[0].clientY });
+        const touch = e.touches[0];
+        setMousePosition({ x: touch.clientX, y: touch.clientY });
         
         if (!userInteracted) {
           setUserInteracted(true);
@@ -65,14 +69,31 @@ export const useFiberInteraction = () => {
       }
     };
 
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        const touch = e.touches[0];
+        setMousePosition({ x: touch.clientX, y: touch.clientY });
+        
+        if (!userInteracted) {
+          setUserInteracted(true);
+        }
+      }
+    };
+
+    // Start the animation loop
     animationFrameId = requestAnimationFrame(updateFiberPositions);
     
+    // Mouse events for desktop
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    
+    // Touch events for mobile
+    window.addEventListener('touchstart', handleTouchStart, { passive: false });
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
 
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('touchstart', handleTouchStart);
       window.removeEventListener('touchmove', handleTouchMove);
     };
   }, [mousePosition, userInteracted]);

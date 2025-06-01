@@ -10,13 +10,17 @@ interface WebGLFiberRendererProps {
   onError?: (error: Error) => void;
   mousePosition: { x: number; y: number };
   isVisible?: boolean;
+  enableParticles?: boolean;
+  fiberCount?: number;
 }
 
 const WebGLFiberRenderer: React.FC<WebGLFiberRendererProps> = ({
   onLoaded,
   onError,
   mousePosition,
-  isVisible = true
+  isVisible = true,
+  enableParticles = true,
+  fiberCount = 15
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const sceneSetupRef = useRef<SceneSetup | null>(null);
@@ -35,8 +39,10 @@ const WebGLFiberRenderer: React.FC<WebGLFiberRendererProps> = ({
       sceneSetupRef.current = sceneSetup;
       const { scene } = sceneSetup;
 
-      // Create 20 curved fiber geometries with particles
-      for (let i = 0; i < 20; i++) {
+      // Create fiber geometries with device-appropriate count
+      const actualFiberCount = Math.min(fiberCount, 20); // Cap at 20 for performance
+      
+      for (let i = 0; i < actualFiberCount; i++) {
         const curve = await createFiberCurve(i);
         const geometry = await createFiberGeometry(curve, i);
         const material = await createFiberMaterial();
@@ -47,10 +53,12 @@ const WebGLFiberRenderer: React.FC<WebGLFiberRendererProps> = ({
         scene.add(fiber);
         fibersRef.current.push(fiber);
 
-        // Create particle system along fiber
-        const particleData = await createParticleSystem(curve);
-        scene.add(particleData.particles);
-        particlesRef.current.push(particleData);
+        // Create particle system along fiber only if enabled
+        if (enableParticles) {
+          const particleData = await createParticleSystem(curve);
+          scene.add(particleData.particles);
+          particlesRef.current.push(particleData);
+        }
       }
 
       onLoaded?.();
@@ -58,7 +66,7 @@ const WebGLFiberRenderer: React.FC<WebGLFiberRendererProps> = ({
       console.error('WebGL initialization failed:', error);
       onError?.(error as Error);
     }
-  }, [onLoaded, onError]);
+  }, [onLoaded, onError, enableParticles, fiberCount]);
 
   const animate = useCallback(() => {
     if (!sceneSetupRef.current || !isVisible) {
@@ -81,14 +89,16 @@ const WebGLFiberRenderer: React.FC<WebGLFiberRendererProps> = ({
       }
     });
 
-    // Update particle positions along curves
-    particlesRef.current.forEach((particleData) => {
-      updateParticlePositions(particleData, time);
-    });
+    // Update particle positions along curves (only if particles are enabled)
+    if (enableParticles) {
+      particlesRef.current.forEach((particleData) => {
+        updateParticlePositions(particleData, time);
+      });
+    }
 
     renderer.render(scene, camera);
     animationIdRef.current = requestAnimationFrame(animate);
-  }, [mousePosition, isVisible]);
+  }, [mousePosition, isVisible, enableParticles]);
 
   useEffect(() => {
     initWebGL();

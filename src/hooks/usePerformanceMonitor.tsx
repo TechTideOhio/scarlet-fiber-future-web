@@ -1,5 +1,6 @@
 
 import { useEffect, useState, useRef, useCallback } from 'react';
+import { detectDeviceCapabilities, getOptimalFiberCount } from '../utils/deviceDetection';
 
 export type QualityLevel = 'high' | 'medium' | 'low' | 'static';
 
@@ -8,27 +9,35 @@ interface PerformanceState {
   fps: number;
   isMonitoring: boolean;
   shouldAutoDegrade: boolean;
+  deviceCapabilities: ReturnType<typeof detectDeviceCapabilities>;
+  isPaused: boolean;
 }
 
 export const usePerformanceMonitor = () => {
-  const [performanceState, setPerformanceState] = useState<PerformanceState>({
-    currentQuality: 'high',
-    fps: 60,
-    isMonitoring: false,
-    shouldAutoDegrade: false
+  const [performanceState, setPerformanceState] = useState<PerformanceState>(() => {
+    const capabilities = detectDeviceCapabilities();
+    return {
+      currentQuality: capabilities.prefersCSSOnly ? 'static' : 'high',
+      fps: 60,
+      isMonitoring: false,
+      shouldAutoDegrade: false,
+      deviceCapabilities: capabilities,
+      isPaused: false
+    };
   });
 
   const frameCountRef = useRef(0);
   const lastTimeRef = useRef(performance.now());
   const monitoringStartRef = useRef(0);
   const animationIdRef = useRef<number>();
+  const batteryApiRef = useRef<any>(null);
 
-  // Check for reduced motion preference
+  // Check for reduced motion preference and update accordingly
   const prefersReducedMotion = useCallback(() => {
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }, []);
 
-  // Load saved preference from localStorage
+  // Load saved preference from localStorage with device-specific defaults
   const loadSavedQuality = useCallback((): QualityLevel => {
     if (prefersReducedMotion()) return 'static';
     
@@ -36,15 +45,22 @@ export const usePerformanceMonitor = () => {
     if (saved && ['high', 'medium', 'low', 'static'].includes(saved)) {
       return saved as QualityLevel;
     }
+    
+    // Device-specific defaults
+    const { isMobile, ram, isOldBrowser } = performanceState.deviceCapabilities;
+    if (isOldBrowser) return 'static';
+    if (isMobile && ram < 3) return 'low';
+    if (isMobile) return 'medium';
+    if (ram < 4) return 'medium';
     return 'high';
-  }, [prefersReducedMotion]);
+  }, [prefersReducedMotion, performanceState.deviceCapabilities]);
 
   // Save quality preference to localStorage
   const saveQualityPreference = useCallback((quality: QualityLevel) => {
     localStorage.setItem('fiber-animation-quality', quality);
   }, []);
 
-  // FPS monitoring loop
+  // Enhanced FPS monitoring with mobile considerations
   const monitorFPS = useCallback(() => {
     const now = performance.now();
     frameCountRef.current++;
@@ -58,14 +74,18 @@ export const usePerformanceMonitor = () => {
       frameCountRef.current = 0;
       lastTimeRef.current = now;
 
-      // Check if we need to downgrade (during monitoring period)
-      if (now - monitoringStartRef.current < 3000) {
-        if (fps < 30 && !performanceState.shouldAutoDegrade) {
-          console.log('Low FPS detected, enabling auto-degradation');
+      // Device-specific performance thresholds
+      const { isMobile } = performanceState.deviceCapabilities;
+      const minFPS = isMobile ? 25 : 30; // Lower threshold for mobile
+      
+      // Check if we need to downgrade during monitoring period
+      if (now - monitoringStartRef.current < 5000) { // Extended monitoring for mobile
+        if (fps < minFPS && !performanceState.shouldAutoDegrade) {
+          console.log(`Low FPS detected (${fps}fps), enabling auto-degradation`);
           setPerformanceState(prev => ({ ...prev, shouldAutoDegrade: true }));
         }
       } else {
-        // Stop monitoring after 3 seconds
+        // Stop monitoring after 5 seconds
         setPerformanceState(prev => ({ ...prev, isMonitoring: false }));
         if (animationIdRef.current) {
           cancelAnimationFrame(animationIdRef.current);
@@ -75,13 +95,37 @@ export const usePerformanceMonitor = () => {
     }
 
     animationIdRef.current = requestAnimationFrame(monitorFPS);
-  }, [performanceState.shouldAutoDegrade]);
+  }, [performanceState.shouldAutoDegrade, performanceState.deviceCapabilities]);
 
-  // Start FPS monitoring
+  // Battery API monitoring for mobile devices
+  useEffect(() => {
+    if ('getBattery' in navigator) {
+      (navigator as any).getBattery().then((battery: any) => {
+        batteryApiRef.current = battery;
+        
+        // Downgrade quality if battery is low
+        const checkBattery = () => {
+          if (battery.level < 0.2 && !battery.charging) {
+            console.log('Low battery detected, reducing animation quality');
+            setPerformanceState(prev => ({ 
+              ...prev, 
+              currentQuality: prev.currentQuality === 'high' ? 'medium' : 'low'
+            }));
+          }
+        };
+        
+        battery.addEventListener('levelchange', checkBattery);
+        battery.addEventListener('chargingchange', checkBattery);
+        checkBattery();
+      });
+    }
+  }, []);
+
+  // Start FPS monitoring with device-specific considerations
   const startMonitoring = useCallback(() => {
-    if (performanceState.isMonitoring) return;
+    if (performanceState.isMonitoring || performanceState.isPaused) return;
 
-    console.log('Starting FPS monitoring...');
+    console.log('Starting FPS monitoring for', performanceState.deviceCapabilities.isMobile ? 'mobile' : 'desktop', 'device...');
     monitoringStartRef.current = performance.now();
     lastTimeRef.current = performance.now();
     frameCountRef.current = 0;
@@ -93,18 +137,21 @@ export const usePerformanceMonitor = () => {
     }));
     
     monitorFPS();
-  }, [performanceState.isMonitoring, monitorFPS]);
+  }, [performanceState.isMonitoring, performanceState.isPaused, monitorFPS, performanceState.deviceCapabilities]);
 
-  // Auto-downgrade quality based on performance
+  // Auto-downgrade quality based on performance with device-specific logic
   const autoAdjustQuality = useCallback(() => {
-    if (!performanceState.shouldAutoDegrade) return;
+    if (!performanceState.shouldAutoDegrade || performanceState.isPaused) return;
 
+    const { isMobile } = performanceState.deviceCapabilities;
+    const minFPS = isMobile ? 25 : 30;
+    
     let newQuality: QualityLevel = performanceState.currentQuality;
 
-    if (performanceState.fps < 30) {
+    if (performanceState.fps < minFPS) {
       switch (performanceState.currentQuality) {
         case 'high':
-          newQuality = 'medium';
+          newQuality = isMobile ? 'low' : 'medium'; // Skip medium on mobile for faster recovery
           break;
         case 'medium':
           newQuality = 'low';
@@ -116,7 +163,7 @@ export const usePerformanceMonitor = () => {
     }
 
     if (newQuality !== performanceState.currentQuality) {
-      console.log(`Auto-downgrading quality from ${performanceState.currentQuality} to ${newQuality}`);
+      console.log(`Auto-downgrading quality from ${performanceState.currentQuality} to ${newQuality} (${performanceState.fps}fps)`);
       setPerformanceState(prev => ({ ...prev, currentQuality: newQuality }));
       saveQualityPreference(newQuality);
     }
@@ -128,6 +175,11 @@ export const usePerformanceMonitor = () => {
     saveQualityPreference(quality);
   }, [saveQualityPreference]);
 
+  // Pause/resume functionality
+  const togglePause = useCallback(() => {
+    setPerformanceState(prev => ({ ...prev, isPaused: !prev.isPaused }));
+  }, []);
+
   // Initialize quality from saved preference
   useEffect(() => {
     const savedQuality = loadSavedQuality();
@@ -138,6 +190,19 @@ export const usePerformanceMonitor = () => {
   useEffect(() => {
     autoAdjustQuality();
   }, [performanceState.fps, performanceState.shouldAutoDegrade, autoAdjustQuality]);
+
+  // Listen for reduced motion preference changes
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const handleChange = (e: MediaQueryListEvent) => {
+      if (e.matches) {
+        setPerformanceState(prev => ({ ...prev, currentQuality: 'static' }));
+      }
+    };
+    
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
 
   // Cleanup
   useEffect(() => {
@@ -152,7 +217,11 @@ export const usePerformanceMonitor = () => {
     currentQuality: performanceState.currentQuality,
     fps: performanceState.fps,
     isMonitoring: performanceState.isMonitoring,
+    deviceCapabilities: performanceState.deviceCapabilities,
+    isPaused: performanceState.isPaused,
+    optimalFiberCount: getOptimalFiberCount(performanceState.deviceCapabilities),
     startMonitoring,
-    setQuality
+    setQuality,
+    togglePause
   };
 };
