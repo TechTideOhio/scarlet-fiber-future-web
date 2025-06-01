@@ -1,6 +1,5 @@
 
 import React from 'react';
-import CTAButton from './CTAButton';
 import FiberBackground from './FiberBackground';
 
 const Hero = () => {
@@ -21,19 +20,11 @@ const Hero = () => {
             Experience lightning-fast connectivity with our enterprise-grade fiber network solutions.
           </p>
           
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 animate-fade-in"
+          <div className="flex justify-center animate-fade-in"
                style={{ animationDelay: '0.4s' }}>
-            <CTAButton variant="primary" size="lg">
-              Get Instant Quote
-            </CTAButton>
-            <CTAButton 
-              variant="primary" 
-              size="lg" 
-              className="bg-buckeye-scarlet hover:bg-buckeye-scarlet/90"
-              onClick={() => window.location.href = 'tel:6146792486'}
-            >
-              Call Now 614-679-2486
-            </CTAButton>
+            <button className="bg-[#BB0000] hover:bg-[#990000] text-white font-bold px-12 py-5 rounded-md transition-all duration-300 hover:translate-y-[-2px] shadow-lg hover:shadow-xl">
+              Start Your Project
+            </button>
           </div>
         </div>
       </div>
