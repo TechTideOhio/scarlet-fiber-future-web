@@ -1,27 +1,22 @@
+
 import React from 'react';
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
-import Services from '../components/Services';
 import StatsStrip from '../components/StatsStrip';
-import ProjectGallery from '../components/ProjectGallery';
+import Services from '../components/Services';
 import WhyChooseUs from '../components/WhyChooseUs';
-import Testimonials from '../components/Testimonials';
-import ContactForm from '../components/ContactForm';
+import SimpleCTA from '../components/SimpleCTA';
 import Footer from '../components/Footer';
-import QuoteWidget from '../components/QuoteWidget';
 
 const Index = () => {
   return (
     <div className="min-h-screen">
       <Navbar />
       <Hero />
-      <Services />
       <StatsStrip />
-      <QuoteWidget />
-      <ProjectGallery />
+      <Services />
       <WhyChooseUs />
-      <Testimonials />
-      <ContactForm />
+      <SimpleCTA />
       <Footer />
     </div>
   );
