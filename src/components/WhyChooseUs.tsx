@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Award, Clock, Shield, Zap } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const WhyChooseUs = () => {
   const advantages = [
@@ -43,12 +44,12 @@ const WhyChooseUs = () => {
         </div>
         
         <div className="text-center mt-12">
-          <a 
-            href="/about"
+          <Link 
+            to="/about"
             className="text-buckeye-scarlet hover:text-buckeye-scarlet/80 font-medium transition-colors"
           >
             Learn more about us →
-          </a>
+          </Link>
         </div>
       </div>
     </section>
