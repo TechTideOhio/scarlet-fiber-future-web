@@ -41,9 +41,8 @@ const Navbar = () => {
       ]
     },
     { name: 'Our Work', href: '/our-work' },
-    { name: 'About Us', href: '#why-choose-us' },
-    { name: 'Testimonials', href: '#testimonials' },
-    { name: 'Contact', href: '#contact' },
+    { name: 'About Us', href: '/about' },
+    { name: 'Contact', href: '/contact' },
   ];
 
   const handleMenuClick = (href: string) => {
@@ -159,7 +158,7 @@ const Navbar = () => {
                     </div>
                   ) : (
                     <Link
-                      to={item.href.startsWith('#') ? `/${item.href}` : item.href}
+                      to={item.href}
                       onClick={() => handleMenuClick(item.href)}
                       className="block py-3 text-lg font-medium hover:text-buckeye-scarlet transition-colors"
                     >
