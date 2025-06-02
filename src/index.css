@@ -51,61 +51,79 @@
   html {
     scroll-behavior: smooth;
     scroll-snap-type: y mandatory;
+    /* Performance optimization for scrolling */
+    -webkit-overflow-scrolling: touch;
   }
 
   body {
     @apply bg-background text-foreground font-['Open_Sans'];
     overflow-x: hidden;
+    /* Optimize font rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeSpeed;
   }
 
   h1, h2, h3, h4, h5, h6 {
     @apply font-['Montserrat'] font-bold tracking-tight;
+    /* Optimize heading rendering */
+    text-rendering: optimizeLegibility;
   }
 
   /* Scroll snap for sections */
   section {
     scroll-snap-align: start;
+    /* Performance: use transform instead of changing layout properties */
+    contain: layout style paint;
   }
 
   /* Performance optimizations */
   * {
     will-change: auto;
+    /* Prevent unnecessary layer creation */
+    transform: translateZ(0);
   }
 
   .parallax-element {
     will-change: transform;
     transform: translateZ(0);
+    /* Promote to composite layer only when needed */
+    backface-visibility: hidden;
   }
 
-  /* Enhanced animations for hero */
+  /* Enhanced animations for hero with performance optimization */
   @keyframes heroFadeIn {
     from {
       opacity: 0;
-      transform: translateY(20px);
+      transform: translate3d(0, 20px, 0);
     }
     to {
       opacity: 1;
-      transform: translateY(0);
+      transform: translate3d(0, 0, 0);
     }
   }
 
   @keyframes syncedPulse {
     0%, 100% {
       opacity: 1;
-      transform: scale(1);
+      transform: scale3d(1, 1, 1);
     }
     50% {
       opacity: 0.8;
-      transform: scale(1.02);
+      transform: scale3d(1.02, 1.02, 1);
     }
   }
 
   .hero-fade-in {
     animation: heroFadeIn 0.8s ease-out forwards;
+    /* Performance: use transform instead of changing layout */
+    transform: translate3d(0, 0, 0);
   }
 
   .synced-pulse {
     animation: syncedPulse 2s ease-in-out infinite;
+    /* Ensure GPU acceleration */
+    will-change: transform, opacity;
   }
 }
 
@@ -127,10 +145,13 @@
     scroll-behavior: smooth;
   }
 
-  /* Enhanced button with glow effects */
+  /* Enhanced button with glow effects - optimized for performance */
   .cta-button {
     @apply relative bg-[var(--cta-primary)] hover:bg-[var(--cta-hover)] text-white font-bold px-12 py-5 rounded-md transition-all duration-300 hover:translate-y-[-2px] shadow-lg hover:shadow-xl;
     box-shadow: 0 4px 20px rgba(187, 0, 0, 0.3);
+    /* Performance: GPU acceleration for smooth animations */
+    transform: translate3d(0, 0, 0);
+    will-change: transform, box-shadow;
   }
 
   .cta-button::before {
@@ -142,7 +163,18 @@
     opacity: 0.2;
     animation: syncedPulse 2s ease-in-out infinite;
     pointer-events: none;
+    /* Performance optimization */
+    transform: translate3d(0, 0, 0);
   }
+}
+
+/* Critical performance optimization for initial paint */
+.hero-content {
+  /* Prevent layout shift during font loading */
+  font-display: swap;
+  /* Optimize text rendering during animations */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 /* Print styles for clean static version */
@@ -178,12 +210,14 @@
   }
 }
 
-/* Battery saving mode */
+/* Battery saving mode - enhanced for performance */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01s !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01s !important;
+    /* Remove will-change to prevent unnecessary layer creation */
+    will-change: auto !important;
   }
   
   .fiber-strand {
@@ -195,4 +229,17 @@
   .synced-pulse {
     animation: none !important;
   }
+
+  /* Optimize for static rendering */
+  .parallax-element {
+    transform: none !important;
+  }
+}
+
+/* Critical CSS inlining hint for build tools */
+/* Above-the-fold content should be inlined for optimal FCP */
+.hero-section-critical {
+  /* Ensure hero content renders immediately */
+  contain: layout style;
+  transform: translate3d(0, 0, 0);
 }
