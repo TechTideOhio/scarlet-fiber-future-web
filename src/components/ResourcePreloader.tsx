@@ -106,22 +106,30 @@ const ResourcePreloader = () => {
         });
         lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true });
 
-        // Track First Input Delay
+        // Track First Input Delay with proper type checking
         const fidObserver = new PerformanceObserver((list) => {
           const entries = list.getEntries();
           entries.forEach(entry => {
-            console.log('FID:', entry.processingStart - entry.startTime);
+            // Type guard for PerformanceEventTiming
+            if ('processingStart' in entry && typeof entry.processingStart === 'number') {
+              console.log('FID:', entry.processingStart - entry.startTime);
+            }
           });
         });
         fidObserver.observe({ type: 'first-input', buffered: true });
 
-        // Track Cumulative Layout Shift
+        // Track Cumulative Layout Shift with proper type checking
         const clsObserver = new PerformanceObserver((list) => {
           let clsValue = 0;
           const entries = list.getEntries();
           entries.forEach(entry => {
-            if (!entry.hadRecentInput) {
-              clsValue += entry.value;
+            // Type guard for LayoutShift entries
+            if ('hadRecentInput' in entry && 'value' in entry && 
+                typeof entry.hadRecentInput === 'boolean' && 
+                typeof entry.value === 'number') {
+              if (!entry.hadRecentInput) {
+                clsValue += entry.value;
+              }
             }
           });
           console.log('CLS:', clsValue);
