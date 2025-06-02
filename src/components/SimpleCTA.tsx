@@ -4,14 +4,14 @@ import CTAButton from './CTAButton';
 
 const SimpleCTA = () => {
   return (
-    <section className="w-full bg-buckeye-black">
-      <div className="container mx-auto px-4 text-center py-8">
-        <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
+    <section className="w-full bg-white py-16">
+      <div className="container mx-auto px-4 text-center">
+        <h2 className="text-2xl md:text-3xl font-bold text-buckeye-black mb-6">
           Ready to transform your network?
         </h2>
-        <CTAButton variant="primary" size="lg">
+        <button className="bg-buckeye-scarlet hover:bg-[#990000] text-white font-bold py-4 px-8 rounded-md transition-all duration-300 hover:shadow-lg">
           Get Started
-        </CTAButton>
+        </button>
       </div>
     </section>
   );
