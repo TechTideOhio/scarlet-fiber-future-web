@@ -11,6 +11,8 @@ const EnhancedHero = () => {
   const { titleVisible, subtitleVisible, buttonVisible } = useTextAnimation();
   const { playHoverSound, soundEnabled, toggleSound } = useSoundEffects();
 
+  console.log('EnhancedHero render - fiber effects:', { fiberGlowIntensity, buttonPulse });
+
   useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
@@ -22,12 +24,9 @@ const EnhancedHero = () => {
 
   return (
     <div className="relative h-full flex items-center justify-center overflow-hidden">
-      {/* Dark overlay for text readability */}
-      <div className="absolute inset-0 bg-black bg-opacity-30 z-5" />
-      
-      {/* Fiber Background with parallax */}
+      {/* Fiber Background Layer - Positioned to be behind content */}
       <div 
-        className="absolute inset-0"
+        className="absolute inset-0 z-0"
         style={{
           transform: `translateY(${scrollY * 0.5}px)`,
         }}
@@ -35,7 +34,10 @@ const EnhancedHero = () => {
         <FiberBackground />
       </div>
       
-      {/* Content overlay */}
+      {/* Dark overlay for text readability */}
+      <div className="absolute inset-0 bg-black bg-opacity-40 z-5" />
+      
+      {/* Content overlay - Higher z-index to appear above fibers */}
       <div className="relative z-10 container mx-auto px-4 text-center">
         <div 
           className="max-w-4xl mx-auto"
@@ -83,7 +85,6 @@ const EnhancedHero = () => {
               }}
               onMouseEnter={() => playHoverSound()}
               onClick={() => {
-                // Handle CTA action
                 console.log('CTA clicked');
               }}
             >

@@ -19,39 +19,31 @@ const CSSFiberAnimation: React.FC<CSSFiberAnimationProps> = ({
   fiberCount,
   isMobile = false
 }) => {
-  // Use provided fiber count or calculate based on quality
+  // Force minimum fiber count to ensure animation is visible
   const actualFiberCount = fiberCount ?? (() => {
     switch (quality) {
       case 'high': return isMobile ? 8 : 15;
       case 'medium': return isMobile ? 6 : 10;
-      case 'low': return isMobile ? 4 : 5;
-      case 'static': return 0;
-      default: return isMobile ? 8 : 15;
+      case 'low': return isMobile ? 4 : 8;
+      case 'static': return 6; // Show fibers even in static mode
+      default: return isMobile ? 8 : 12;
     }
   })();
   
-  // Don't render anything for static quality
-  if (quality === 'static' || actualFiberCount === 0) {
+  console.log('CSSFiberAnimation render:', { quality, actualFiberCount, opacity, isVisible });
+
+  // Always render fibers unless explicitly set to 0
+  if (actualFiberCount === 0) {
     return null;
   }
 
   // Container styles with performance optimizations
   const containerStyles: React.CSSProperties = {
-    opacity,
+    opacity: Math.max(opacity, 0.7), // Ensure minimum visibility
     animationPlayState: isVisible ? 'running' : 'paused',
     transform: 'translate3d(0,0,0)', // GPU acceleration
-    contain: 'layout style paint' // CSS containment
-  };
-
-  // Mobile-specific optimizations
-  const getMobileOptimizations = (): Record<string, string> => {
-    if (!isMobile) return {};
-    
-    return {
-      '--mobile-blur-reduction': '0.5px',
-      '--mobile-animation-scale': '0.7',
-      '--mobile-glow-reduction': '0.5'
-    };
+    contain: 'layout style paint', // CSS containment
+    zIndex: 1 // Ensure it's behind content but visible
   };
 
   return (
@@ -60,35 +52,26 @@ const CSSFiberAnimation: React.FC<CSSFiberAnimationProps> = ({
       style={containerStyles}
     >
       {Array.from({ length: actualFiberCount }, (_, index) => {
-        // Reduce complexity for lower quality levels and mobile
-        const isComplexFiber = (quality === 'high' && !isMobile) || 
-                               (quality === 'medium' && !isMobile && index < 7);
-        
-        // Mobile-specific adjustments
+        // Simplified fiber properties for better reliability
         const baseWidth = isMobile ? 1.5 : 2;
-        const baseOpacity = isMobile ? 0.25 : 0.3;
-        const complexityMultiplier = isMobile ? 0.5 : 1;
+        const baseOpacity = 0.4;
         
         const customProperties = {
-          '--strand-width': `${baseWidth + Math.random() * (quality === 'high' ? 2 : 1) * complexityMultiplier}px`,
-          '--strand-opacity': `${baseOpacity + Math.random() * (quality === 'high' ? 0.4 : 0.2) * complexityMultiplier}`,
+          '--strand-width': `${baseWidth + Math.random() * 2}px`,
+          '--strand-opacity': `${baseOpacity + Math.random() * 0.3}`,
           '--strand-delay': `${Math.random() * 2}s`,
-          '--strand-duration': `${3 + Math.random() * (quality === 'high' ? 4 : 2) * complexityMultiplier}s`,
+          '--strand-duration': `${4 + Math.random() * 3}s`,
           '--strand-x': `${Math.random() * 100}%`,
-          '--strand-rotate-x': `${Math.random() * (isComplexFiber ? 30 : 15) - (isComplexFiber ? 15 : 7.5)}deg`,
-          '--strand-rotate-y': `${Math.random() * (isComplexFiber ? 60 : 30) - (isComplexFiber ? 30 : 15)}deg`,
-          '--strand-translate-z': `${Math.random() * (isComplexFiber ? 200 : 100) - (isComplexFiber ? 100 : 50)}px`,
-          '--mouse-offset-x': '0px',
-          '--mouse-offset-y': '0px',
-          '--glow-intensity': isMobile ? '0.2' : '0.3',
-          willChange: enableMouseEffects && isVisible ? 'transform, box-shadow' : 'auto',
-          ...getMobileOptimizations()
+          '--strand-rotate-x': `${Math.random() * 20 - 10}deg`,
+          '--strand-rotate-y': `${Math.random() * 40 - 20}deg`,
+          '--strand-translate-z': `${Math.random() * 150 - 75}px`,
+          '--glow-intensity': '0.4',
         } as React.CSSProperties;
         
         return (
           <div
             key={index}
-            className={`fiber-strand fiber-strand-${index + 1} ${enableMouseEffects ? 'interactive' : ''} ${isMobile ? 'mobile' : ''}`}
+            className={`fiber-strand fiber-strand-${index + 1} ${enableMouseEffects ? 'interactive' : ''}`}
             style={customProperties}
           />
         );
@@ -104,91 +87,83 @@ const CSSFiberAnimation: React.FC<CSSFiberAnimationProps> = ({
           background: linear-gradient(
             to bottom,
             rgba(187, 0, 0, var(--strand-opacity)),
-            rgba(187, 0, 0, 0.1),
+            rgba(187, 0, 0, 0.2),
+            rgba(187, 0, 0, 0.05),
             transparent
           );
           transform: 
             perspective(1000px)
             rotateX(var(--strand-rotate-x))
             rotateY(var(--strand-rotate-y))
-            translateZ(var(--strand-translate-z))
-            translate3d(var(--mouse-offset-x), var(--mouse-offset-y), 0);
+            translateZ(var(--strand-translate-z));
           animation: 
             fiberFlow var(--strand-duration) ease-in-out infinite,
-            fiberPulse calc(var(--strand-duration) * 1.5) ease-in-out infinite;
+            fiberPulse calc(var(--strand-duration) * 1.2) ease-in-out infinite;
           animation-delay: var(--strand-delay);
           animation-play-state: ${isVisible ? 'running' : 'paused'};
           contain: layout style paint;
-        }
-
-        /* ... keep existing code (mobile, interactive, and animation styles) */
-        .fiber-strand.mobile {
-          transform: 
-            perspective(500px)
-            rotateX(calc(var(--strand-rotate-x) * var(--mobile-animation-scale, 1)))
-            rotateY(calc(var(--strand-rotate-y) * var(--mobile-animation-scale, 1)))
-            translateZ(calc(var(--strand-translate-z) * var(--mobile-animation-scale, 1)))
-            translate3d(var(--mouse-offset-x), var(--mouse-offset-y), 0);
+          box-shadow: 
+            0 0 10px rgba(187, 0, 0, var(--glow-intensity)),
+            0 0 20px rgba(187, 0, 0, calc(var(--glow-intensity) * 0.6));
         }
 
         .fiber-strand.interactive {
-          box-shadow: 
-            0 0 calc(10px * var(--glow-intensity) * var(--mobile-glow-reduction, 1)) rgba(187, 0, 0, calc(0.5 * var(--glow-intensity))),
-            0 0 calc(20px * var(--glow-intensity) * var(--mobile-glow-reduction, 1)) rgba(187, 0, 0, calc(0.3 * var(--glow-intensity)));
           transition: box-shadow 0.3s ease-out, transform 0.1s ease-out;
         }
 
         .fiber-strand:nth-child(3n) {
-          filter: blur(${quality === 'low' || isMobile ? 'var(--mobile-blur-reduction, 0.5px)' : '1px'});
-          opacity: ${quality === 'low' || isMobile ? '0.7' : '0.6'};
+          filter: blur(1px);
+          opacity: 0.8;
         }
 
         .fiber-strand:nth-child(5n) {
-          filter: blur(${quality === 'low' || isMobile ? 'calc(var(--mobile-blur-reduction, 0.5px) * 2)' : '2px'});
-          opacity: ${quality === 'low' || isMobile ? '0.5' : '0.4'};
+          filter: blur(1.5px);
+          opacity: 0.6;
         }
 
         @keyframes fiberFlow {
           0%, 100% {
             transform: 
-              perspective(${isMobile ? '500px' : '1000px'})
-              rotateX(calc(var(--strand-rotate-x) * var(--mobile-animation-scale, 1)))
-              rotateY(calc(var(--strand-rotate-y) * var(--mobile-animation-scale, 1)))
-              translateZ(calc(var(--strand-translate-z) * var(--mobile-animation-scale, 1)))
-              translate3d(var(--mouse-offset-x), var(--mouse-offset-y), 0);
+              perspective(1000px)
+              rotateX(var(--strand-rotate-x))
+              rotateY(var(--strand-rotate-y))
+              translateZ(var(--strand-translate-z));
           }
           25% {
             transform: 
-              perspective(${isMobile ? '500px' : '1000px'})
-              rotateX(calc((var(--strand-rotate-x) + ${quality === 'low' || isMobile ? '2deg' : '5deg'}) * var(--mobile-animation-scale, 1)))
-              rotateY(calc((var(--strand-rotate-y) + ${quality === 'low' || isMobile ? '5deg' : '10deg'}) * var(--mobile-animation-scale, 1)))
-              translateZ(calc((var(--strand-translate-z) + ${quality === 'low' || isMobile ? '10px' : '20px'}) * var(--mobile-animation-scale, 1)))
-              translate3d(var(--mouse-offset-x), calc(var(--mouse-offset-y) + ${quality === 'low' || isMobile ? '-10px' : '-20px'}), 0);
+              perspective(1000px)
+              rotateX(calc(var(--strand-rotate-x) + 5deg))
+              rotateY(calc(var(--strand-rotate-y) + 8deg))
+              translateZ(calc(var(--strand-translate-z) + 20px));
           }
           50% {
             transform: 
-              perspective(${isMobile ? '500px' : '1000px'})
-              rotateX(calc((var(--strand-rotate-x) - ${quality === 'low' || isMobile ? '1deg' : '3deg'}) * var(--mobile-animation-scale, 1)))
-              rotateY(calc((var(--strand-rotate-y) - ${quality === 'low' || isMobile ? '4deg' : '8deg'}) * var(--mobile-animation-scale, 1)))
-              translateZ(calc((var(--strand-translate-z) - ${quality === 'low' || isMobile ? '8px' : '15px'}) * var(--mobile-animation-scale, 1)))
-              translate3d(var(--mouse-offset-x), calc(var(--mouse-offset-y) + ${quality === 'low' || isMobile ? '5px' : '10px'}), 0);
+              perspective(1000px)
+              rotateX(calc(var(--strand-rotate-x) - 3deg))
+              rotateY(calc(var(--strand-rotate-y) - 6deg))
+              translateZ(calc(var(--strand-translate-z) - 15px));
           }
           75% {
             transform: 
-              perspective(${isMobile ? '500px' : '1000px'})
-              rotateX(calc((var(--strand-rotate-x) + ${quality === 'low' || isMobile ? '4deg' : '8deg'}) * var(--mobile-animation-scale, 1)))
-              rotateY(calc((var(--strand-rotate-y) + ${quality === 'low' || isMobile ? '2deg' : '5deg'}) * var(--mobile-animation-scale, 1)))
-              translateZ(calc((var(--strand-translate-z) + ${quality === 'low' || isMobile ? '5px' : '10px'}) * var(--mobile-animation-scale, 1)))
-              translate3d(var(--mouse-offset-x), calc(var(--mouse-offset-y) + ${quality === 'low' || isMobile ? '-8px' : '-15px'}), 0);
+              perspective(1000px)
+              rotateX(calc(var(--strand-rotate-x) + 7deg))
+              rotateY(calc(var(--strand-rotate-y) + 4deg))
+              translateZ(calc(var(--strand-translate-z) + 10px));
           }
         }
 
         @keyframes fiberPulse {
           0%, 100% {
             opacity: var(--strand-opacity);
+            box-shadow: 
+              0 0 10px rgba(187, 0, 0, var(--glow-intensity)),
+              0 0 20px rgba(187, 0, 0, calc(var(--glow-intensity) * 0.6));
           }
           50% {
-            opacity: calc(var(--strand-opacity) * ${quality === 'low' || isMobile ? '0.7' : '0.6'});
+            opacity: calc(var(--strand-opacity) * 0.7);
+            box-shadow: 
+              0 0 15px rgba(187, 0, 0, calc(var(--glow-intensity) * 1.2)),
+              0 0 25px rgba(187, 0, 0, calc(var(--glow-intensity) * 0.8));
           }
         }
 
@@ -196,16 +171,6 @@ const CSSFiberAnimation: React.FC<CSSFiberAnimationProps> = ({
           .fiber-strand {
             animation: none !important;
             transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px) !important;
-          }
-        }
-
-        @media (max-width: 768px) {
-          .fiber-strand {
-            will-change: auto;
-          }
-          
-          .fiber-strand.interactive {
-            transition-duration: 0.2s;
           }
         }
 

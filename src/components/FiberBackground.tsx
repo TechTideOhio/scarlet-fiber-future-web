@@ -28,6 +28,15 @@ const FiberBackground = () => {
   const { shouldShowCSS, shouldShowMouseEffects, shouldShowWebGL } = useLazyFiberEffects(currentQuality);
   const { elementRef, isVisible } = useIntersectionObserver();
 
+  console.log('FiberBackground render:', { 
+    currentQuality, 
+    shouldShowCSS, 
+    isVisible, 
+    isPaused,
+    optimalFiberCount,
+    deviceCapabilities: deviceCapabilities?.isMobile 
+  });
+
   // Start performance monitoring when component mounts and is visible
   useEffect(() => {
     if (isVisible && currentQuality !== 'static' && !isPaused) {
@@ -35,44 +44,11 @@ const FiberBackground = () => {
     }
   }, [isVisible, currentQuality, startMonitoring, isPaused]);
 
-  // Determine if WebGL should load based on all conditions
-  const shouldLoadWebGL = shouldShowWebGL && 
-                          webglState.supported && 
-                          webglState.shouldUse && 
-                          (userInteracted || shouldShowWebGL) && 
-                          !webglState.error &&
-                          isVisible &&
-                          !isPaused &&
-                          shouldUseParticleEffects(deviceCapabilities);
-
-  // Static fallback for old browsers or when quality is static
-  if (currentQuality === 'static' || deviceCapabilities.isOldBrowser || deviceCapabilities.prefersCSSOnly) {
-    return (
-      <div 
-        ref={(node) => {
-          if (node) {
-            containerRef.current = node;
-            elementRef.current = node;
-          }
-        }} 
-        className="absolute inset-0 w-full h-full"
-      >
-        <StaticFiberBackground />
-        <AccessibilityControls
-          isPaused={isPaused}
-          onTogglePause={togglePause}
-          quality={currentQuality}
-          onQualityChange={setQuality}
-        />
-      </div>
-    );
-  }
-
   // Container styles with optimizations
   const containerStyles = {
     contain: 'layout style paint', // CSS containment
     transform: 'translate3d(0,0,0)', // GPU acceleration
-    willChange: isVisible && !isPaused ? 'auto' : 'auto' // Only use will-change when needed
+    zIndex: 1 // Ensure proper layering
   };
 
   return (
@@ -86,20 +62,23 @@ const FiberBackground = () => {
       className="absolute inset-0 w-full h-full bg-black overflow-hidden"
       style={containerStyles}
     >
-      {/* CSS Fiber Animation - Conditionally rendered based on quality */}
-      {shouldShowCSS && (
-        <CSSFiberAnimation 
-          opacity={webglState.loaded ? 0.3 : 1}
-          enableMouseEffects={shouldShowMouseEffects && deviceCapabilities.touchEnabled}
-          isVisible={isVisible && !isPaused}
-          quality={currentQuality}
-          fiberCount={optimalFiberCount}
-          isMobile={deviceCapabilities.isMobile}
-        />
+      {/* Always show CSS Fiber Animation as primary effect */}
+      <CSSFiberAnimation 
+        opacity={webglState.loaded ? 0.6 : 1}
+        enableMouseEffects={shouldShowMouseEffects && deviceCapabilities?.touchEnabled}
+        isVisible={isVisible && !isPaused}
+        quality={currentQuality}
+        fiberCount={Math.max(optimalFiberCount || 8, 6)} // Ensure minimum fiber count
+        isMobile={deviceCapabilities?.isMobile}
+      />
+
+      {/* Static background overlay for very low quality scenarios */}
+      {currentQuality === 'static' && (
+        <StaticFiberBackground />
       )}
 
-      {/* WebGL Enhancement Layer - Only for high quality with particle support */}
-      {shouldLoadWebGL && (
+      {/* WebGL Enhancement Layer - Only for high quality */}
+      {shouldShowWebGL && webglState.supported && webglState.shouldUse && !webglState.error && isVisible && !isPaused && shouldUseParticleEffects(deviceCapabilities) && (
         <React.Suspense fallback={null}>
           <div className={`absolute inset-0 transition-opacity duration-2000 ${webglState.loaded ? 'opacity-100' : 'opacity-0'}`}>
             <WebGLFiberRenderer
@@ -108,7 +87,7 @@ const FiberBackground = () => {
               mousePosition={mousePosition}
               isVisible={isVisible && !isPaused}
               enableParticles={shouldUseParticleEffects(deviceCapabilities)}
-              fiberCount={Math.min(optimalFiberCount, 15)} // Limit WebGL fibers
+              fiberCount={Math.min(optimalFiberCount || 10, 12)}
             />
           </div>
         </React.Suspense>
@@ -124,10 +103,11 @@ const FiberBackground = () => {
 
       {/* Debug info in development */}
       {process.env.NODE_ENV === 'development' && (
-        <div className="absolute top-4 left-4 text-white text-xs bg-black bg-opacity-50 p-2 rounded">
-          Quality: {currentQuality} | Device: {deviceCapabilities.isMobile ? 'Mobile' : 'Desktop'} | 
-          RAM: {deviceCapabilities.ram}GB | Fibers: {optimalFiberCount} | 
-          Visible: {isVisible ? 'Y' : 'N'} | Paused: {isPaused ? 'Y' : 'N'}
+        <div className="absolute top-4 left-4 text-white text-xs bg-black bg-opacity-50 p-2 rounded z-50">
+          Quality: {currentQuality} | Device: {deviceCapabilities?.isMobile ? 'Mobile' : 'Desktop'} | 
+          RAM: {deviceCapabilities?.ram}GB | Fibers: {optimalFiberCount} | 
+          Visible: {isVisible ? 'Y' : 'N'} | Paused: {isPaused ? 'Y' : 'N'} | 
+          CSS: {shouldShowCSS ? 'Y' : 'N'}
         </div>
       )}
     </div>
