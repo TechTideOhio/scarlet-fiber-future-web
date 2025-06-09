@@ -100,16 +100,6 @@ const FiberBackground = () => {
         quality={currentQuality}
         onQualityChange={setQuality}
       />
-
-      {/* Debug info in development */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="absolute top-4 left-4 text-white text-xs bg-black bg-opacity-50 p-2 rounded z-50">
-          Quality: {currentQuality} | Device: {deviceCapabilities?.isMobile ? 'Mobile' : 'Desktop'} | 
-          RAM: {deviceCapabilities?.ram}GB | Snake Paths: {optimalFiberCount} | 
-          Visible: {isVisible ? 'Y' : 'N'} | Paused: {isPaused ? 'Y' : 'N'} | 
-          Snake Mode: Active
-        </div>
-      )}
     </div>
   );
 };

@@ -27,11 +27,24 @@ const SnakeRenderer: React.FC<SnakeRendererProps> = ({
 
     const updateCanvasSize = () => {
       const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = rect.height;
+      const dpr = window.devicePixelRatio || 1;
+      
+      // Set actual size in memory (scaled to account for extra pixel density)
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      
+      // Set display size (css pixels)
+      canvas.style.width = rect.width + 'px';
+      canvas.style.height = rect.height + 'px';
+      
+      // Scale the drawing context so everything draws at the correct size
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.scale(dpr, dpr);
+      }
       
       // Reinitialize path generator with new dimensions
-      pathGeneratorRef.current = new SnakePathGenerator(canvas.width, canvas.height, isMobile);
+      pathGeneratorRef.current = new SnakePathGenerator(rect.width, rect.height, isMobile);
       setPaths(pathGeneratorRef.current.generateNetworkPaths(pathCount));
     };
 
@@ -56,9 +69,8 @@ const SnakeRenderer: React.FC<SnakeRendererProps> = ({
       const deltaTime = currentTime - lastTimeRef.current;
       lastTimeRef.current = currentTime;
 
-      // Clear canvas with fade effect
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // Clear canvas completely
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Update and render paths
       setPaths(currentPaths => {
@@ -95,40 +107,62 @@ const SnakeRenderer: React.FC<SnakeRendererProps> = ({
     
     if (activeNodes.length < 2) return;
 
-    // Draw path connections
-    ctx.beginPath();
-    ctx.moveTo(activeNodes[0].x, activeNodes[0].y);
-    
-    for (let i = 1; i < activeNodes.length; i++) {
-      ctx.lineTo(activeNodes[i].x, activeNodes[i].y);
-    }
-
-    // Apply gradient stroke
-    const gradient = ctx.createLinearGradient(
-      activeNodes[0].x, activeNodes[0].y,
-      activeNodes[activeNodes.length - 1].x, activeNodes[activeNodes.length - 1].y
-    );
-    
-    gradient.addColorStop(0, 'transparent');
-    gradient.addColorStop(0.3, path.color);
-    gradient.addColorStop(0.7, path.color);
-    gradient.addColorStop(1, 'transparent');
-
-    ctx.strokeStyle = gradient;
-    ctx.lineWidth = path.width;
+    // Set up context for glowing effect
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-    ctx.shadowColor = path.color;
-    ctx.shadowBlur = isMobile ? 8 : 12;
-    ctx.stroke();
+    
+    // Draw multiple layers for glow effect
+    for (let i = 0; i < 3; i++) {
+      ctx.beginPath();
+      ctx.moveTo(activeNodes[0].x, activeNodes[0].y);
+      
+      for (let j = 1; j < activeNodes.length; j++) {
+        ctx.lineTo(activeNodes[j].x, activeNodes[j].y);
+      }
+
+      // Different layer properties for glow
+      if (i === 0) {
+        // Outer glow
+        ctx.strokeStyle = `rgba(255, 50, 50, ${0.1})`;
+        ctx.lineWidth = path.width * 4;
+        ctx.shadowBlur = isMobile ? 15 : 25;
+        ctx.shadowColor = 'rgba(255, 50, 50, 0.8)';
+      } else if (i === 1) {
+        // Middle glow
+        ctx.strokeStyle = `rgba(255, 100, 100, ${0.3})`;
+        ctx.lineWidth = path.width * 2;
+        ctx.shadowBlur = isMobile ? 8 : 12;
+        ctx.shadowColor = 'rgba(255, 100, 100, 0.6)';
+      } else {
+        // Core line
+        ctx.strokeStyle = path.color;
+        ctx.lineWidth = path.width;
+        ctx.shadowBlur = isMobile ? 4 : 6;
+        ctx.shadowColor = path.color;
+      }
+      
+      ctx.stroke();
+    }
 
     // Draw glowing nodes
     activeNodes.forEach(node => {
       if (node.intensity > 0.3) {
+        const nodeRadius = (path.width * 0.8) * node.intensity;
+        
+        // Outer glow for node
         ctx.beginPath();
-        ctx.arc(node.x, node.y, (path.width * 0.8) * node.intensity, 0, Math.PI * 2);
-        ctx.fillStyle = path.color;
-        ctx.shadowBlur = isMobile ? 15 : 20;
+        ctx.arc(node.x, node.y, nodeRadius * 2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 50, 50, ${node.intensity * 0.1})`;
+        ctx.shadowBlur = isMobile ? 20 : 30;
+        ctx.shadowColor = 'rgba(255, 50, 50, 0.8)';
+        ctx.fill();
+        
+        // Core node
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, nodeRadius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${node.intensity * 0.9})`;
+        ctx.shadowBlur = isMobile ? 10 : 15;
+        ctx.shadowColor = path.color;
         ctx.fill();
       }
     });
@@ -140,11 +174,12 @@ const SnakeRenderer: React.FC<SnakeRendererProps> = ({
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 w-full h-full pointer-events-none"
+      className="absolute inset-0 w-full h-full"
       style={{
-        mixBlendMode: 'screen',
+        pointerEvents: enableInteractive ? 'auto' : 'none',
         opacity: isVisible ? 1 : 0,
-        transition: 'opacity 1s ease-in-out'
+        transition: 'opacity 1s ease-in-out',
+        zIndex: 2
       }}
     />
   );

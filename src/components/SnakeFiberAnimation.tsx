@@ -44,16 +44,17 @@ const SnakeFiberAnimation: React.FC<SnakeFiberAnimationProps> = ({
   }
 
   const containerStyles: React.CSSProperties = {
-    opacity: Math.max(opacity, 0.85),
+    opacity: Math.max(opacity, 0.9),
     transform: 'translate3d(0,0,0)',
     contain: 'layout style paint',
-    zIndex: 1,
-    filter: 'contrast(1.1) saturate(1.2)'
+    zIndex: 2,
+    filter: 'contrast(1.2) saturate(1.4)',
+    mixBlendMode: 'screen'
   };
 
   return (
     <div 
-      className="absolute inset-0 transition-opacity duration-1500"
+      className="absolute inset-0 w-full h-full transition-opacity duration-1500"
       style={containerStyles}
     >
       <SnakeRenderer
@@ -64,16 +65,16 @@ const SnakeFiberAnimation: React.FC<SnakeFiberAnimationProps> = ({
       />
       
       {/* Background network grid overlay */}
-      <div className="absolute inset-0 opacity-20">
+      <div className="absolute inset-0 opacity-10 pointer-events-none">
         <div 
           className="w-full h-full"
           style={{
             backgroundImage: `
-              linear-gradient(90deg, rgba(187, 0, 0, 0.1) 1px, transparent 1px),
-              linear-gradient(0deg, rgba(187, 0, 0, 0.1) 1px, transparent 1px)
+              linear-gradient(90deg, rgba(255, 50, 50, 0.15) 1px, transparent 1px),
+              linear-gradient(0deg, rgba(255, 50, 50, 0.15) 1px, transparent 1px)
             `,
-            backgroundSize: `${isMobile ? '40px' : '60px'} ${isMobile ? '40px' : '60px'}`,
-            animation: 'pulse 4s ease-in-out infinite'
+            backgroundSize: `${isMobile ? '50px' : '80px'} ${isMobile ? '50px' : '80px'}`,
+            animation: 'pulse 6s ease-in-out infinite'
           }}
         />
       </div>
