@@ -1,0 +1,54 @@
+
+@layer base {
+  /* Enhanced animations for hero with performance optimization */
+  @keyframes heroFadeIn {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 20px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @keyframes syncedPulse {
+    0%, 100% {
+      opacity: 1;
+      transform: scale3d(1, 1, 1);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scale3d(1.02, 1.02, 1);
+    }
+  }
+
+  .hero-fade-in {
+    animation: heroFadeIn 0.8s ease-out forwards;
+    /* Performance: use transform instead of changing layout */
+    transform: translate3d(0, 0, 0);
+  }
+
+  .synced-pulse {
+    animation: syncedPulse 2s ease-in-out infinite;
+    /* Ensure GPU acceleration */
+    will-change: transform, opacity;
+  }
+}
+
+/* Critical performance optimization for initial paint */
+.hero-content {
+  /* Prevent layout shift during font loading */
+  font-display: swap;
+  /* Optimize text rendering during animations */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Critical CSS inlining hint for build tools */
+/* Above-the-fold content should be inlined for optimal FCP */
+.hero-section-critical {
+  /* Ensure hero content renders immediately */
+  contain: layout style;
+  transform: translate3d(0, 0, 0);
+}

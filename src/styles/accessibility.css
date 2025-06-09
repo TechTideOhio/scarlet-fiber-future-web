@@ -1,0 +1,59 @@
+
+/* Print styles for clean static version */
+@media print {
+  .fiber-background,
+  .static-fiber-background > *:not(.print-safe) {
+    display: none !important;
+  }
+  
+  .static-fiber-background {
+    background: linear-gradient(135deg, #f8f8f8 0%, #e8e8e8 100%) !important;
+  }
+  
+  .hero-content,
+  .hero-content * {
+    color: #000 !important;
+    text-shadow: none !important;
+  }
+  
+  .accessibility-controls {
+    display: none !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .fiber-strand {
+    --strand-opacity: 0.8 !important;
+  }
+  
+  .static-fiber-background {
+    background: linear-gradient(135deg, #000000 0%, #333333 100%) !important;
+  }
+}
+
+/* Battery saving mode - enhanced for performance */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01s !important;
+    /* Remove will-change to prevent unnecessary layer creation */
+    will-change: auto !important;
+  }
+  
+  .fiber-strand {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .hero-fade-in,
+  .synced-pulse {
+    animation: none !important;
+  }
+
+  /* Optimize for static rendering */
+  .parallax-element {
+    transform: none !important;
+  }
+}

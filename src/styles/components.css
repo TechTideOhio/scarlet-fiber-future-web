@@ -1,0 +1,41 @@
+
+@layer components {
+  .section-padding {
+    @apply py-16 md:py-24 px-4 sm:px-6 lg:px-8;
+  }
+  
+  .section-title {
+    @apply text-3xl md:text-4xl font-bold mb-8 text-buckeye-black;
+  }
+  
+  .section-subtitle {
+    @apply text-xl font-medium mb-16 text-buckeye-gray max-w-3xl mx-auto;
+  }
+
+  /* Smooth scrolling enhancement */
+  .smooth-scroll {
+    scroll-behavior: smooth;
+  }
+
+  /* Enhanced button with glow effects - optimized for performance */
+  .cta-button {
+    @apply relative bg-[var(--cta-primary)] hover:bg-[var(--cta-hover)] text-white font-bold px-12 py-5 rounded-md transition-all duration-300 hover:translate-y-[-2px] shadow-lg hover:shadow-xl;
+    box-shadow: 0 4px 20px rgba(187, 0, 0, 0.3);
+    /* Performance: GPU acceleration for smooth animations */
+    transform: translate3d(0, 0, 0);
+    will-change: transform, box-shadow;
+  }
+
+  .cta-button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--cta-primary);
+    opacity: 0.2;
+    animation: syncedPulse 2s ease-in-out infinite;
+    pointer-events: none;
+    /* Performance optimization */
+    transform: translate3d(0, 0, 0);
+  }
+}
