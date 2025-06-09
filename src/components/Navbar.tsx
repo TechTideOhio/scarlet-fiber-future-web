@@ -85,8 +85,8 @@ const Navbar = () => {
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex justify-between items-center">
             <Link to="/" className="flex items-center">
-              <span className="text-buckeye-scarlet font-['Montserrat'] text-xl md:text-2xl font-extrabold">BUCKEYE</span>
-              <span className="text-buckeye-scarlet font-['Montserrat'] text-xl md:text-2xl font-light ml-1">DATACOM</span>
+              <span className={`font-['Montserrat'] text-xl md:text-2xl font-extrabold transition-colors ${isScrolled ? 'text-buckeye-scarlet' : 'text-white'}`}>BUCKEYE</span>
+              <span className={`font-['Montserrat'] text-xl md:text-2xl font-light ml-1 transition-colors ${isScrolled ? 'text-buckeye-scarlet' : 'text-white'}`}>DATACOM</span>
             </Link>
             
             {/* Desktop navigation */}
@@ -95,7 +95,7 @@ const Navbar = () => {
                 <a 
                   key={link.name} 
                   href={link.href}
-                  className="text-buckeye-gray hover:text-buckeye-scarlet font-medium transition-colors"
+                  className={`font-medium transition-colors ${isScrolled ? 'text-buckeye-gray hover:text-buckeye-scarlet' : 'text-white hover:text-gray-200'}`}
                 >
                   {link.name}
                 </a>
@@ -106,7 +106,7 @@ const Navbar = () => {
             <div className="flex items-center">
               <button 
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="text-buckeye-gray hover:text-buckeye-scarlet p-2 transition-colors"
+                className={`p-2 transition-colors ${isScrolled ? 'text-buckeye-gray hover:text-buckeye-scarlet' : 'text-white hover:text-gray-200'}`}
                 aria-label="Toggle menu"
               >
                 <div className="relative w-6 h-6">

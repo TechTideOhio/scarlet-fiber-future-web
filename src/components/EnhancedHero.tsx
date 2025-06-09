@@ -3,15 +3,11 @@ import React, { useEffect, useState } from 'react';
 import FiberBackground from './FiberBackground';
 import { useFiberSync } from '../hooks/useFiberSync';
 import { useTextAnimation } from '../hooks/useTextAnimation';
-import { useSoundEffects } from '../hooks/useSoundEffects';
 
 const EnhancedHero = () => {
   const [scrollY, setScrollY] = useState(0);
   const { fiberGlowIntensity, buttonPulse } = useFiberSync();
   const { titleVisible, subtitleVisible, buttonVisible } = useTextAnimation();
-  const { playHoverSound, soundEnabled, toggleSound } = useSoundEffects();
-
-  console.log('EnhancedHero render - fiber effects:', { fiberGlowIntensity, buttonPulse });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -83,9 +79,12 @@ const EnhancedHero = () => {
               style={{
                 boxShadow: `0 4px 20px rgba(187, 0, 0, ${0.3 + fiberGlowIntensity * 0.4})`
               }}
-              onMouseEnter={() => playHoverSound()}
               onClick={() => {
-                console.log('CTA clicked');
+                // Navigate to contact or services
+                const element = document.querySelector('#services-section');
+                if (element) {
+                  element.scrollIntoView({ behavior: 'smooth' });
+                }
               }}
             >
               Start Your Project
@@ -102,15 +101,6 @@ const EnhancedHero = () => {
           </div>
         </div>
       </div>
-
-      {/* Sound toggle control */}
-      <button
-        onClick={toggleSound}
-        className="absolute top-4 right-4 z-20 p-2 rounded-full bg-black bg-opacity-30 text-white hover:bg-opacity-50 transition-all duration-200"
-        title={`Sound ${soundEnabled ? 'on' : 'off'}`}
-      >
-        {soundEnabled ? '🔊' : '🔇'}
-      </button>
 
       {/* Scroll indicator with animation */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
