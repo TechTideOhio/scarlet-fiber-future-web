@@ -13,8 +13,8 @@ const CSSFiberAnimation: React.FC<CSSFiberAnimationProps> = ({
   fiberCount,
   isMobile = false
 }) => {
-  // Force minimum fiber count to ensure animation is visible
-  const actualFiberCount = calculateFiberCount(fiberCount, quality, isMobile);
+  // Ensure minimum fiber count for visibility
+  const actualFiberCount = Math.max(calculateFiberCount(fiberCount, quality, isMobile), 8);
   
   console.log('CSSFiberAnimation render:', { quality, actualFiberCount, opacity, isVisible });
 
@@ -23,18 +23,20 @@ const CSSFiberAnimation: React.FC<CSSFiberAnimationProps> = ({
     return null;
   }
 
-  // Container styles with performance optimizations
+  // Enhanced container styles with better visibility
   const containerStyles: React.CSSProperties = {
-    opacity: Math.max(opacity, 0.7), // Ensure minimum visibility
+    opacity: Math.max(opacity, 0.85), // Increased minimum opacity
     animationPlayState: isVisible ? 'running' : 'paused',
     transform: 'translate3d(0,0,0)', // GPU acceleration
     contain: 'layout style paint', // CSS containment
-    zIndex: 1 // Ensure it's behind content but visible
+    zIndex: 1, // Ensure proper layering
+    mixBlendMode: 'screen', // Enhanced blending for more vibrant colors
+    filter: 'contrast(1.1) saturate(1.2)' // Boost overall visual impact
   };
 
   return (
     <div 
-      className="absolute inset-0 transition-opacity duration-2000"
+      className="absolute inset-0 transition-opacity duration-1500"
       style={containerStyles}
     >
       {Array.from({ length: actualFiberCount }, (_, index) => (

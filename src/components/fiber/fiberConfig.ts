@@ -8,16 +8,16 @@ export const calculateFiberCount = (
 ): number => {
   return fiberCount ?? (() => {
     switch (quality) {
-      case 'high': return isMobile ? 8 : 15;
-      case 'medium': return isMobile ? 6 : 10;
-      case 'low': return isMobile ? 4 : 8;
-      case 'static': return 6; // Show fibers even in static mode
-      default: return isMobile ? 8 : 12;
+      case 'high': return isMobile ? 12 : 20; // Increased for better visibility
+      case 'medium': return isMobile ? 10 : 16; // Increased
+      case 'low': return isMobile ? 8 : 12; // Increased
+      case 'static': return 8; // Show more fibers even in static mode
+      default: return isMobile ? 10 : 16;
     }
   })();
 };
 
 export const getFiberConfig = (isMobile: boolean) => ({
-  baseWidth: isMobile ? 1.5 : 2,
-  baseOpacity: 0.4
+  baseWidth: isMobile ? 2.5 : 4, // Increased from previous values
+  baseOpacity: 0.8 // Increased from 0.4
 });
