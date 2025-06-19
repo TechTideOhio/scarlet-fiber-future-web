@@ -1,5 +1,4 @@
-
-import { EnhancedSnakePath } from '../components/fiber/EnhancedSnakeGenerator';
+import { EnhancedSnakePath } from '../components/fiber/types/snakeTypes';
 
 export const renderEnhancedPaths = (
   ctx: CanvasRenderingContext2D, 

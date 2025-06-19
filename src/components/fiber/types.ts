@@ -1,11 +1,18 @@
-
 import type { QualityLevel } from '../../hooks/usePerformanceMonitor';
 
+// Re-export snake types for backward compatibility
+export type { 
+  EnhancedSnakeNode, 
+  EnhancedSnakePath, 
+  PathGenerationConfig 
+} from './types/snakeTypes';
+
+// Keep existing types
 export interface CSSFiberAnimationProps {
   opacity: number;
   enableMouseEffects?: boolean;
   isVisible?: boolean;
-  quality: QualityLevel;
+  quality: import('../../hooks/usePerformanceMonitor').QualityLevel;
   fiberCount?: number;
   isMobile?: boolean;
 }
@@ -23,7 +30,7 @@ export interface FiberConfig {
   baseOpacity: number;
 }
 
-// New Snake-specific interfaces
+// Legacy snake interfaces - keeping for backward compatibility
 export interface SnakeNode {
   x: number;
   y: number;
