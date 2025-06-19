@@ -28,7 +28,7 @@ export const useCanvasSetup = ({ pathCount, isMobile }: UseCanvasSetupProps) => 
         console.log('Canvas setup - rect:', { width: rect.width, height: rect.height });
         console.log('Canvas setup - dpr:', dpr);
         
-        // Set canvas size
+        // Set canvas size with proper scaling
         canvas.width = rect.width * dpr;
         canvas.height = rect.height * dpr;
         canvas.style.width = rect.width + 'px';
@@ -46,17 +46,18 @@ export const useCanvasSetup = ({ pathCount, isMobile }: UseCanvasSetupProps) => 
           throw new Error('Failed to get 2D context');
         }
         
+        // CRITICAL FIX: Scale context properly
         ctx.scale(dpr, dpr);
         
-        // Clear canvas to black with proper dimensions
+        // Clear canvas to black using ACTUAL display dimensions (not scaled)
         ctx.fillStyle = 'rgba(0, 0, 0, 1)';
         ctx.fillRect(0, 0, rect.width, rect.height);
         
-        console.log('Canvas cleared to black');
+        console.log('Canvas cleared to black with dimensions:', rect.width, 'x', rect.height);
         
-        // Initialize generator
+        // Initialize generator with display dimensions
         pathGeneratorRef.current = new EnhancedSnakeGenerator(rect.width, rect.height, isMobile);
-        console.log('Path generator initialized');
+        console.log('Path generator initialized with:', rect.width, 'x', rect.height);
         
         setCanvasReady(true);
         setRenderError(null);
@@ -68,9 +69,14 @@ export const useCanvasSetup = ({ pathCount, isMobile }: UseCanvasSetupProps) => 
       }
     };
 
-    updateCanvasSize();
+    // Add slight delay to ensure DOM is ready
+    const timeoutId = setTimeout(updateCanvasSize, 50);
     window.addEventListener('resize', updateCanvasSize);
-    return () => window.removeEventListener('resize', updateCanvasSize);
+    
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener('resize', updateCanvasSize);
+    };
   }, [pathCount, isMobile]);
 
   return {

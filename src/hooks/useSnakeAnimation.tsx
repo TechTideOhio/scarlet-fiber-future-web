@@ -30,34 +30,51 @@ export const useSnakeAnimation = ({
   const [paths, setPaths] = useState<EnhancedSnakePath[]>([]);
   const lastTimeRef = useRef<number>(0);
   const [animationStarted, setAnimationStarted] = useState(false);
+  const frameCountRef = useRef(0);
 
   // Initialize paths when canvas is ready
   useEffect(() => {
-    if (canvasReady && pathGeneratorRef.current) {
-      console.log('Generating paths for pathCount:', pathCount);
-      const generatedPaths = pathGeneratorRef.current.generateEnhancedPaths(pathCount);
+    if (canvasReady && pathGeneratorRef.current && pathCount > 0) {
+      console.log('Initializing paths for pathCount:', pathCount);
       
-      // Fix: Start with activeSegmentIndex at 0 for proper sequential activation
-      const initializedPaths = generatedPaths.map(path => ({
-        ...path,
-        activeSegmentIndex: 0
-      }));
-      
-      console.log('Generated and initialized paths:', initializedPaths.length);
-      console.log('First path nodes:', initializedPaths[0]?.nodes?.length);
-      setPaths(initializedPaths);
-      setAnimationStarted(false);
+      try {
+        const generatedPaths = pathGeneratorRef.current.generateEnhancedPaths(pathCount);
+        
+        if (generatedPaths.length === 0) {
+          console.error('No paths generated!');
+          setRenderError('Failed to generate animation paths');
+          return;
+        }
+        
+        console.log('Generated paths successfully:', {
+          count: generatedPaths.length,
+          firstPathNodes: generatedPaths[0]?.nodes?.length,
+          firstPathActiveIndex: generatedPaths[0]?.activeSegmentIndex
+        });
+        
+        setPaths(generatedPaths);
+        setAnimationStarted(false);
+        frameCountRef.current = 0;
+        setRenderError(null);
+        
+      } catch (error) {
+        console.error('Path generation error:', error);
+        setRenderError(error instanceof Error ? error.message : 'Path generation failed');
+      }
     }
-  }, [canvasReady, pathCount]);
+  }, [canvasReady, pathCount, pathGeneratorRef]);
 
-  // Animation loop with immediate start
+  // CRITICAL FIX: Enhanced animation loop with proper error handling
   useEffect(() => {
     if (!isVisible || !canvasReady || renderError || paths.length === 0) {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
+        animationRef.current = undefined;
       }
       return;
     }
+
+    console.log('Starting animation loop with paths:', paths.length);
 
     const animate = (currentTime: number) => {
       const canvas = canvasRef.current;
@@ -70,45 +87,58 @@ export const useSnakeAnimation = ({
       }
 
       try {
-        const deltaTime = currentTime - lastTimeRef.current;
+        // CRITICAL FIX: Proper timing calculation
+        const deltaTime = lastTimeRef.current === 0 ? 16 : Math.min(currentTime - lastTimeRef.current, 50);
         lastTimeRef.current = currentTime;
+        frameCountRef.current++;
 
-        // Get canvas dimensions for clearing
+        // Get canvas display dimensions for clearing
         const rect = canvas.getBoundingClientRect();
         
-        // Fix: Clear canvas using proper dimensions
+        // CRITICAL FIX: Clear using display dimensions, not canvas buffer dimensions
         ctx.clearRect(0, 0, rect.width, rect.height);
         
-        // Add subtle background
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.02)';
+        // Add very subtle background to prevent pure black
+        ctx.fillStyle = 'rgba(5, 5, 10, 0.1)';
         ctx.fillRect(0, 0, rect.width, rect.height);
 
         // Update and render paths
         setPaths(currentPaths => {
+          if (currentPaths.length === 0) return currentPaths;
+          
           const updatedPaths = currentPaths.map(path => 
             pathGeneratorRef.current!.updateEnhancedPath(path, deltaTime, heroGlowIntensity)
           );
 
-          // Debug: Log first path state
-          if (!animationStarted && updatedPaths.length > 0) {
-            console.log('Animation starting - first path state:', {
-              activeSegmentIndex: updatedPaths[0].activeSegmentIndex,
-              activeNodes: updatedPaths[0].nodes.filter(n => n.isActive).length,
-              totalNodes: updatedPaths[0].nodes.length
+          // Debug logging for first few frames
+          if (!animationStarted && frameCountRef.current <= 5) {
+            const firstPath = updatedPaths[0];
+            const activeNodes = firstPath?.nodes?.filter(n => n.isActive && n.intensity > 0) || [];
+            console.log(`Frame ${frameCountRef.current} - First path state:`, {
+              activeSegmentIndex: firstPath?.activeSegmentIndex,
+              activeNodes: activeNodes.length,
+              totalNodes: firstPath?.nodes?.length,
+              deltaTime
             });
-            setAnimationStarted(true);
+            
+            if (frameCountRef.current === 5) {
+              setAnimationStarted(true);
+            }
           }
 
-          // Render with error handling
+          // CRITICAL FIX: Enhanced rendering with error handling
           try {
             renderEnhancedPaths(ctx, updatedPaths, isMobile);
             
-            // Debug: Log rendering attempt
-            if (deltaTime > 0) {
-              console.log('Rendered paths:', updatedPaths.length, 'at time:', currentTime);
+            // Success - clear any previous errors
+            if (renderError) {
+              setRenderError(null);
             }
           } catch (renderErr) {
             console.error('Render error:', renderErr);
+            if (frameCountRef.current % 60 === 0) { // Log every 60 frames to avoid spam
+              setRenderError(renderErr instanceof Error ? renderErr.message : 'Rendering failed');
+            }
           }
 
           return updatedPaths;
@@ -122,13 +152,14 @@ export const useSnakeAnimation = ({
       animationRef.current = requestAnimationFrame(animate);
     };
 
-    console.log('Starting animation loop with paths:', paths.length);
+    // Start animation with proper initialization
     lastTimeRef.current = performance.now();
     animationRef.current = requestAnimationFrame(animate);
 
     return () => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
+        animationRef.current = undefined;
       }
     };
   }, [isVisible, heroGlowIntensity, canvasReady, renderError, isMobile, setRenderError, paths.length]);

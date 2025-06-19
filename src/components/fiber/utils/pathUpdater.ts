@@ -7,19 +7,25 @@ export const updatePathNodes = (
   time: number,
   heroGlowIntensity: number
 ): EnhancedSnakeNode[] => {
+  // CRITICAL FIX: Ensure proper node activation
+  const safeActiveIndex = Math.max(0, Math.min(activeSegmentIndex, path.nodes.length - 1));
+  
   return path.nodes.map((node, index) => {
-    const distanceFromActive = Math.abs(index - activeSegmentIndex);
+    const distanceFromActive = Math.abs(index - safeActiveIndex);
     const isInSegment = distanceFromActive < path.segmentLength;
     
-    // Calculate intensity with pulse effects
+    // Calculate intensity with enhanced visibility
     let intensity = 0;
     if (isInSegment) {
-      const baseIntensity = Math.max(0, 1 - (distanceFromActive / path.segmentLength));
-      const pulseEffect = Math.sin(time * 0.002 + node.pulsePhase) * 0.3 + 0.7;
+      const baseIntensity = Math.max(0.1, 1 - (distanceFromActive / path.segmentLength));
+      const pulseEffect = Math.sin(time * 0.003 + node.pulsePhase) * 0.2 + 0.8;
       intensity = baseIntensity * pulseEffect * node.connectionStrength;
       
       // Hero synchronization effect
       intensity += heroGlowIntensity * 0.3;
+      
+      // CRITICAL FIX: Ensure minimum visibility
+      intensity = Math.max(intensity, 0.3);
     }
     
     return {
@@ -37,17 +43,18 @@ export const calculateNextSegmentIndex = (
   deltaTime: number,
   nodeCount: number
 ): number => {
-  // Fix: Ensure proper progression with minimum speed
-  const baseSpeed = Math.max(speed, 0.5);
-  const speedMultiplier = pathType === 'main' ? 1 : 1.2;
+  // CRITICAL FIX: Ensure smooth, predictable progression
+  const baseSpeed = Math.max(speed, 0.3); // Minimum speed
+  const speedMultiplier = pathType === 'main' ? 0.8 : 1.0; // Slower main paths
   
-  // Use time-based progression for smooth animation
-  const progressionRate = baseSpeed * speedMultiplier * deltaTime * 0.001;
+  // Use consistent time-based progression
+  const progressionRate = baseSpeed * speedMultiplier * deltaTime * 0.0015; // Slower overall
   let nextIndex = currentIndex + progressionRate;
   
-  // Reset when reaching the end
-  if (nextIndex >= nodeCount) {
-    nextIndex = 0;
+  // CRITICAL FIX: Proper wraparound with segment consideration
+  const maxIndex = nodeCount - 1;
+  if (nextIndex >= maxIndex) {
+    nextIndex = 0; // Reset to beginning
     console.log(`Path ${pathType} completed cycle, resetting to 0`);
   }
   
@@ -59,7 +66,7 @@ export const updatePathProperties = (
   heroGlowIntensity: number
 ): { opacity: number; glowIntensity: number } => {
   return {
-    opacity: Math.min(path.opacity + heroGlowIntensity * 0.2, 1),
-    glowIntensity: Math.min(path.glowIntensity + heroGlowIntensity * 0.4, 2)
+    opacity: Math.min(Math.max(path.opacity + heroGlowIntensity * 0.2, 0.6), 1),
+    glowIntensity: Math.min(Math.max(path.glowIntensity + heroGlowIntensity * 0.4, 0.5), 2)
   };
 };
