@@ -54,12 +54,22 @@ export const detectDeviceCapabilities = (): DeviceCapabilities => {
     }
   })();
 
-  // Determine if CSS-only version should be preferred
+  // More lenient CSS-only determination - only for very old browsers or explicit user preference
   const prefersCSSOnly = isOldBrowser || 
-                        (isMobile && ram < 3) || 
                         window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const touchEnabled = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+  console.log('Device capabilities:', {
+    isMobile,
+    isTablet,
+    isDesktop,
+    ram,
+    isOldBrowser,
+    supportsWebGL,
+    prefersCSSOnly,
+    touchEnabled
+  });
 
   return {
     isMobile,

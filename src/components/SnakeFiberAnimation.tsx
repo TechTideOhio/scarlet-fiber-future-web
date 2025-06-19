@@ -30,19 +30,23 @@ const SnakeFiberAnimation: React.FC<SnakeFiberAnimationProps> = ({
     const calculatePathCount = () => {
       if (fiberCount !== undefined) return fiberCount;
       
+      // More generous path counts to ensure visibility
       switch (quality) {
-        case 'high': return isMobile ? 8 : 12; // Increased for enhanced paths
-        case 'medium': return isMobile ? 6 : 9;
-        case 'low': return isMobile ? 4 : 6;
+        case 'high': return isMobile ? 12 : 16;
+        case 'medium': return isMobile ? 10 : 14;
+        case 'low': return isMobile ? 8 : 12;
         case 'static': return 0;
-        default: return isMobile ? 6 : 9;
+        default: return isMobile ? 10 : 14;
       }
     };
 
-    setActualPathCount(calculatePathCount());
+    const pathCount = calculatePathCount();
+    console.log('SnakeFiberAnimation path count:', { quality, isMobile, pathCount });
+    setActualPathCount(pathCount);
   }, [quality, fiberCount, isMobile]);
 
   if (actualPathCount === 0 || quality === 'static') {
+    console.log('SnakeFiberAnimation: No paths to render');
     return null;
   }
 
@@ -54,6 +58,13 @@ const SnakeFiberAnimation: React.FC<SnakeFiberAnimationProps> = ({
     filter: `contrast(1.3) saturate(1.5) brightness(${1 + heroGlowIntensity * 0.2})`,
     mixBlendMode: 'screen'
   };
+
+  console.log('SnakeFiberAnimation render:', { 
+    actualPathCount, 
+    quality, 
+    isVisible, 
+    heroGlowIntensity 
+  });
 
   return (
     <div 
