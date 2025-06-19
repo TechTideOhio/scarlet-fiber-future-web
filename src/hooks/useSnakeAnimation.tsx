@@ -29,19 +29,30 @@ export const useSnakeAnimation = ({
   const animationRef = useRef<number>();
   const [paths, setPaths] = useState<EnhancedSnakePath[]>([]);
   const lastTimeRef = useRef<number>(0);
+  const [animationStarted, setAnimationStarted] = useState(false);
 
   // Initialize paths when canvas is ready
   useEffect(() => {
     if (canvasReady && pathGeneratorRef.current) {
+      console.log('Generating paths for pathCount:', pathCount);
       const generatedPaths = pathGeneratorRef.current.generateEnhancedPaths(pathCount);
-      console.log('Generated paths:', generatedPaths.length);
-      setPaths(generatedPaths);
+      
+      // Fix: Start with activeSegmentIndex at 0 for proper sequential activation
+      const initializedPaths = generatedPaths.map(path => ({
+        ...path,
+        activeSegmentIndex: 0
+      }));
+      
+      console.log('Generated and initialized paths:', initializedPaths.length);
+      console.log('First path nodes:', initializedPaths[0]?.nodes?.length);
+      setPaths(initializedPaths);
+      setAnimationStarted(false);
     }
   }, [canvasReady, pathCount]);
 
-  // Animation loop
+  // Animation loop with immediate start
   useEffect(() => {
-    if (!isVisible || !canvasReady || renderError) {
+    if (!isVisible || !canvasReady || renderError || paths.length === 0) {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
@@ -53,7 +64,7 @@ export const useSnakeAnimation = ({
       const ctx = canvas?.getContext('2d');
       
       if (!canvas || !ctx || !pathGeneratorRef.current) {
-        console.warn('Animation frame skipped - missing canvas or context');
+        console.warn('Animation frame skipped - missing dependencies');
         animationRef.current = requestAnimationFrame(animate);
         return;
       }
@@ -62,10 +73,10 @@ export const useSnakeAnimation = ({
         const deltaTime = currentTime - lastTimeRef.current;
         lastTimeRef.current = currentTime;
 
-        // Get canvas dimensions
+        // Get canvas dimensions for clearing
         const rect = canvas.getBoundingClientRect();
         
-        // Clear canvas properly
+        // Fix: Clear canvas using proper dimensions
         ctx.clearRect(0, 0, rect.width, rect.height);
         
         // Add subtle background
@@ -78,7 +89,28 @@ export const useSnakeAnimation = ({
             pathGeneratorRef.current!.updateEnhancedPath(path, deltaTime, heroGlowIntensity)
           );
 
-          renderEnhancedPaths(ctx, updatedPaths, isMobile);
+          // Debug: Log first path state
+          if (!animationStarted && updatedPaths.length > 0) {
+            console.log('Animation starting - first path state:', {
+              activeSegmentIndex: updatedPaths[0].activeSegmentIndex,
+              activeNodes: updatedPaths[0].nodes.filter(n => n.isActive).length,
+              totalNodes: updatedPaths[0].nodes.length
+            });
+            setAnimationStarted(true);
+          }
+
+          // Render with error handling
+          try {
+            renderEnhancedPaths(ctx, updatedPaths, isMobile);
+            
+            // Debug: Log rendering attempt
+            if (deltaTime > 0) {
+              console.log('Rendered paths:', updatedPaths.length, 'at time:', currentTime);
+            }
+          } catch (renderErr) {
+            console.error('Render error:', renderErr);
+          }
+
           return updatedPaths;
         });
 
@@ -90,7 +122,8 @@ export const useSnakeAnimation = ({
       animationRef.current = requestAnimationFrame(animate);
     };
 
-    console.log('Starting animation loop');
+    console.log('Starting animation loop with paths:', paths.length);
+    lastTimeRef.current = performance.now();
     animationRef.current = requestAnimationFrame(animate);
 
     return () => {
@@ -98,7 +131,7 @@ export const useSnakeAnimation = ({
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [isVisible, heroGlowIntensity, canvasReady, renderError, isMobile, setRenderError]);
+  }, [isVisible, heroGlowIntensity, canvasReady, renderError, isMobile, setRenderError, paths.length]);
 
   return { paths };
 };

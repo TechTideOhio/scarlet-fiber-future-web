@@ -25,17 +25,21 @@ export const useCanvasSetup = ({ pathCount, isMobile }: UseCanvasSetupProps) => 
         const rect = canvas.getBoundingClientRect();
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         
-        console.log('Setting up canvas:', { 
-          width: rect.width, 
-          height: rect.height, 
-          dpr 
-        });
+        console.log('Canvas setup - rect:', { width: rect.width, height: rect.height });
+        console.log('Canvas setup - dpr:', dpr);
         
         // Set canvas size
         canvas.width = rect.width * dpr;
         canvas.height = rect.height * dpr;
         canvas.style.width = rect.width + 'px';
         canvas.style.height = rect.height + 'px';
+        
+        console.log('Canvas setup - final dimensions:', { 
+          canvasWidth: canvas.width, 
+          canvasHeight: canvas.height,
+          styleWidth: canvas.style.width,
+          styleHeight: canvas.style.height
+        });
         
         const ctx = canvas.getContext('2d');
         if (!ctx) {
@@ -44,12 +48,15 @@ export const useCanvasSetup = ({ pathCount, isMobile }: UseCanvasSetupProps) => 
         
         ctx.scale(dpr, dpr);
         
-        // Clear canvas to black
+        // Clear canvas to black with proper dimensions
         ctx.fillStyle = 'rgba(0, 0, 0, 1)';
         ctx.fillRect(0, 0, rect.width, rect.height);
         
+        console.log('Canvas cleared to black');
+        
         // Initialize generator
         pathGeneratorRef.current = new EnhancedSnakeGenerator(rect.width, rect.height, isMobile);
+        console.log('Path generator initialized');
         
         setCanvasReady(true);
         setRenderError(null);

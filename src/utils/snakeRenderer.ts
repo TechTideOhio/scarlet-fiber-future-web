@@ -1,3 +1,4 @@
+
 import { EnhancedSnakePath } from '../components/fiber/types/snakeTypes';
 
 export const renderEnhancedPaths = (
@@ -10,26 +11,38 @@ export const renderEnhancedPaths = (
     return;
   }
 
+  console.log(`Rendering ${pathsToRender.length} paths`);
+
   // Sort paths by layer for proper depth
   const sortedPaths = [...pathsToRender].sort((a, b) => a.layer - b.layer);
   
-  sortedPaths.forEach(path => {
+  let renderedCount = 0;
+  sortedPaths.forEach((path, index) => {
     try {
-      renderEnhancedPath(ctx, path, isMobile);
+      const rendered = renderEnhancedPath(ctx, path, isMobile);
+      if (rendered) renderedCount++;
     } catch (error) {
-      console.error('Path rendering error:', error);
+      console.error(`Path ${index} rendering error:`, error);
     }
   });
+  
+  console.log(`Successfully rendered ${renderedCount}/${sortedPaths.length} paths`);
 };
 
 export const renderEnhancedPath = (
   ctx: CanvasRenderingContext2D, 
   path: EnhancedSnakePath,
   isMobile: boolean
-) => {
+): boolean => {
   const activeNodes = path.nodes.filter(node => node.isActive && node.intensity > 0);
   
-  if (activeNodes.length < 2) return;
+  if (activeNodes.length < 2) {
+    // Debug: Log why path wasn't rendered
+    console.log(`Path ${path.id} not rendered: activeNodes=${activeNodes.length}, totalNodes=${path.nodes.length}`);
+    return false;
+  }
+
+  console.log(`Rendering path ${path.id}: ${activeNodes.length} active nodes`);
 
   ctx.save();
   ctx.globalAlpha = Math.min(path.opacity, 1);
@@ -51,44 +64,49 @@ export const renderEnhancedPath = (
       }
     }
 
-    // Layer-specific styling
+    // Layer-specific styling with enhanced visibility
     if (layer === 0) {
-      // Outer glow
-      ctx.strokeStyle = `rgba(255, 50, 50, ${Math.min(0.08 * path.glowIntensity, 0.3)})`;
+      // Outer glow - more visible
+      ctx.strokeStyle = `rgba(255, 50, 50, ${Math.min(0.15 * path.glowIntensity, 0.4)})`;
       ctx.lineWidth = path.width * 6;
-      ctx.shadowBlur = isMobile ? 25 : 40;
-      ctx.shadowColor = 'rgba(255, 50, 50, 0.6)';
+      ctx.shadowBlur = isMobile ? 30 : 45;
+      ctx.shadowColor = 'rgba(255, 50, 50, 0.8)';
     } else if (layer === 1) {
-      // Middle glow
-      ctx.strokeStyle = `rgba(255, 100, 100, ${Math.min(0.15 * path.glowIntensity, 0.4)})`;
-      ctx.lineWidth = path.width * 3;
-      ctx.shadowBlur = isMobile ? 15 : 25;
-      ctx.shadowColor = 'rgba(255, 100, 100, 0.4)';
+      // Middle glow - enhanced
+      ctx.strokeStyle = `rgba(255, 100, 100, ${Math.min(0.25 * path.glowIntensity, 0.6)})`;
+      ctx.lineWidth = path.width * 4;
+      ctx.shadowBlur = isMobile ? 20 : 30;
+      ctx.shadowColor = 'rgba(255, 100, 100, 0.6)';
     } else if (layer === 2) {
-      // Inner glow
+      // Inner glow - brighter
       ctx.strokeStyle = path.color;
-      ctx.lineWidth = path.width * 1.5;
-      ctx.shadowBlur = isMobile ? 8 : 12;
+      ctx.lineWidth = path.width * 2;
+      ctx.shadowBlur = isMobile ? 12 : 18;
       ctx.shadowColor = path.color;
     } else {
-      // Core line
-      ctx.strokeStyle = `rgba(255, 255, 255, ${Math.min(0.8 * path.glowIntensity, 0.9)})`;
-      ctx.lineWidth = path.width * 0.5;
-      ctx.shadowBlur = isMobile ? 4 : 6;
-      ctx.shadowColor = 'rgba(255, 255, 255, 0.8)';
+      // Core line - always visible
+      ctx.strokeStyle = `rgba(255, 255, 255, ${Math.min(0.9 * path.glowIntensity, 1)})`;
+      ctx.lineWidth = Math.max(path.width * 0.8, 2);
+      ctx.shadowBlur = isMobile ? 6 : 10;
+      ctx.shadowColor = 'rgba(255, 255, 255, 0.9)';
     }
     
     ctx.stroke();
   }
 
   // Enhanced node rendering
+  let renderedNodes = 0;
   activeNodes.forEach(node => {
-    if (node.intensity > 0.2) {
+    if (node.intensity > 0.1) {
       renderEnhancedNode(ctx, node, path, isMobile);
+      renderedNodes++;
     }
   });
 
+  console.log(`Path ${path.id} rendered with ${renderedNodes} nodes`);
+
   ctx.restore();
+  return true;
 };
 
 export const renderEnhancedNode = (
@@ -97,23 +115,24 @@ export const renderEnhancedNode = (
   path: EnhancedSnakePath,
   isMobile: boolean
 ) => {
-  const nodeRadius = (path.width * 0.8) * node.intensity;
-  const pulseRadius = nodeRadius * (1 + Math.sin(Date.now() * 0.005 + node.pulsePhase) * 0.3);
+  const baseRadius = Math.max(path.width * 0.8, 3);
+  const nodeRadius = baseRadius * Math.max(node.intensity, 0.3);
+  const pulseRadius = nodeRadius * (1 + Math.sin(Date.now() * 0.005 + node.pulsePhase) * 0.4);
   
-  // Outer pulse
+  // Outer pulse - more visible
   ctx.beginPath();
-  ctx.arc(node.x, node.y, pulseRadius * 2, 0, Math.PI * 2);
-  ctx.fillStyle = `rgba(255, 50, 50, ${Math.min(node.intensity * 0.05, 0.2)})`;
-  ctx.shadowBlur = isMobile ? 30 : 50;
-  ctx.shadowColor = 'rgba(255, 50, 50, 0.4)';
+  ctx.arc(node.x, node.y, pulseRadius * 2.5, 0, Math.PI * 2);
+  ctx.fillStyle = `rgba(255, 50, 50, ${Math.min(node.intensity * 0.1, 0.3)})`;
+  ctx.shadowBlur = isMobile ? 35 : 60;
+  ctx.shadowColor = 'rgba(255, 50, 50, 0.6)';
   ctx.fill();
   
-  // Core node
+  // Core node - always visible
   ctx.beginPath();
-  ctx.arc(node.x, node.y, nodeRadius, 0, Math.PI * 2);
-  const coreOpacity = Math.min(node.intensity * node.connectionStrength, 1);
+  ctx.arc(node.x, node.y, Math.max(nodeRadius, 2), 0, Math.PI * 2);
+  const coreOpacity = Math.min(Math.max(node.intensity * node.connectionStrength, 0.4), 1);
   ctx.fillStyle = `rgba(255, 255, 255, ${coreOpacity})`;
-  ctx.shadowBlur = isMobile ? 15 : 20;
+  ctx.shadowBlur = isMobile ? 20 : 25;
   ctx.shadowColor = path.color;
   ctx.fill();
 };

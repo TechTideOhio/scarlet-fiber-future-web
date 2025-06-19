@@ -15,7 +15,7 @@ export const updatePathNodes = (
     let intensity = 0;
     if (isInSegment) {
       const baseIntensity = Math.max(0, 1 - (distanceFromActive / path.segmentLength));
-      const pulseEffect = Math.sin(time * 2 + node.pulsePhase) * 0.3 + 0.7;
+      const pulseEffect = Math.sin(time * 0.002 + node.pulsePhase) * 0.3 + 0.7;
       intensity = baseIntensity * pulseEffect * node.connectionStrength;
       
       // Hero synchronization effect
@@ -25,7 +25,7 @@ export const updatePathNodes = (
     return {
       ...node,
       isActive: isInSegment,
-      intensity: Math.min(intensity, 1)
+      intensity: Math.min(Math.max(intensity, 0), 1)
     };
   });
 };
@@ -37,12 +37,18 @@ export const calculateNextSegmentIndex = (
   deltaTime: number,
   nodeCount: number
 ): number => {
-  const speedMultiplier = pathType === 'main' ? 1 : 1.5;
-  let nextIndex = currentIndex + speed * speedMultiplier * deltaTime * 0.08;
+  // Fix: Ensure proper progression with minimum speed
+  const baseSpeed = Math.max(speed, 0.5);
+  const speedMultiplier = pathType === 'main' ? 1 : 1.2;
+  
+  // Use time-based progression for smooth animation
+  const progressionRate = baseSpeed * speedMultiplier * deltaTime * 0.001;
+  let nextIndex = currentIndex + progressionRate;
   
   // Reset when reaching the end
   if (nextIndex >= nodeCount) {
     nextIndex = 0;
+    console.log(`Path ${pathType} completed cycle, resetting to 0`);
   }
   
   return nextIndex;
@@ -53,7 +59,7 @@ export const updatePathProperties = (
   heroGlowIntensity: number
 ): { opacity: number; glowIntensity: number } => {
   return {
-    opacity: path.opacity + heroGlowIntensity * 0.2,
-    glowIntensity: path.glowIntensity + heroGlowIntensity * 0.4
+    opacity: Math.min(path.opacity + heroGlowIntensity * 0.2, 1),
+    glowIntensity: Math.min(path.glowIntensity + heroGlowIntensity * 0.4, 2)
   };
 };
