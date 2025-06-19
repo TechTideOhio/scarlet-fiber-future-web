@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import SnakeRenderer from './fiber/SnakeRenderer';
+import EnhancedSnakeRenderer from './fiber/EnhancedSnakeRenderer';
 import type { QualityLevel } from '../hooks/usePerformanceMonitor';
 
 interface SnakeFiberAnimationProps {
@@ -10,6 +10,8 @@ interface SnakeFiberAnimationProps {
   quality: QualityLevel;
   fiberCount?: number;
   isMobile?: boolean;
+  heroGlowIntensity?: number;
+  mousePosition?: { x: number; y: number };
 }
 
 const SnakeFiberAnimation: React.FC<SnakeFiberAnimationProps> = ({
@@ -18,21 +20,22 @@ const SnakeFiberAnimation: React.FC<SnakeFiberAnimationProps> = ({
   isVisible = true,
   quality,
   fiberCount,
-  isMobile = false
+  isMobile = false,
+  heroGlowIntensity = 0,
+  mousePosition = { x: 0, y: 0 }
 }) => {
   const [actualPathCount, setActualPathCount] = useState(0);
 
   useEffect(() => {
-    // Calculate optimal path count based on quality and device
     const calculatePathCount = () => {
       if (fiberCount !== undefined) return fiberCount;
       
       switch (quality) {
-        case 'high': return isMobile ? 6 : 10;
-        case 'medium': return isMobile ? 4 : 7;
-        case 'low': return isMobile ? 3 : 5;
-        case 'static': return 0; // No animation in static mode
-        default: return isMobile ? 4 : 7;
+        case 'high': return isMobile ? 8 : 12; // Increased for enhanced paths
+        case 'medium': return isMobile ? 6 : 9;
+        case 'low': return isMobile ? 4 : 6;
+        case 'static': return 0;
+        default: return isMobile ? 6 : 9;
       }
     };
 
@@ -44,37 +47,43 @@ const SnakeFiberAnimation: React.FC<SnakeFiberAnimationProps> = ({
   }
 
   const containerStyles: React.CSSProperties = {
-    opacity: Math.max(opacity, 0.9),
+    opacity: Math.max(opacity, 0.95),
     transform: 'translate3d(0,0,0)',
     contain: 'layout style paint',
     zIndex: 2,
-    filter: 'contrast(1.2) saturate(1.4)',
+    filter: `contrast(1.3) saturate(1.5) brightness(${1 + heroGlowIntensity * 0.2})`,
     mixBlendMode: 'screen'
   };
 
   return (
     <div 
-      className="absolute inset-0 w-full h-full transition-opacity duration-1500"
+      className="absolute inset-0 w-full h-full transition-all duration-1500"
       style={containerStyles}
     >
-      <SnakeRenderer
+      <EnhancedSnakeRenderer
         isVisible={isVisible}
         pathCount={actualPathCount}
         isMobile={isMobile}
         enableInteractive={enableMouseEffects}
+        heroGlowIntensity={heroGlowIntensity}
+        mousePosition={mousePosition}
       />
       
-      {/* Background network grid overlay */}
-      <div className="absolute inset-0 opacity-10 pointer-events-none">
+      {/* Enhanced background grid with dynamic opacity */}
+      <div 
+        className="absolute inset-0 pointer-events-none transition-opacity duration-2000"
+        style={{ opacity: 0.05 + heroGlowIntensity * 0.1 }}
+      >
         <div 
           className="w-full h-full"
           style={{
             backgroundImage: `
-              linear-gradient(90deg, rgba(255, 50, 50, 0.15) 1px, transparent 1px),
-              linear-gradient(0deg, rgba(255, 50, 50, 0.15) 1px, transparent 1px)
+              radial-gradient(circle at 50% 50%, rgba(255, 50, 50, 0.1) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(255, 50, 50, 0.08) 1px, transparent 1px),
+              linear-gradient(0deg, rgba(255, 50, 50, 0.08) 1px, transparent 1px)
             `,
-            backgroundSize: `${isMobile ? '50px' : '80px'} ${isMobile ? '50px' : '80px'}`,
-            animation: 'pulse 6s ease-in-out infinite'
+            backgroundSize: `${isMobile ? '60px' : '100px'} ${isMobile ? '60px' : '100px'}, ${isMobile ? '80px' : '120px'} ${isMobile ? '80px' : '120px'}, ${isMobile ? '80px' : '120px'} ${isMobile ? '80px' : '120px'}`,
+            animation: 'pulse 8s ease-in-out infinite'
           }}
         />
       </div>

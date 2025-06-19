@@ -5,6 +5,7 @@ import { useWebGLState } from '../hooks/useWebGLState';
 import { usePerformanceMonitor } from '../hooks/usePerformanceMonitor';
 import { useLazyFiberEffects } from '../hooks/useLazyFiberEffects';
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
+import { useFiberSync } from '../hooks/useFiberSync';
 import { shouldUseParticleEffects } from '../utils/deviceDetection';
 import SnakeFiberAnimation from './SnakeFiberAnimation';
 import StaticFiberBackground from './StaticFiberBackground';
@@ -27,13 +28,15 @@ const FiberBackground = () => {
   
   const { shouldShowCSS, shouldShowMouseEffects, shouldShowWebGL } = useLazyFiberEffects(currentQuality);
   const { elementRef, isVisible } = useIntersectionObserver();
+  const { fiberGlowIntensity, buttonPulse } = useFiberSync();
 
-  console.log('FiberBackground render (Snake mode):', { 
+  console.log('FiberBackground render (Enhanced Snake mode):', { 
     currentQuality, 
     shouldShowCSS, 
     isVisible, 
     isPaused,
     optimalFiberCount,
+    fiberGlowIntensity,
     deviceCapabilities: deviceCapabilities?.isMobile 
   });
 
@@ -62,14 +65,16 @@ const FiberBackground = () => {
       className="absolute inset-0 w-full h-full bg-black overflow-hidden"
       style={containerStyles}
     >
-      {/* Primary Snake Fiber Animation */}
+      {/* Enhanced Snake Fiber Animation with hero synchronization */}
       <SnakeFiberAnimation 
-        opacity={webglState.loaded ? 0.6 : 1}
+        opacity={webglState.loaded ? 0.7 : 1}
         enableMouseEffects={shouldShowMouseEffects && deviceCapabilities?.touchEnabled}
         isVisible={isVisible && !isPaused}
         quality={currentQuality}
-        fiberCount={Math.max(optimalFiberCount || 6, 3)} // Fewer paths for Snake mode
+        fiberCount={Math.max(optimalFiberCount || 8, 4)}
         isMobile={deviceCapabilities?.isMobile}
+        heroGlowIntensity={fiberGlowIntensity}
+        mousePosition={mousePosition}
       />
 
       {/* Static background overlay for very low quality scenarios */}
@@ -87,7 +92,7 @@ const FiberBackground = () => {
               mousePosition={mousePosition}
               isVisible={isVisible && !isPaused}
               enableParticles={shouldUseParticleEffects(deviceCapabilities)}
-              fiberCount={Math.min(optimalFiberCount || 8, 10)}
+              fiberCount={Math.min(optimalFiberCount || 10, 12)}
             />
           </div>
         </React.Suspense>
