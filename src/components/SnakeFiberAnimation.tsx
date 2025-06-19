@@ -28,15 +28,15 @@ const SnakeFiberAnimation: React.FC<SnakeFiberAnimationProps> = ({
 
   useEffect(() => {
     const calculatePathCount = () => {
-      if (fiberCount !== undefined) return Math.max(fiberCount, 4); // Ensure minimum
+      if (fiberCount !== undefined) return Math.max(fiberCount, 6); // Higher minimum
       
-      // CRITICAL FIX: Ensure paths are generated for all quality levels except static
+      // CRITICAL FIX: Ensure paths are generated for all non-static quality levels
       switch (quality) {
-        case 'high': return isMobile ? 14 : 18;
-        case 'medium': return isMobile ? 12 : 16;
-        case 'low': return isMobile ? 10 : 14;
+        case 'high': return isMobile ? 16 : 22;
+        case 'medium': return isMobile ? 14 : 20;
+        case 'low': return isMobile ? 12 : 18;
         case 'static': return 0;
-        default: return isMobile ? 12 : 16;
+        default: return isMobile ? 14 : 20;
       }
     };
 
@@ -62,11 +62,11 @@ const SnakeFiberAnimation: React.FC<SnakeFiberAnimationProps> = ({
   }
 
   const containerStyles: React.CSSProperties = {
-    opacity: Math.max(opacity, 0.9), // Higher minimum opacity
+    opacity: Math.max(opacity, 0.95), // Higher minimum opacity for better visibility
     transform: 'translate3d(0,0,0)',
     contain: 'layout style paint',
     zIndex: 2,
-    filter: `contrast(1.4) saturate(1.6) brightness(${1 + heroGlowIntensity * 0.3})`,
+    filter: `contrast(1.6) saturate(1.8) brightness(${1 + heroGlowIntensity * 0.4})`,
     mixBlendMode: 'screen'
   };
 
@@ -94,17 +94,17 @@ const SnakeFiberAnimation: React.FC<SnakeFiberAnimationProps> = ({
       {/* Enhanced background grid with dynamic opacity */}
       <div 
         className="absolute inset-0 pointer-events-none transition-opacity duration-2000"
-        style={{ opacity: 0.08 + heroGlowIntensity * 0.15 }}
+        style={{ opacity: 0.12 + heroGlowIntensity * 0.2 }}
       >
         <div 
           className="w-full h-full"
           style={{
             backgroundImage: `
-              radial-gradient(circle at 50% 50%, rgba(255, 50, 50, 0.15) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255, 50, 50, 0.1) 1px, transparent 1px),
-              linear-gradient(0deg, rgba(255, 50, 50, 0.1) 1px, transparent 1px)
+              radial-gradient(circle at 50% 50%, rgba(255, 50, 50, 0.2) 2px, transparent 2px),
+              linear-gradient(90deg, rgba(255, 50, 50, 0.12) 1px, transparent 1px),
+              linear-gradient(0deg, rgba(255, 50, 50, 0.12) 1px, transparent 1px)
             `,
-            backgroundSize: `${isMobile ? '80px' : '120px'} ${isMobile ? '80px' : '120px'}, ${isMobile ? '100px' : '150px'} ${isMobile ? '100px' : '150px'}, ${isMobile ? '100px' : '150px'} ${isMobile ? '100px' : '150px'}`,
+            backgroundSize: `${isMobile ? '100px' : '140px'} ${isMobile ? '100px' : '140px'}, ${isMobile ? '120px' : '180px'} ${isMobile ? '120px' : '180px'}, ${isMobile ? '120px' : '180px'} ${isMobile ? '120px' : '180px'}`,
             animation: 'pulse 6s ease-in-out infinite'
           }}
         />

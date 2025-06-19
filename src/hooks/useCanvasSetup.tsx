@@ -28,7 +28,7 @@ export const useCanvasSetup = ({ pathCount, isMobile }: UseCanvasSetupProps) => 
         console.log('Canvas setup - rect:', { width: rect.width, height: rect.height });
         console.log('Canvas setup - dpr:', dpr);
         
-        // Set canvas size with proper scaling
+        // CRITICAL FIX: Set canvas size with proper scaling
         canvas.width = rect.width * dpr;
         canvas.height = rect.height * dpr;
         canvas.style.width = rect.width + 'px';
@@ -46,18 +46,22 @@ export const useCanvasSetup = ({ pathCount, isMobile }: UseCanvasSetupProps) => 
           throw new Error('Failed to get 2D context');
         }
         
-        // CRITICAL FIX: Scale context properly
+        // CRITICAL FIX: Scale context properly for HiDPI
         ctx.scale(dpr, dpr);
         
-        // Clear canvas to black using ACTUAL display dimensions (not scaled)
-        ctx.fillStyle = 'rgba(0, 0, 0, 1)';
+        // CRITICAL FIX: Clear canvas using display dimensions, not buffer dimensions
+        ctx.fillStyle = 'rgba(5, 5, 10, 1)';
         ctx.fillRect(0, 0, rect.width, rect.height);
         
-        console.log('Canvas cleared to black with dimensions:', rect.width, 'x', rect.height);
+        console.log('Canvas cleared with dark background using display dimensions:', rect.width, 'x', rect.height);
+        
+        // Store display dimensions for use in animation
+        canvas.dataset.displayWidth = rect.width.toString();
+        canvas.dataset.displayHeight = rect.height.toString();
         
         // Initialize generator with display dimensions
         pathGeneratorRef.current = new EnhancedSnakeGenerator(rect.width, rect.height, isMobile);
-        console.log('Path generator initialized with:', rect.width, 'x', rect.height);
+        console.log('Path generator initialized with display dimensions:', rect.width, 'x', rect.height);
         
         setCanvasReady(true);
         setRenderError(null);
