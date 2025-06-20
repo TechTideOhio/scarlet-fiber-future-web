@@ -160,9 +160,7 @@ export const useSnakeAnimation = ({
 
           // CRITICAL FIX: Enhanced rendering with comprehensive error handling
           try {
-            renderEn
-
-hancedPaths(ctx, updatedPaths, isMobile);
+            renderEnhancedPaths(ctx, updatedPaths, isMobile);
             
             // Success - clear any previous errors
             if (renderError) {
