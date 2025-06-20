@@ -10,9 +10,9 @@ export const useAnimationState = () => {
     lastTime: 0
   });
 
-  const animationRef = useRef<number>();
+  const animationRef = useRef<number | undefined>();
   const lastTimeRef = useRef<number>(0);
-  const initializationAttemptRef = useRef(0);
+  const initializationAttemptRef = useRef<number>(0);
 
   const updateAnimationState = (updates: Partial<AnimationState>) => {
     setAnimationState(prev => ({ ...prev, ...updates }));

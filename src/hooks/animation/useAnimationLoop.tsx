@@ -16,7 +16,7 @@ export const useAnimationLoop = ({
   setAnimationState
 }: AnimationLoopProps) => {
 
-  const startAnimationLoop = (animationRef: React.RefObject<number>, lastTimeRef: React.RefObject<number>) => {
+  const startAnimationLoop = (animationRef: React.MutableRefObject<number | undefined>, lastTimeRef: React.MutableRefObject<number>) => {
     useEffect(() => {
       if (!isVisible || !canvasReady || renderError || animationState.paths.length === 0) {
         if (animationRef.current) {

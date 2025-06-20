@@ -9,13 +9,11 @@ export const usePathInitialization = ({
   setRenderError
 }: PathInitializationProps) => {
   
-  const initializePaths = (initializationAttemptRef: React.RefObject<number>, updateAnimationState: (updates: any) => void) => {
+  const initializePaths = (initializationAttemptRef: React.MutableRefObject<number>, updateAnimationState: (updates: any) => void) => {
     useEffect(() => {
       if (canvasReady && pathGeneratorRef.current && pathCount > 0) {
-        if (initializationAttemptRef.current) {
-          initializationAttemptRef.current++;
-        }
-        console.log(`Initializing paths attempt ${initializationAttemptRef.current || 1} for pathCount:`, pathCount);
+        initializationAttemptRef.current++;
+        console.log(`Initializing paths attempt ${initializationAttemptRef.current} for pathCount:`, pathCount);
         
         try {
           const generatedPaths = pathGeneratorRef.current.generateEnhancedPaths(pathCount);
