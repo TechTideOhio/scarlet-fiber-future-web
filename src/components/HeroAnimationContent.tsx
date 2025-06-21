@@ -8,11 +8,19 @@ const HeroAnimationContent = () => {
     <div className="relative z-10 flex items-center justify-center min-h-screen px-4">
       <div className="text-center max-w-6xl mx-auto">
         <div className="mb-12">
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-10 tracking-tight animate-fade-in leading-relaxed py-4">
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-buckeye-scarlet to-white animate-text-shimmer bg-[length:200%_100%]">
+          <h1 className="text-5xl md:text-7xl font-bold text-white mb-10 tracking-tight animate-fade-in leading-relaxed py-6">
+            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-buckeye-scarlet to-white animate-text-shimmer bg-[length:200%_100%] pb-2" style={{ 
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              fallbacks: [{ color: 'white' }]
+            }}>
               Connecting the Future,
             </span>
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-buckeye-scarlet to-white animate-text-shimmer bg-[length:200%_100%] animation-delay-500">
+            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-buckeye-scarlet to-white animate-text-shimmer bg-[length:200%_100%] animation-delay-500 pb-2" style={{ 
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              fallbacks: [{ color: 'white' }]
+            }}>
               Powering Tomorrow.
             </span>
           </h1>

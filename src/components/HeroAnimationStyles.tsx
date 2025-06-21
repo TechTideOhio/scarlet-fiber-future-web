@@ -32,6 +32,9 @@ const HeroAnimationStyles = () => {
       
       .animate-text-shimmer {
         animation: text-shimmer 3s linear infinite;
+        -webkit-background-clip: text !important;
+        background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
       }
       
       .animate-fade-in {
@@ -54,6 +57,19 @@ const HeroAnimationStyles = () => {
       
       .bg-radial-gradient {
         background: radial-gradient(circle at center, transparent 0%, transparent 50%, rgba(0,0,0,0.4) 100%);
+      }
+      
+      /* Ensure text gradient spans render properly */
+      .text-transparent {
+        color: transparent !important;
+      }
+      
+      /* Fallback for browsers that don't support background-clip: text */
+      @supports not (-webkit-background-clip: text) {
+        .animate-text-shimmer {
+          color: white !important;
+          -webkit-text-fill-color: white !important;
+        }
       }
       `}
     </style>

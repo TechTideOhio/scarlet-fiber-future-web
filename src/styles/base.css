@@ -73,17 +73,18 @@
     contain: layout style paint;
   }
 
-  /* Performance optimizations */
-  * {
-    will-change: auto;
-    /* Prevent unnecessary layer creation */
-    transform: translateZ(0);
-  }
-
+  /* Performance optimizations - Apply transform only where needed */
   .parallax-element {
     will-change: transform;
     transform: translateZ(0);
     /* Promote to composite layer only when needed */
     backface-visibility: hidden;
+  }
+
+  /* Specific transforms for animated elements */
+  .animate-fade-in,
+  .animate-fade-in-delay,
+  .animate-fade-in-delay-2 {
+    transform: translateZ(0);
   }
 }
