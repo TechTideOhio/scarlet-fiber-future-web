@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Github, Linkedin } from 'lucide-react';
+import { Clock, CheckCircle } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -19,27 +19,20 @@ const Footer = () => {
               </div>
             </div>
             
-            {/* Right Section - Social Links */}
+            {/* Right Section - Quick Quote Information */}
             <div className="flex items-start justify-start md:justify-end">
-              <div className="flex space-x-4">
-                <a
-                  href="https://linkedin.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-white hover:text-buckeye-scarlet transition-colors duration-300 p-2 hover:bg-gray-800 rounded-md"
-                  aria-label="LinkedIn"
-                >
-                  <Linkedin size={24} />
-                </a>
-                <a
-                  href="https://github.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-white hover:text-buckeye-scarlet transition-colors duration-300 p-2 hover:bg-gray-800 rounded-md"
-                  aria-label="GitHub"
-                >
-                  <Github size={24} />
-                </a>
+              <div className="text-white">
+                <h4 className="text-lg font-semibold mb-3 text-buckeye-scarlet">Get Your Quote Fast</h4>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <Clock size={16} className="text-buckeye-scarlet" />
+                    <span className="text-gray-300">30-Second Online Quotes</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <CheckCircle size={16} className="text-buckeye-scarlet" />
+                    <span className="text-gray-300">Quotes Returned Within 24 Hours</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
