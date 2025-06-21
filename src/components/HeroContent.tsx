@@ -7,18 +7,6 @@ const HeroContent: React.FC = () => {
   return (
     <div className="relative z-10 flex items-center justify-center min-h-screen px-4">
       <div className="text-center max-w-4xl mx-auto">
-        <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 hero-fade-in">
-          <span className="inline-block bg-gradient-to-r from-red-400 via-red-500 to-red-600 bg-clip-text text-transparent hero-gradient-x">
-            Fiber Optic
-          </span>
-          {' '}
-          <span className="text-white">Future</span>
-        </h1>
-        
-        <p className="text-xl md:text-2xl text-gray-300 mb-8 hero-fade-in-delay">
-          Experience the speed of light with our cutting-edge technology
-        </p>
-        
         <button
           className="relative px-8 py-4 bg-red-600 text-white font-semibold rounded-lg overflow-hidden transform transition-all duration-300 hover:scale-105 active:scale-95 shadow-2xl hover:shadow-red-500/25 hero-fade-in-delay-2"
           onMouseEnter={() => setIsButtonHovered(true)}
