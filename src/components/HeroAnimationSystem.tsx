@@ -36,15 +36,11 @@ const HeroAnimationSystem: React.FC<HeroAnimationSystemProps> = ({
   return (
     <div ref={containerRef} className={`relative min-h-screen bg-black overflow-hidden ${className}`}>
       {/* Animated gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-red-950/20 animate-gradient-shift" />
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-red-950/20 hero-gradient-shift" />
       
       {/* Grid pattern overlay */}
       <div 
-        className="absolute inset-0 opacity-20"
-        style={{
-          backgroundImage: `linear-gradient(rgba(255,0,0,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,0,0,0.1) 1px, transparent 1px)`,
-          backgroundSize: '50px 50px'
-        }}
+        className="absolute inset-0 opacity-20 hero-grid-pattern"
       />
       
       {/* Animated fiber optic lines */}
@@ -115,11 +111,8 @@ const HeroAnimationSystem: React.FC<HeroAnimationSystemProps> = ({
           stroke="rgba(239, 68, 68, 0.3)"
           strokeWidth="2"
           filter="url(#glow)"
-          className="pointer-events-none"
-        >
-          <animate attributeName="r" values="80;120;80" dur="2s" repeatCount="indefinite" />
-          <animate attributeName="opacity" values="0.3;0.1;0.3" dur="2s" repeatCount="indefinite" />
-        </circle>
+          className="pointer-events-none hero-mouse-glow"
+        />
       </svg>
       
       {/* Floating particles */}
@@ -127,7 +120,7 @@ const HeroAnimationSystem: React.FC<HeroAnimationSystemProps> = ({
         {[...Array(20)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-1 h-1 bg-red-500 rounded-full animate-float"
+            className="absolute w-1 h-1 bg-red-500 rounded-full hero-particle-float"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
@@ -142,20 +135,20 @@ const HeroAnimationSystem: React.FC<HeroAnimationSystemProps> = ({
       {/* Hero content */}
       <div className="relative z-10 flex items-center justify-center min-h-screen px-4">
         <div className="text-center max-w-4xl mx-auto">
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 animate-fade-in">
-            <span className="inline-block bg-gradient-to-r from-red-400 via-red-500 to-red-600 bg-clip-text text-transparent animate-gradient-x">
+          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 hero-fade-in">
+            <span className="inline-block bg-gradient-to-r from-red-400 via-red-500 to-red-600 bg-clip-text text-transparent hero-gradient-x">
               Fiber Optic
             </span>
             {' '}
             <span className="text-white">Future</span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-gray-300 mb-8 animate-fade-in-delay">
+          <p className="text-xl md:text-2xl text-gray-300 mb-8 hero-fade-in-delay">
             Experience the speed of light with our cutting-edge technology
           </p>
           
           <button
-            className="relative px-8 py-4 bg-red-600 text-white font-semibold rounded-lg overflow-hidden transform transition-all duration-300 hover:scale-105 active:scale-95 shadow-2xl hover:shadow-red-500/25 animate-fade-in-delay-2"
+            className="relative px-8 py-4 bg-red-600 text-white font-semibold rounded-lg overflow-hidden transform transition-all duration-300 hover:scale-105 active:scale-95 shadow-2xl hover:shadow-red-500/25 hero-fade-in-delay-2"
             onMouseEnter={() => setIsButtonHovered(true)}
             onMouseLeave={() => setIsButtonHovered(false)}
           >
@@ -164,7 +157,7 @@ const HeroAnimationSystem: React.FC<HeroAnimationSystemProps> = ({
             
             {/* Button border animation */}
             <div className="absolute inset-0 rounded-lg">
-              <div className={`absolute inset-0 rounded-lg bg-gradient-to-r from-transparent via-red-400 to-transparent opacity-0 ${isButtonHovered ? 'animate-shimmer' : ''}`} />
+              <div className={`absolute inset-0 rounded-lg bg-gradient-to-r from-transparent via-red-400 to-transparent opacity-0 ${isButtonHovered ? 'hero-shimmer' : ''}`} />
             </div>
             
             {/* Button content */}
@@ -190,84 +183,12 @@ const HeroAnimationSystem: React.FC<HeroAnimationSystemProps> = ({
             {/* Ripple effect container */}
             <div className="absolute inset-0 rounded-lg overflow-hidden">
               {isButtonHovered && (
-                <div className="absolute inset-0 animate-ripple bg-white/20 rounded-full transform scale-0" />
+                <div className="absolute inset-0 hero-ripple bg-white/20 rounded-full transform scale-0" />
               )}
             </div>
           </button>
         </div>
       </div>
-      
-      {/* Custom styles */}
-      <style jsx>{`
-        @keyframes gradient-shift {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-        }
-        
-        @keyframes gradient-x {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-        }
-        
-        @keyframes float {
-          0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
-          10% { opacity: 1; }
-          90% { opacity: 1; }
-          100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
-        }
-        
-        @keyframes fade-in {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @keyframes shimmer {
-          0% { transform: translateX(-100%); opacity: 0; }
-          50% { opacity: 1; }
-          100% { transform: translateX(100%); opacity: 0; }
-        }
-        
-        @keyframes ripple {
-          0% { transform: scale(0); opacity: 1; }
-          100% { transform: scale(4); opacity: 0; }
-        }
-        
-        .animate-gradient-shift {
-          background-size: 200% 200%;
-          animation: gradient-shift 10s ease infinite;
-        }
-        
-        .animate-gradient-x {
-          background-size: 200% 200%;
-          animation: gradient-x 3s ease infinite;
-        }
-        
-        .animate-float {
-          animation: float 20s ease-in-out infinite;
-        }
-        
-        .animate-fade-in {
-          animation: fade-in 0.8s ease-out;
-        }
-        
-        .animate-fade-in-delay {
-          opacity: 0;
-          animation: fade-in 0.8s ease-out 0.2s forwards;
-        }
-        
-        .animate-fade-in-delay-2 {
-          opacity: 0;
-          animation: fade-in 0.8s ease-out 0.4s forwards;
-        }
-        
-        .animate-shimmer {
-          animation: shimmer 1s ease-out;
-        }
-        
-        .animate-ripple {
-          animation: ripple 0.6s ease-out;
-        }
-      `}</style>
     </div>
   );
 };

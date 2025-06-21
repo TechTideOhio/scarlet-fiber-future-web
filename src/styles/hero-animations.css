@@ -45,6 +45,93 @@
   }
 }
 
+/* New animations for HeroAnimationSystem */
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes gradient-x {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateX(100%); opacity: 0; }
+}
+
+@keyframes ripple {
+  0% { transform: scale(0); opacity: 1; }
+  100% { transform: scale(4); opacity: 0; }
+}
+
+@keyframes mouse-glow {
+  0% { r: 80; opacity: 0.3; }
+  50% { r: 120; opacity: 0.1; }
+  100% { r: 80; opacity: 0.3; }
+}
+
+/* Grid pattern background */
+.hero-grid-pattern {
+  background-image: linear-gradient(rgba(255,0,0,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,0,0,0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* Animation classes */
+.hero-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradient-shift 10s ease infinite;
+}
+
+.hero-gradient-x {
+  background-size: 200% 200%;
+  animation: gradient-x 3s ease infinite;
+}
+
+.hero-particle-float {
+  animation: float 20s ease-in-out infinite;
+}
+
+.hero-fade-in {
+  animation: fade-in 0.8s ease-out;
+}
+
+.hero-fade-in-delay {
+  opacity: 0;
+  animation: fade-in 0.8s ease-out 0.2s forwards;
+}
+
+.hero-fade-in-delay-2 {
+  opacity: 0;
+  animation: fade-in 0.8s ease-out 0.4s forwards;
+}
+
+.hero-shimmer {
+  animation: shimmer 1s ease-out;
+}
+
+.hero-ripple {
+  animation: ripple 0.6s ease-out;
+}
+
+.hero-mouse-glow {
+  animation: mouse-glow 2s ease-in-out infinite;
+}
+
 /* Performance optimizations */
 .hero-animation-system * {
   will-change: transform, opacity;
