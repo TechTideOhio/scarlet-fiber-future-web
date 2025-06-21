@@ -2,22 +2,49 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 const HeroAnimationSystem = () => {
-  const canvasRef = useRef(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isButtonHovered, setIsButtonHovered] = useState(false);
-  const frameRef = useRef(0);
-  const fibersRef = useRef([]);
+  const frameRef = useRef<number>(0);
+  const fibersRef = useRef<AnimatedFiber[]>([]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
     // Initialize fibers
-    class Fiber {
+    class AnimatedFiber {
+      x: number;
+      y: number;
+      targetX: number;
+      targetY: number;
+      progress: number;
+      speed: number;
+      width: number;
+      opacity: number;
+      cp1x: number;
+      cp1y: number;
+      cp2x: number;
+      cp2y: number;
+
       constructor() {
+        this.x = 0;
+        this.y = 0;
+        this.targetX = 0;
+        this.targetY = 0;
+        this.progress = 0;
+        this.speed = 0;
+        this.width = 0;
+        this.opacity = 0;
+        this.cp1x = 0;
+        this.cp1y = 0;
+        this.cp2x = 0;
+        this.cp2y = 0;
         this.reset();
       }
 
@@ -55,7 +82,7 @@ const HeroAnimationSystem = () => {
         }
       }
 
-      draw(ctx) {
+      draw(ctx: CanvasRenderingContext2D) {
         const t = this.progress;
         
         // Calculate current position on bezier curve
@@ -118,7 +145,7 @@ const HeroAnimationSystem = () => {
 
     // Create fibers
     for (let i = 0; i < 5; i++) {
-      fibersRef.current.push(new Fiber());
+      fibersRef.current.push(new AnimatedFiber());
     }
 
     // Animation loop
@@ -236,7 +263,8 @@ const HeroAnimationSystem = () => {
       <div className="absolute inset-0 pointer-events-none bg-radial-gradient from-transparent via-transparent to-black/50" />
       
       {/* Custom styles */}
-      <style jsx>{`
+      <style>
+        {`
         @keyframes text-shimmer {
           0% { background-position: 0% 50%; }
           100% { background-position: 200% 50%; }
@@ -287,7 +315,8 @@ const HeroAnimationSystem = () => {
         .bg-radial-gradient {
           background: radial-gradient(circle at center, transparent 0%, transparent 50%, rgba(0,0,0,0.4) 100%);
         }
-      `}</style>
+        `}
+      </style>
     </div>
   );
 };

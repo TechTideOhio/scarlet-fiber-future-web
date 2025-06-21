@@ -21,11 +21,7 @@ const EnhancedHero = () => {
         transform: `translateY(${scrollY * 0.3}px)`,
       }}
     >
-      <HeroAnimationSystem 
-        isVisible={true}
-        intensity={0.8}
-        className="hero-animation-system"
-      />
+      <HeroAnimationSystem />
     </div>
   );
 };
