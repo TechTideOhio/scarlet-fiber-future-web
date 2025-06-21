@@ -1,0 +1,62 @@
+
+/* Hero Animation System Styles */
+
+@keyframes fiberGlow {
+  0% {
+    opacity: 0.1;
+    box-shadow: 0 0 5px rgba(239, 68, 68, 0.3);
+  }
+  50% {
+    opacity: 0.6;
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
+  }
+  100% {
+    opacity: 0.1;
+    box-shadow: 0 0 5px rgba(239, 68, 68, 0.3);
+  }
+}
+
+@keyframes diagonalMove {
+  0% {
+    transform: translateX(-100%) rotate(5deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.5;
+  }
+  90% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateX(100vw) rotate(5deg);
+    opacity: 0;
+  }
+}
+
+@keyframes particleFloat {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(180deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(360deg);
+  }
+}
+
+/* Performance optimizations */
+.hero-animation-system * {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .hero-animation-system * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import FiberBackground from './FiberBackground';
+import HeroAnimationSystem from './HeroAnimationSystem';
 import { useFiberSync } from '../hooks/useFiberSync';
 import { useTextAnimation } from '../hooks/useTextAnimation';
 
@@ -20,7 +21,7 @@ const EnhancedHero = () => {
 
   return (
     <div className="relative h-full flex items-center justify-center overflow-hidden">
-      {/* Fiber Background Layer - Positioned to be behind content */}
+      {/* Fiber Background Layer - Original canvas-based system */}
       <div 
         className="absolute inset-0 z-0"
         style={{
@@ -30,10 +31,24 @@ const EnhancedHero = () => {
         <FiberBackground />
       </div>
       
+      {/* New Hero Animation System - Additional layer */}
+      <div 
+        className="absolute inset-0 z-1"
+        style={{
+          transform: `translateY(${scrollY * 0.3}px)`,
+        }}
+      >
+        <HeroAnimationSystem 
+          isVisible={true}
+          intensity={fiberGlowIntensity}
+          className="hero-animation-system"
+        />
+      </div>
+      
       {/* Dark overlay for text readability */}
       <div className="absolute inset-0 bg-black bg-opacity-40 z-5" />
       
-      {/* Content overlay - Higher z-index to appear above fibers */}
+      {/* Content overlay - Higher z-index to appear above all effects */}
       <div className="relative z-10 container mx-auto px-4 text-center">
         <div 
           className="max-w-4xl mx-auto"
