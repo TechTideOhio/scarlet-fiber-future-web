@@ -14,19 +14,19 @@ const AnimatedSVGBackground: React.FC<AnimatedSVGBackgroundProps> = ({
     <svg className="absolute inset-0 w-full h-full">
       <defs>
         <linearGradient id="fiber-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#dc2626" stopOpacity="0">
-            <animate attributeName="stop-opacity" values="0;1;0" dur="3s" repeatCount="indefinite" />
+          <stop offset="0%" stopColor="#ff4444" stopOpacity="0.8">
+            <animate attributeName="stop-opacity" values="0.8;1;0.8" dur="3s" repeatCount="indefinite" />
           </stop>
-          <stop offset="50%" stopColor="#ef4444" stopOpacity="1">
-            <animate attributeName="stop-opacity" values="1;0.5;1" dur="3s" repeatCount="indefinite" />
+          <stop offset="50%" stopColor="#ff6666" stopOpacity="1">
+            <animate attributeName="stop-opacity" values="1;0.8;1" dur="3s" repeatCount="indefinite" />
           </stop>
-          <stop offset="100%" stopColor="#dc2626" stopOpacity="0">
-            <animate attributeName="stop-opacity" values="0;1;0" dur="3s" repeatCount="indefinite" />
+          <stop offset="100%" stopColor="#ff4444" stopOpacity="0.8">
+            <animate attributeName="stop-opacity" values="0.8;1;0.8" dur="3s" repeatCount="indefinite" />
           </stop>
         </linearGradient>
         
         <filter id="glow">
-          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+          <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
           <feMerge>
             <feMergeNode in="coloredBlur"/>
             <feMergeNode in="SourceGraphic"/>
@@ -34,16 +34,16 @@ const AnimatedSVGBackground: React.FC<AnimatedSVGBackgroundProps> = ({
         </filter>
       </defs>
       
-      {/* Animated fiber paths */}
+      {/* Animated fiber paths with increased brightness */}
       {[...Array(6)].map((_, i) => (
         <g key={i}>
           <path
             d={`M ${-100 + i * 100} ${window.innerHeight} Q ${window.innerWidth / 2} ${window.innerHeight / 2} ${window.innerWidth + 100 - i * 50} ${-100}`}
             fill="none"
             stroke="url(#fiber-gradient)"
-            strokeWidth="2"
+            strokeWidth="3"
             filter="url(#glow)"
-            opacity={0.8 * intensity}
+            opacity={Math.min(1.0 * intensity, 1)}
           >
             <animate
               attributeName="d"
@@ -56,27 +56,27 @@ const AnimatedSVGBackground: React.FC<AnimatedSVGBackgroundProps> = ({
             />
           </path>
           
-          {/* Light particles */}
-          <circle r="4" fill="#ef4444" filter="url(#glow)">
+          {/* Brighter light particles */}
+          <circle r="6" fill="#ff6666" filter="url(#glow)">
             <animateMotion
               dur={`${4 + i}s`}
               repeatCount="indefinite"
               path={`M ${-100 + i * 100} ${window.innerHeight} Q ${window.innerWidth / 2} ${window.innerHeight / 2} ${window.innerWidth + 100 - i * 50} ${-100}`}
             />
-            <animate attributeName="opacity" values="0;1;1;0" dur={`${4 + i}s`} repeatCount="indefinite" />
-            <animate attributeName="r" values="2;6;2" dur={`${4 + i}s`} repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0.8;1;1;0.8" dur={`${4 + i}s`} repeatCount="indefinite" />
+            <animate attributeName="r" values="4;8;4" dur={`${4 + i}s`} repeatCount="indefinite" />
           </circle>
         </g>
       ))}
       
-      {/* Mouse-following glow */}
+      {/* Mouse-following glow with increased brightness */}
       <circle
         cx={mousePosition.x}
         cy={mousePosition.y}
-        r="100"
+        r="120"
         fill="none"
-        stroke="rgba(239, 68, 68, 0.3)"
-        strokeWidth="2"
+        stroke="rgba(255, 102, 102, 0.6)"
+        strokeWidth="3"
         filter="url(#glow)"
         className="pointer-events-none hero-mouse-glow"
       />
