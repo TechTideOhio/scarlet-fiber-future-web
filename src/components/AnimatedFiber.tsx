@@ -1,4 +1,3 @@
-
 export class AnimatedFiber {
   x: number;
   y: number;
@@ -37,7 +36,7 @@ export class AnimatedFiber {
     this.targetX = Math.random() * this.canvas.width;
     this.targetY = -50;
     this.progress = 0;
-    this.speed = 0.002 + Math.random() * 0.003; // Much slower
+    this.speed = 0.001 + Math.random() * 0.0015; // Reduced speed by 50%
     this.width = 2 + Math.random() * 2;
     this.opacity = 0;
     

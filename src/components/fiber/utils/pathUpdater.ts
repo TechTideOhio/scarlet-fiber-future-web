@@ -18,7 +18,8 @@ export const updatePathNodes = (
     let intensity = 0;
     if (isInSegment) {
       const baseIntensity = Math.max(0.2, 1 - (distanceFromActive / path.segmentLength));
-      const pulseEffect = Math.sin(time * 0.003 + node.pulsePhase) * 0.3 + 0.7;
+      // Reduced pulse effect speed by 50% - was 0.003, now 0.0015
+      const pulseEffect = Math.sin(time * 0.0015 + node.pulsePhase) * 0.3 + 0.7;
       intensity = baseIntensity * pulseEffect * node.connectionStrength;
       
       // Hero synchronization effect
@@ -44,11 +45,11 @@ export const calculateNextSegmentIndex = (
   nodeCount: number
 ): number => {
   // CRITICAL FIX: Ensure smooth, predictable progression with minimum speed
-  const baseSpeed = Math.max(speed, 0.5);
-  const speedMultiplier = pathType === 'main' ? 0.6 : 0.8;
+  const baseSpeed = Math.max(speed, 0.25); // Reduced from 0.5 to 0.25 (50% slower)
+  const speedMultiplier = pathType === 'main' ? 0.3 : 0.4; // Reduced multipliers by 50%
   
   // CRITICAL FIX: Use consistent time-based progression that's more visible
-  const progressionRate = baseSpeed * speedMultiplier * deltaTime * 0.002;
+  const progressionRate = baseSpeed * speedMultiplier * deltaTime * 0.001; // Reduced from 0.002 to 0.001
   let nextIndex = currentIndex + progressionRate;
   
   // CRITICAL FIX: Proper wraparound ensuring continuous animation
