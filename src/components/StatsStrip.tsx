@@ -15,8 +15,8 @@ const StatsStrip = () => {
           <Separator orientation="vertical" className="hidden md:block h-16 bg-gray-700" />
           
           <div className="text-center animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            <p className="text-buckeye-scarlet text-3xl md:text-4xl font-bold">30-Sec</p>
-            <p className="text-white text-sm mt-2">Online Quotes</p>
+            <p className="text-buckeye-scarlet text-3xl md:text-4xl font-bold">24-Hr</p>
+            <p className="text-white text-sm mt-2">Quote Response</p>
           </div>
           
           <Separator orientation="vertical" className="hidden md:block h-16 bg-gray-700" />

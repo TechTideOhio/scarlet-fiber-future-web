@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Clock, CheckCircle } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -24,10 +24,6 @@ const Footer = () => {
               <div className="text-white">
                 <h4 className="text-lg font-semibold mb-3 text-buckeye-scarlet">Get Your Quote Fast</h4>
                 <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <Clock size={16} className="text-buckeye-scarlet" />
-                    <span className="text-gray-300">30-Second Online Quotes</span>
-                  </div>
                   <div className="flex items-center space-x-2">
                     <CheckCircle size={16} className="text-buckeye-scarlet" />
                     <span className="text-gray-300">Quotes Returned Within 24 Hours</span>
