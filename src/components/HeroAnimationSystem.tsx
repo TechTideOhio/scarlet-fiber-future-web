@@ -1,16 +1,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 
-interface FloatingParticle {
-  id: number;
-  x: number;
-  y: number;
-  size: number;
-  opacity: number;
-  speed: number;
-  angle: number;
-}
-
 interface HeroAnimationSystemProps {
   isVisible?: boolean;
   intensity?: number;
@@ -22,160 +12,262 @@ const HeroAnimationSystem: React.FC<HeroAnimationSystemProps> = ({
   intensity = 0.5,
   className = ''
 }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [particles, setParticles] = useState<FloatingParticle[]>([]);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const animationRef = useRef<number>();
+  const [isButtonHovered, setIsButtonHovered] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Initialize particles
-  useEffect(() => {
-    if (!isVisible) return;
-
-    const particleCount = 15;
-    const newParticles: FloatingParticle[] = [];
-
-    for (let i = 0; i < particleCount; i++) {
-      newParticles.push({
-        id: i,
-        x: Math.random() * 100,
-        y: Math.random() * 100,
-        size: Math.random() * 3 + 1,
-        opacity: Math.random() * 0.3 + 0.1,
-        speed: Math.random() * 0.5 + 0.2,
-        angle: Math.random() * Math.PI * 2
-      });
-    }
-
-    setParticles(newParticles);
-  }, [isVisible]);
-
-  // Mouse tracking
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();
         setMousePosition({
-          x: ((e.clientX - rect.left) / rect.width) * 100,
-          y: ((e.clientY - rect.top) / rect.height) * 100
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top
         });
       }
     };
 
-    const container = containerRef.current;
-    if (container) {
-      container.addEventListener('mousemove', handleMouseMove);
-      return () => container.removeEventListener('mousemove', handleMouseMove);
-    }
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
-
-  // Animation loop
-  useEffect(() => {
-    if (!isVisible || particles.length === 0) return;
-
-    let lastTime = 0;
-
-    const animate = (currentTime: number) => {
-      const deltaTime = currentTime - lastTime;
-      lastTime = currentTime;
-
-      setParticles(prevParticles => 
-        prevParticles.map(particle => ({
-          ...particle,
-          x: (particle.x + Math.cos(particle.angle) * particle.speed * 0.1) % 100,
-          y: (particle.y + Math.sin(particle.angle) * particle.speed * 0.1) % 100,
-          angle: particle.angle + 0.001
-        }))
-      );
-
-      animationRef.current = requestAnimationFrame(animate);
-    };
-
-    animationRef.current = requestAnimationFrame(animate);
-
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    };
-  }, [isVisible, particles.length]);
 
   if (!isVisible) return null;
 
   return (
-    <div 
-      ref={containerRef}
-      className={`absolute inset-0 overflow-hidden ${className}`}
-      style={{ zIndex: 1 }}
-    >
-      {/* Animated Fiber Lines */}
-      <div className="absolute inset-0">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div
-            key={`fiber-${i}`}
-            className="absolute w-px bg-gradient-to-b from-transparent via-red-500/30 to-transparent"
-            style={{
-              left: `${15 + i * 12}%`,
-              height: '100%',
-              opacity: intensity * 0.6,
-              animation: `fiberGlow ${3 + i * 0.5}s ease-in-out infinite alternate`,
-              transform: `translateY(${Math.sin(i * 0.5) * 10}px)`
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Diagonal Fiber Lines */}
-      <div className="absolute inset-0">
-        {Array.from({ length: 4 }).map((_, i) => (
-          <div
-            key={`diagonal-${i}`}
-            className="absolute bg-gradient-to-r from-transparent via-red-400/20 to-transparent"
-            style={{
-              top: `${20 + i * 20}%`,
-              left: '0%',
-              width: '100%',
-              height: '1px',
-              opacity: intensity * 0.4,
-              animation: `diagonalMove ${4 + i * 0.7}s linear infinite`,
-              transform: `rotate(${5 + i * 2}deg) translateX(${mousePosition.x * 0.1}px)`
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Floating Particles */}
-      <div className="absolute inset-0">
-        {particles.map(particle => (
-          <div
-            key={particle.id}
-            className="absolute w-1 h-1 bg-red-400 rounded-full"
-            style={{
-              left: `${particle.x}%`,
-              top: `${particle.y}%`,
-              opacity: particle.opacity * intensity,
-              transform: `scale(${particle.size * 0.5})`,
-              boxShadow: `0 0 ${particle.size * 4}px rgba(239, 68, 68, ${particle.opacity * 0.5})`
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Interactive Glow Effect */}
-      <div
-        className="absolute w-32 h-32 bg-red-500/10 rounded-full blur-xl pointer-events-none transition-all duration-300"
+    <div ref={containerRef} className={`relative min-h-screen bg-black overflow-hidden ${className}`}>
+      {/* Animated gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-red-950/20 animate-gradient-shift" />
+      
+      {/* Grid pattern overlay */}
+      <div 
+        className="absolute inset-0 opacity-20"
         style={{
-          left: `${mousePosition.x}%`,
-          top: `${mousePosition.y}%`,
-          transform: 'translate(-50%, -50%)',
-          opacity: intensity * 0.3
+          backgroundImage: `linear-gradient(rgba(255,0,0,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,0,0,0.1) 1px, transparent 1px)`,
+          backgroundSize: '50px 50px'
         }}
       />
-
-      {/* Gradient Overlay */}
-      <div 
-        className="absolute inset-0 bg-gradient-to-br from-red-900/5 via-transparent to-blue-900/5"
-        style={{ opacity: intensity * 0.3 }}
-      />
+      
+      {/* Animated fiber optic lines */}
+      <svg className="absolute inset-0 w-full h-full">
+        <defs>
+          <linearGradient id="fiber-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#dc2626" stopOpacity="0">
+              <animate attributeName="stop-opacity" values="0;1;0" dur="3s" repeatCount="indefinite" />
+            </stop>
+            <stop offset="50%" stopColor="#ef4444" stopOpacity="1">
+              <animate attributeName="stop-opacity" values="1;0.5;1" dur="3s" repeatCount="indefinite" />
+            </stop>
+            <stop offset="100%" stopColor="#dc2626" stopOpacity="0">
+              <animate attributeName="stop-opacity" values="0;1;0" dur="3s" repeatCount="indefinite" />
+            </stop>
+          </linearGradient>
+          
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+        
+        {/* Animated fiber paths */}
+        {[...Array(6)].map((_, i) => (
+          <g key={i}>
+            <path
+              d={`M ${-100 + i * 100} ${window.innerHeight} Q ${window.innerWidth / 2} ${window.innerHeight / 2} ${window.innerWidth + 100 - i * 50} ${-100}`}
+              fill="none"
+              stroke="url(#fiber-gradient)"
+              strokeWidth="2"
+              filter="url(#glow)"
+              opacity={0.8 * intensity}
+            >
+              <animate
+                attributeName="d"
+                values={`M ${-100 + i * 100} ${window.innerHeight} Q ${window.innerWidth / 2} ${window.innerHeight / 2} ${window.innerWidth + 100 - i * 50} ${-100};
+                        M ${-100 + i * 100} ${window.innerHeight} Q ${window.innerWidth / 3} ${window.innerHeight / 3} ${window.innerWidth + 100 - i * 50} ${-100};
+                        M ${-100 + i * 100} ${window.innerHeight} Q ${window.innerWidth * 0.7} ${window.innerHeight * 0.7} ${window.innerWidth + 100 - i * 50} ${-100};
+                        M ${-100 + i * 100} ${window.innerHeight} Q ${window.innerWidth / 2} ${window.innerHeight / 2} ${window.innerWidth + 100 - i * 50} ${-100}`}
+                dur={`${8 + i * 2}s`}
+                repeatCount="indefinite"
+              />
+            </path>
+            
+            {/* Light particles */}
+            <circle r="4" fill="#ef4444" filter="url(#glow)">
+              <animateMotion
+                dur={`${4 + i}s`}
+                repeatCount="indefinite"
+                path={`M ${-100 + i * 100} ${window.innerHeight} Q ${window.innerWidth / 2} ${window.innerHeight / 2} ${window.innerWidth + 100 - i * 50} ${-100}`}
+              />
+              <animate attributeName="opacity" values="0;1;1;0" dur={`${4 + i}s`} repeatCount="indefinite" />
+              <animate attributeName="r" values="2;6;2" dur={`${4 + i}s`} repeatCount="indefinite" />
+            </circle>
+          </g>
+        ))}
+        
+        {/* Mouse-following glow */}
+        <circle
+          cx={mousePosition.x}
+          cy={mousePosition.y}
+          r="100"
+          fill="none"
+          stroke="rgba(239, 68, 68, 0.3)"
+          strokeWidth="2"
+          filter="url(#glow)"
+          className="pointer-events-none"
+        >
+          <animate attributeName="r" values="80;120;80" dur="2s" repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0.3;0.1;0.3" dur="2s" repeatCount="indefinite" />
+        </circle>
+      </svg>
+      
+      {/* Floating particles */}
+      <div className="absolute inset-0">
+        {[...Array(20)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1 h-1 bg-red-500 rounded-full animate-float"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 10}s`,
+              animationDuration: `${15 + Math.random() * 10}s`,
+              opacity: intensity
+            }}
+          />
+        ))}
+      </div>
+      
+      {/* Hero content */}
+      <div className="relative z-10 flex items-center justify-center min-h-screen px-4">
+        <div className="text-center max-w-4xl mx-auto">
+          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 animate-fade-in">
+            <span className="inline-block bg-gradient-to-r from-red-400 via-red-500 to-red-600 bg-clip-text text-transparent animate-gradient-x">
+              Fiber Optic
+            </span>
+            {' '}
+            <span className="text-white">Future</span>
+          </h1>
+          
+          <p className="text-xl md:text-2xl text-gray-300 mb-8 animate-fade-in-delay">
+            Experience the speed of light with our cutting-edge technology
+          </p>
+          
+          <button
+            className="relative px-8 py-4 bg-red-600 text-white font-semibold rounded-lg overflow-hidden transform transition-all duration-300 hover:scale-105 active:scale-95 shadow-2xl hover:shadow-red-500/25 animate-fade-in-delay-2"
+            onMouseEnter={() => setIsButtonHovered(true)}
+            onMouseLeave={() => setIsButtonHovered(false)}
+          >
+            {/* Button gradient animation */}
+            <div className={`absolute inset-0 bg-gradient-to-r from-red-600 to-red-500 transition-opacity duration-300 ${isButtonHovered ? 'opacity-100' : 'opacity-0'}`} />
+            
+            {/* Button border animation */}
+            <div className="absolute inset-0 rounded-lg">
+              <div className={`absolute inset-0 rounded-lg bg-gradient-to-r from-transparent via-red-400 to-transparent opacity-0 ${isButtonHovered ? 'animate-shimmer' : ''}`} />
+            </div>
+            
+            {/* Button content */}
+            <span className="relative z-10 flex items-center gap-2">
+              Get Started
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                className={`transform transition-transform duration-300 ${isButtonHovered ? 'translate-x-1' : ''}`}
+              >
+                <path
+                  d="M7 10L13 10M13 10L10 7M13 10L10 13"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </span>
+            
+            {/* Ripple effect container */}
+            <div className="absolute inset-0 rounded-lg overflow-hidden">
+              {isButtonHovered && (
+                <div className="absolute inset-0 animate-ripple bg-white/20 rounded-full transform scale-0" />
+              )}
+            </div>
+          </button>
+        </div>
+      </div>
+      
+      {/* Custom styles */}
+      <style jsx>{`
+        @keyframes gradient-shift {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+        
+        @keyframes gradient-x {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+        
+        @keyframes float {
+          0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
+        }
+        
+        @keyframes fade-in {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); opacity: 0; }
+          50% { opacity: 1; }
+          100% { transform: translateX(100%); opacity: 0; }
+        }
+        
+        @keyframes ripple {
+          0% { transform: scale(0); opacity: 1; }
+          100% { transform: scale(4); opacity: 0; }
+        }
+        
+        .animate-gradient-shift {
+          background-size: 200% 200%;
+          animation: gradient-shift 10s ease infinite;
+        }
+        
+        .animate-gradient-x {
+          background-size: 200% 200%;
+          animation: gradient-x 3s ease infinite;
+        }
+        
+        .animate-float {
+          animation: float 20s ease-in-out infinite;
+        }
+        
+        .animate-fade-in {
+          animation: fade-in 0.8s ease-out;
+        }
+        
+        .animate-fade-in-delay {
+          opacity: 0;
+          animation: fade-in 0.8s ease-out 0.2s forwards;
+        }
+        
+        .animate-fade-in-delay-2 {
+          opacity: 0;
+          animation: fade-in 0.8s ease-out 0.4s forwards;
+        }
+        
+        .animate-shimmer {
+          animation: shimmer 1s ease-out;
+        }
+        
+        .animate-ripple {
+          animation: ripple 0.6s ease-out;
+        }
+      `}</style>
     </div>
   );
 };
