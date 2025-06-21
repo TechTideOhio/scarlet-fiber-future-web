@@ -100,14 +100,14 @@ const HeroAnimationSystem = () => {
         ctx.save();
         ctx.globalAlpha = this.opacity * 0.8;
         
-        // Create gradient for fiber
+        // Create gradient for fiber - Updated to Buckeye red (#BB0000)
         const gradient = ctx.createLinearGradient(
           x - 50, y - 50, 
           x + 50, y + 50
         );
-        gradient.addColorStop(0, 'rgba(255, 59, 48, 0)');
-        gradient.addColorStop(0.5, 'rgba(255, 59, 48, 1)');
-        gradient.addColorStop(1, 'rgba(255, 59, 48, 0)');
+        gradient.addColorStop(0, 'rgba(187, 0, 0, 0)');
+        gradient.addColorStop(0.5, 'rgba(187, 0, 0, 1)');
+        gradient.addColorStop(1, 'rgba(187, 0, 0, 0)');
         
         ctx.strokeStyle = gradient;
         ctx.lineWidth = this.width;
@@ -129,13 +129,13 @@ const HeroAnimationSystem = () => {
         ctx.lineWidth = this.width * 0.3;
         ctx.stroke();
         
-        // Draw light point
+        // Draw light point - Updated to Buckeye red
         ctx.beginPath();
         ctx.arc(x, y, 4 + this.width, 0, Math.PI * 2);
         const pointGradient = ctx.createRadialGradient(x, y, 0, x, y, 4 + this.width);
         pointGradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
-        pointGradient.addColorStop(0.3, 'rgba(255, 59, 48, 0.8)');
-        pointGradient.addColorStop(1, 'rgba(255, 59, 48, 0)');
+        pointGradient.addColorStop(0.3, 'rgba(187, 0, 0, 0.8)');
+        pointGradient.addColorStop(1, 'rgba(187, 0, 0, 0)');
         ctx.fillStyle = pointGradient;
         ctx.fill();
         
@@ -188,11 +188,11 @@ const HeroAnimationSystem = () => {
         style={{ mixBlendMode: 'screen' }}
       />
       
-      {/* Subtle grid */}
+      {/* Subtle grid - Updated to Buckeye red */}
       <div 
         className="absolute inset-0 opacity-[0.02]"
         style={{
-          backgroundImage: 'radial-gradient(circle at center, transparent 0%, rgba(255,59,48,0.5) 100%)',
+          backgroundImage: 'radial-gradient(circle at center, transparent 0%, rgba(187, 0, 0, 0.5) 100%)',
           backgroundSize: '100% 100%'
         }}
       />
@@ -202,15 +202,15 @@ const HeroAnimationSystem = () => {
         <div className="text-center max-w-6xl mx-auto">
           <div className="mb-12">
             <h1 className="text-5xl md:text-7xl font-bold text-white mb-8 tracking-tight animate-fade-in leading-tight">
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-red-500 to-white animate-text-shimmer bg-[length:200%_100%]">
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-buckeye-scarlet to-white animate-text-shimmer bg-[length:200%_100%]">
                 Connecting the Future,
               </span>
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-red-500 to-white animate-text-shimmer bg-[length:200%_100%] animation-delay-500">
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-buckeye-scarlet to-white animate-text-shimmer bg-[length:200%_100%] animation-delay-500">
                 Powering Tomorrow.
               </span>
             </h1>
             
-            <div className="h-px w-32 mx-auto bg-gradient-to-r from-transparent via-red-500 to-transparent animate-pulse" />
+            <div className="h-px w-32 mx-auto bg-gradient-to-r from-transparent via-buckeye-scarlet to-transparent animate-pulse" />
           </div>
           
           <p className="text-xl md:text-2xl text-gray-400 mb-12 animate-fade-in-delay max-w-3xl mx-auto font-light">
@@ -229,11 +229,11 @@ const HeroAnimationSystem = () => {
             }}
           >
             {/* Button background */}
-            <div className="absolute inset-0 bg-white/5 backdrop-blur-sm border border-white/10 transition-all duration-300 group-hover:bg-white/10 group-hover:border-red-500/50" />
+            <div className="absolute inset-0 bg-white/5 backdrop-blur-sm border border-white/10 transition-all duration-300 group-hover:bg-white/10 group-hover:border-buckeye-scarlet/50" />
             
-            {/* Button glow effect */}
+            {/* Button glow effect - Updated to Buckeye red */}
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/20 to-transparent animate-shimmer-slow" />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-buckeye-scarlet/20 to-transparent animate-shimmer-slow" />
             </div>
             
             {/* Button content */}
