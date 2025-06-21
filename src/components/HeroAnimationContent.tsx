@@ -20,12 +20,12 @@ const HeroAnimationContent = () => {
           <div className="h-px w-32 mx-auto bg-gradient-to-r from-transparent via-buckeye-scarlet to-transparent animate-pulse" />
         </div>
         
-        <p className="text-xl md:text-2xl text-gray-400 mb-12 animate-fade-in-delay max-w-3xl mx-auto font-light">
+        <p className="text-xl md:text-2xl text-buckeye-scarlet mb-12 animate-fade-in-delay max-w-3xl mx-auto font-light">
           Experience lightning-fast connectivity with our enterprise-grade fiber network solutions.
         </p>
         
         <button
-          className="relative px-10 py-4 text-white font-medium overflow-hidden group animate-fade-in-delay-2"
+          className="relative px-10 py-4 font-medium overflow-hidden group animate-fade-in-delay-2"
           onMouseEnter={() => setIsButtonHovered(true)}
           onMouseLeave={() => setIsButtonHovered(false)}
           onClick={() => {
@@ -44,7 +44,7 @@ const HeroAnimationContent = () => {
           </div>
           
           {/* Button content */}
-          <span className="relative z-10 flex items-center gap-3 text-sm tracking-wider uppercase">
+          <span className="relative z-10 flex items-center gap-3 text-sm tracking-wider uppercase text-buckeye-scarlet">
             Start Your Project
             <svg
               width="20"
