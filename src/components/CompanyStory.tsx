@@ -35,8 +35,8 @@ const CompanyStory = () => {
           
           <div className="relative">
             <img
-              src="https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&w=800&q=80"
-              alt="Buckeye DataCom team at work"
+              src="/lovable-uploads/a29c1cf0-fb8c-42bb-a7c5-ce74b4957e85.png"
+              alt="Buckeye DataCom family team"
               className="rounded-lg shadow-xl"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-buckeye-black/20 to-transparent rounded-lg" />
