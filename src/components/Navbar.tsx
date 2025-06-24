@@ -95,7 +95,7 @@ const Navbar = () => {
                 <a 
                   key={link.name} 
                   href={link.href}
-                  className="font-medium text-buckeye-scarlet hover:text-buckeye-scarlet/80 transition-colors"
+                  className="font-medium text-buckeye-scarlet hover:text-buckeye-scarlet/80 transition-colors animate-pulse-slow"
                 >
                   {link.name}
                 </a>

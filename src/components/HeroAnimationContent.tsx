@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 
 const HeroAnimationContent = () => {
@@ -49,7 +50,7 @@ const HeroAnimationContent = () => {
           </div>
           
           {/* Button content */}
-          <span className="relative z-10 flex items-center gap-3 text-sm tracking-wider uppercase text-buckeye-scarlet">
+          <span className="relative z-10 flex items-center gap-3 text-sm tracking-wider uppercase text-buckeye-scarlet animate-pulse-slow">
             Start Your Project
             <svg
               width="20"
