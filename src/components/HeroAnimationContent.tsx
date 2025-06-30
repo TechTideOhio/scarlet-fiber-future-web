@@ -31,7 +31,7 @@ const HeroAnimationContent = () => {
         </p>
         
         <button
-          className="relative px-10 py-4 font-medium overflow-hidden group animate-fade-in-delay-2"
+          className="relative px-12 py-5 font-medium overflow-hidden group animate-fade-in-delay-2"
           onMouseEnter={() => setIsButtonHovered(true)}
           onMouseLeave={() => setIsButtonHovered(false)}
           onClick={() => {
@@ -41,20 +41,23 @@ const HeroAnimationContent = () => {
             }
           }}
         >
-          {/* Button background */}
-          <div className="absolute inset-0 bg-white/5 backdrop-blur-sm border border-white/10 transition-all duration-300 group-hover:bg-white/10 group-hover:border-buckeye-scarlet/50" />
+          {/* Button background with enhanced contrast */}
+          <div className="absolute inset-0 bg-white/10 backdrop-blur-sm border-2 border-white/20 transition-all duration-300 group-hover:bg-white/15 group-hover:border-buckeye-scarlet/70" />
           
-          {/* Button glow effect - Updated to Buckeye red */}
+          {/* Button glow effect */}
           <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-buckeye-scarlet/20 to-transparent animate-shimmer-slow" />
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-buckeye-scarlet/30 to-transparent animate-shimmer-slow" />
           </div>
           
-          {/* Button content */}
-          <span className="relative z-10 flex items-center gap-3 text-sm tracking-wider uppercase text-buckeye-scarlet animate-pulse-slow">
+          {/* Button content with same animation as main title */}
+          <span className="relative z-10 flex items-center gap-3 text-lg tracking-wider uppercase text-transparent bg-clip-text bg-gradient-to-r from-white via-buckeye-scarlet to-white animate-text-shimmer bg-[length:200%_100%]" style={{ 
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>
             Start Your Project
             <svg
-              width="20"
-              height="20"
+              width="24"
+              height="24"
               viewBox="0 0 24 24"
               fill="none"
               className={`transform transition-transform duration-300 ${isButtonHovered ? 'translate-x-1' : ''}`}
