@@ -38,10 +38,6 @@ const Navbar = () => {
     };
   }, [isMenuOpen]);
 
-  const navLinks = [
-    { name: 'Client Testimonials', href: '#testimonials' },
-  ];
-
   const menuItems = [
     { name: 'Home', href: '/' },
     { 
@@ -88,19 +84,6 @@ const Navbar = () => {
               <span className="font-['Montserrat'] text-xl md:text-2xl font-extrabold text-buckeye-scarlet">BUCKEYE</span>
               <span className="font-['Montserrat'] text-xl md:text-2xl font-light ml-1 text-buckeye-scarlet">DATACOM</span>
             </Link>
-            
-            {/* Desktop navigation */}
-            <div className="hidden lg:flex items-center space-x-8">
-              {navLinks.map((link) => (
-                <a 
-                  key={link.name} 
-                  href={link.href}
-                  className="font-medium text-buckeye-scarlet hover:text-buckeye-scarlet/80 transition-colors animate-pulse-slow"
-                >
-                  {link.name}
-                </a>
-              ))}
-            </div>
             
             {/* Hamburger button */}
             <div className="flex items-center">
