@@ -71,11 +71,29 @@ export const ANIMATION_TOKENS = {
     fast: 0.5,
   },
 
-  // 🎮 Master Animation Speed Controls
-  // These control the overall animation speed across all systems
+  /**
+   * 🎮 MASTER ANIMATION SPEED CONTROLS
+   * ⚠️  CRITICAL: This is the SINGLE SOURCE OF TRUTH for all animation speeds
+   * 
+   * HOW IT WORKS:
+   * - JavaScript animations: multiply speed by masterSpeed
+   * - CSS animations: divide duration by masterSpeed (inverse!)
+   * 
+   * EXAMPLE (masterSpeed.global = 0.04 = 25x slower):
+   * - JS: baseSpeed × 0.04 = much slower progression
+   * - CSS: baseDuration ÷ 0.04 = much longer duration
+   * 
+   * TO CHANGE GLOBAL SPEED:
+   * 1. Update masterSpeed.global value
+   * 2. Check console logs for "ANIMATION SYSTEM AUDIT"
+   * 3. Verify all 3 systems report same slowdown factor
+   * 
+   * @see AnimatedFiber.tsx - Canvas fiber animation
+   * @see pathUpdater.ts - Snake path animation
+   * @see FiberStrand.tsx - CSS fiber strands
+   */
   masterSpeed: {
     // Global multiplier - affects ALL animations (1.0 = normal, 0.04 = 25x slower for smooth, elegant motion)
-    // Changed from 0.2 to 0.04 for proper 500% slower effect
     global: 0.04,
     
     // Specific system multipliers (applied on top of global)
@@ -95,10 +113,41 @@ export const ANIMATION_TOKENS = {
       veryFast: 2.0,
       ultraFast: 3.0,
     },
+    
+    /**
+     * Helper to calculate CSS animation duration with masterSpeed applied
+     * CSS durations work inversely: slower speed = longer duration
+     */
+    getCSSAnimationDuration: (baseDurationMs: number, global: number = 0.04) => {
+      return (baseDurationMs / global) / 1000; // Convert to seconds
+    },
+    
+    /**
+     * Validation guard for masterSpeed values
+     */
+    validateSpeed: (speed: number): number => {
+      const min = 0.01;
+      const max = 3.0;
+      if (speed < min || speed > max) {
+        console.error(`❌ INVALID masterSpeed: ${speed}. Must be between ${min}-${max}. Using default 1.0`);
+        return 1.0;
+      }
+      return speed;
+    },
   },
 } as const;
 
-// 📊 Logging helper
+// 📊 Logging helpers
 export const logAnimationToken = (token: string, value: any) => {
   console.log(`🎬 Animation Token: ${token} = ${value}`);
+};
+
+export const logAnimationSpeed = (system: string, speed: number, duration?: number) => {
+  const global = ANIMATION_TOKENS.masterSpeed.global;
+  const slowdownFactor = (1 / global).toFixed(1);
+  console.log(
+    `🎮 ANIMATION SPEED [${system}]: speed=${speed.toFixed(6)}x, ` +
+    `${duration ? `duration=${duration.toFixed(2)}s, ` : ''}` +
+    `global=${global}x (${slowdownFactor}x slower)`
+  );
 };

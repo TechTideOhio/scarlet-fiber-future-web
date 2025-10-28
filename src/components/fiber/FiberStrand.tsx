@@ -20,11 +20,28 @@ const FiberStrand: React.FC<FiberStrandProps> = ({
   const opacityVariation = Math.random() * (FIBER_ANIMATION_TOKENS.opacity.path.max - FIBER_ANIMATION_TOKENS.opacity.path.min);
   const rotationVariation = Math.random() * 30 - 15;
   
+  // Calculate base duration in milliseconds (3000-6000ms)
+  const baseDuration = ANIMATION_TOKENS.duration.backgroundPulse + 
+                       Math.random() * ANIMATION_TOKENS.duration.backgroundPulse;
+  
+  // Apply master speed (inverse: slower speed = longer duration)
+  // With masterSpeed.global = 0.04: 3000-6000ms becomes 75000-150000ms (75-150 seconds)
+  const adjustedDuration = baseDuration / ANIMATION_TOKENS.masterSpeed.global;
+  
+  // Log first strand initialization for verification
+  if (index === 0) {
+    console.log(
+      `🧵 FIBER STRAND v3.0: baseDuration=${baseDuration.toFixed(0)}ms, ` +
+      `adjusted=${adjustedDuration.toFixed(0)}ms (${(adjustedDuration/baseDuration).toFixed(1)}x slower), ` +
+      `masterSpeed=${ANIMATION_TOKENS.masterSpeed.global}x`
+    );
+  }
+  
   const customProperties = {
     '--strand-width': `${baseWidth + widthVariation}px`,
     '--strand-opacity': `${Math.min(baseOpacity + opacityVariation, FIBER_ANIMATION_TOKENS.opacity.path.max)}`,
-    '--strand-delay': `${Math.random() * ANIMATION_TOKENS.duration.backgroundPulse / 1000}s`,
-    '--strand-duration': `${(ANIMATION_TOKENS.duration.backgroundPulse + Math.random() * ANIMATION_TOKENS.duration.backgroundPulse) / 1000}s`,
+    '--strand-delay': `${Math.random() * (adjustedDuration / 1000)}s`,
+    '--strand-duration': `${adjustedDuration / 1000}s`,
     '--strand-x': `${5 + Math.random() * 90}%`,
     '--strand-rotate-x': `${rotationVariation}deg`,
     '--strand-rotate-y': `${Math.random() * 50 - 25}deg`,

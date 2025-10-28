@@ -54,7 +54,13 @@ export class AnimatedFiber {
                  Math.random() * FIBER_ANIMATION_TOKENS.lineWidth.mobile.main;
     this.opacity = 0;
     
-    console.log(`🎨 FIBER RESET v2.0: speed=${this.speed.toFixed(6)} (base=${baseSpeed.toFixed(4)} × ${ANIMATION_TOKENS.masterSpeed.global}), width=${this.width.toFixed(1)}px, masterSpeed=${ANIMATION_TOKENS.masterSpeed.global}`);
+    const estimatedFrames = Math.floor(1 / this.speed);
+    const estimatedDuration = estimatedFrames / 60; // Assuming 60fps
+    console.log(
+      `🎨 FIBER RESET v3.0: speed=${this.speed.toFixed(6)}/frame, ` +
+      `duration=${estimatedDuration.toFixed(1)}s @ 60fps, ` +
+      `base=${baseSpeed.toFixed(4)} × global=${ANIMATION_TOKENS.masterSpeed.global} × canvas=${ANIMATION_TOKENS.masterSpeed.fiber.canvas}`
+    );
     
     // Control points for bezier curve
     const curveDeviation = LAYOUT_TOKENS.spacing.gigantic * 6;
@@ -78,7 +84,12 @@ export class AnimatedFiber {
     }
 
     if (this.progress > 1) {
-      console.log(`🔄 FIBER COMPLETE v2.0: progress=${this.progress.toFixed(3)}, took ${(1 / this.speed).toFixed(0)} frames @ ${(this.speed * 1000).toFixed(3)}ms/frame, resetting...`);
+      const frames = Math.floor(1 / this.speed);
+      const duration = frames / 60;
+      console.log(
+        `🔄 FIBER COMPLETE v3.0: progress=${this.progress.toFixed(3)}, ` +
+        `took ${frames} frames (${duration.toFixed(1)}s @ 60fps), resetting...`
+      );
       this.reset();
     }
   }

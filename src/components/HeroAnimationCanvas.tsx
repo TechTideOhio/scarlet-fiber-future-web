@@ -20,7 +20,32 @@ const HeroAnimationCanvas = () => {
 
     // Create fibers
     const fiberCount = FIBER_ANIMATION_TOKENS.count.default.hero;
-    console.log(`🚀 HERO CANVAS INIT v2.0: Creating ${fiberCount} fibers @ ${ANIMATION_TOKENS.masterSpeed.global}x speed (25x slower than original)`);
+    
+    // System audit on startup
+    console.log(`
+🎮 ============================================
+   ANIMATION SYSTEM AUDIT v3.0
+🎮 ============================================
+📊 Master Speed: ${ANIMATION_TOKENS.masterSpeed.global}x (${(1/ANIMATION_TOKENS.masterSpeed.global).toFixed(1)}x slower)
+
+🎨 Canvas Fibers (AnimatedFiber):
+   - Count: ${fiberCount}
+   - Speed Multiplier: ${ANIMATION_TOKENS.masterSpeed.fiber.canvas}x
+   - Effective Speed: ${(ANIMATION_TOKENS.masterSpeed.global * ANIMATION_TOKENS.masterSpeed.fiber.canvas).toFixed(4)}x
+   - Base Speed Range: ${FIBER_ANIMATION_TOKENS.speed.base.min}-${FIBER_ANIMATION_TOKENS.speed.base.default}
+
+🐍 Snake Paths (EnhancedSnake):
+   - Speed Multiplier: ${ANIMATION_TOKENS.masterSpeed.fiber.snake}x
+   - Effective Speed: ${(ANIMATION_TOKENS.masterSpeed.global * ANIMATION_TOKENS.masterSpeed.fiber.snake).toFixed(4)}x
+   - Progression Rate: ${FIBER_ANIMATION_TOKENS.speed.progression}
+
+🧵 CSS Fiber Strands (FiberStrand):
+   - Duration Range: ${ANIMATION_TOKENS.duration.backgroundPulse}-${ANIMATION_TOKENS.duration.backgroundPulse * 2}ms
+   - Adjusted Duration: ${(ANIMATION_TOKENS.duration.backgroundPulse / ANIMATION_TOKENS.masterSpeed.global).toFixed(0)}-${(ANIMATION_TOKENS.duration.backgroundPulse * 2 / ANIMATION_TOKENS.masterSpeed.global).toFixed(0)}ms
+   - Slowdown Factor: ${(1 / ANIMATION_TOKENS.masterSpeed.global).toFixed(1)}x
+
+🎮 ============================================
+    `);
     
     for (let i = 0; i < fiberCount; i++) {
       fibersRef.current.push(new AnimatedFiber(canvas));
