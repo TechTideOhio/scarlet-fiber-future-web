@@ -73,7 +73,7 @@ export const useAnimationLoop = ({
               }
             });
 
-            // Debug logging for first few frames and periodically
+            // Debug logging for first few frames and periodically (using token for frame check)
             if (!prevState.animationStarted && newFrameCount <= PERFORMANCE_TOKENS.logging.initialFrames) {
               const activePathsCount = updatedPaths.filter(path => {
                 const activeNodes = path.nodes.filter(n => n.isActive && n.intensity > 0);
@@ -87,7 +87,7 @@ export const useAnimationLoop = ({
                 heroGlowIntensity
               });
               
-              if (newFrameCount === 10) {
+              if (newFrameCount === PERFORMANCE_TOKENS.logging.initialFrames) {
                 console.log('Animation initialization complete');
               }
             }
@@ -122,7 +122,7 @@ export const useAnimationLoop = ({
               ...prevState,
               paths: updatedPaths,
               frameCount: newFrameCount,
-              animationStarted: newFrameCount === 10 ? true : prevState.animationStarted,
+              animationStarted: newFrameCount === PERFORMANCE_TOKENS.logging.initialFrames ? true : prevState.animationStarted,
               lastTime: currentTime
             };
           });
