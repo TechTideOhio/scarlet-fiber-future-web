@@ -1,5 +1,6 @@
 
 import { EnhancedSnakePath, EnhancedSnakeNode, PathGenerationConfig } from '../types/snakeTypes';
+import { FIBER_ANIMATION_TOKENS, COLOR_TOKENS, logFiberToken } from '../../../constants';
 
 export const createMainNetworkPath = (
   index: number, 
@@ -8,7 +9,9 @@ export const createMainNetworkPath = (
 ): EnhancedSnakePath => {
   const { containerWidth, containerHeight, isMobile } = config;
   const nodes: EnhancedSnakeNode[] = [];
-  const segmentLength = isMobile ? 12 : 18; // Longer segments for better visibility
+  const segmentLength = isMobile 
+    ? FIBER_ANIMATION_TOKENS.segmentLength.mobile.main 
+    : FIBER_ANIMATION_TOKENS.segmentLength.desktop.main;
   
   // CRITICAL FIX: Deterministic positioning to avoid overlapping paths
   const pathType = index % 3 === 0 ? 'horizontal' : index % 3 === 1 ? 'diagonal' : 'curved';
@@ -83,26 +86,25 @@ export const createMainNetworkPath = (
     }
   }
 
-  console.log(`Generated main path ${index} (${pathType}):`, {
-    nodeCount: nodes.length,
-    segmentLength,
-    firstNode: nodes[0],
-    lastNode: nodes[nodes.length - 1]
-  });
+  logFiberToken('path-generated', `main-${index} (${pathType}): ${nodes.length} nodes`);
+
+  const lineWidth = isMobile 
+    ? FIBER_ANIMATION_TOKENS.lineWidth.mobile.main 
+    : FIBER_ANIMATION_TOKENS.lineWidth.desktop.main;
 
   return {
     id: `enhanced-main-${index}`,
     nodes,
     direction: pathType === 'horizontal' ? 'horizontal' : pathType === 'diagonal' ? 'diagonal' : 'curved',
-    speed: 0.6 + (index % 3) * 0.3, // Varied but predictable speeds
+    speed: 0.6 + (index % 3) * 0.3,
     color,
-    width: isMobile ? 5 : 7,
-    activeSegmentIndex: (index * 5) % Math.max(nodes.length - segmentLength, 1), // Staggered start positions
+    width: lineWidth,
+    activeSegmentIndex: (index * 5) % Math.max(nodes.length - segmentLength, 1),
     segmentLength,
     pathType: 'main',
     layer: index % 3,
-    opacity: 0.8 + (index % 2) * 0.1,
-    glowIntensity: 0.7 + (index % 3) * 0.2
+    opacity: FIBER_ANIMATION_TOKENS.opacity.path.base + (index % 2) * 0.1,
+    glowIntensity: FIBER_ANIMATION_TOKENS.glow.base + (index % 3) * 0.2
   };
 };
 
@@ -114,7 +116,9 @@ export const createBranchPath = (
   const { containerWidth, containerHeight, isMobile } = config;
   const nodes: EnhancedSnakeNode[] = [];
   const nodeCount = isMobile ? 10 : 15;
-  const segmentLength = isMobile ? 8 : 12;
+  const segmentLength = isMobile 
+    ? FIBER_ANIMATION_TOKENS.segmentLength.mobile.branch 
+    : FIBER_ANIMATION_TOKENS.segmentLength.desktop.branch;
   
   // CRITICAL FIX: Create predictable connecting paths
   const startX = (index % 6) * (containerWidth / 6);
@@ -138,12 +142,11 @@ export const createBranchPath = (
     });
   }
 
-  console.log(`Generated branch path ${index}:`, {
-    nodeCount: nodes.length,
-    segmentLength,
-    angle: angle * 180 / Math.PI,
-    startPosition: { x: startX, y: startY }
-  });
+  logFiberToken('branch-generated', `branch-${index}: ${nodes.length} nodes`);
+
+  const lineWidth = isMobile 
+    ? FIBER_ANIMATION_TOKENS.lineWidth.mobile.branch 
+    : FIBER_ANIMATION_TOKENS.lineWidth.desktop.branch;
 
   return {
     id: `enhanced-branch-${index}`,
@@ -151,23 +154,14 @@ export const createBranchPath = (
     direction: 'diagonal',
     speed: 1.0 + (index % 2) * 0.4,
     color,
-    width: isMobile ? 3 : 4,
+    width: lineWidth,
     activeSegmentIndex: (index * 3) % Math.max(nodes.length - segmentLength, 1),
     segmentLength,
     pathType: 'branch',
     layer: (index % 2) + 1,
-    opacity: 0.6 + (index % 3) * 0.2,
-    glowIntensity: 0.5 + (index % 2) * 0.3
+    opacity: FIBER_ANIMATION_TOKENS.opacity.path.min + (index % 3) * 0.2,
+    glowIntensity: FIBER_ANIMATION_TOKENS.glow.min + (index % 2) * 0.3
   };
 };
 
-export const getDefaultColors = (): string[] => [
-  'rgba(255, 50, 50, 1)',
-  'rgba(255, 100, 100, 0.9)',
-  'rgba(220, 30, 30, 0.8)',
-  'rgba(187, 0, 0, 0.9)',
-  'rgba(255, 80, 80, 0.7)',
-  'rgba(200, 20, 20, 0.85)',
-  'rgba(255, 120, 120, 0.8)',
-  'rgba(180, 10, 10, 0.9)'
-];
+export const getDefaultColors = (): string[] => [...COLOR_TOKENS.fiberPath];

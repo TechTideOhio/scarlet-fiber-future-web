@@ -10,6 +10,7 @@ import {
   calculateNextSegmentIndex, 
   updatePathProperties 
 } from '../utils/pathUpdater';
+import { FIBER_ANIMATION_TOKENS, logFiberToken } from '../../../constants';
 
 export class SnakeGenerator {
   private containerWidth: number;
@@ -88,40 +89,43 @@ export class SnakeGenerator {
   }
 
   updateEnhancedPath(path: EnhancedSnakePath, deltaTime: number, heroGlowIntensity: number = 0): EnhancedSnakePath {
-    // CRITICAL FIX: Use consistent time accumulation
-    this.time += deltaTime * 0.001;
+    this.time += deltaTime;
     
-    // Calculate next segment index with proper bounds checking
-    const nextSegmentIndex = calculateNextSegmentIndex(
-      path.activeSegmentIndex,
-      path.speed,
-      path.pathType,
-      deltaTime,
-      path.nodes.length
-    );
-    
-    // Update nodes with active segment
-    const updatedNodes = updatePathNodes(path, Math.floor(nextSegmentIndex), this.time, heroGlowIntensity);
-    
-    // Update path properties
-    const { opacity, glowIntensity } = updatePathProperties(path, heroGlowIntensity);
-
-    // Debug active nodes count
-    const activeNodeCount = updatedNodes.filter(n => n.isActive && n.intensity > 0).length;
-    if (activeNodeCount === 0) {
-      console.warn(`Path ${path.id} has no active nodes:`, {
-        activeSegmentIndex: nextSegmentIndex,
-        nodeCount: path.nodes.length,
-        segmentLength: path.segmentLength
-      });
+    if (!path.nodes || path.nodes.length === 0) {
+      console.warn('Attempted to update path with no nodes');
+      return path;
     }
-
-    return {
-      ...path,
-      activeSegmentIndex: nextSegmentIndex,
-      nodes: updatedNodes,
-      opacity: Math.max(opacity, 0.6), // Ensure minimum visibility
-      glowIntensity: Math.max(glowIntensity, 0.5) // Ensure minimum glow
-    };
+    
+    try {
+      // CRITICAL FIX: Calculate next segment with proper time delta
+      const nextSegmentIndex = calculateNextSegmentIndex(
+        path.activeSegmentIndex,
+        path.speed,
+        path.pathType,
+        deltaTime,
+        path.nodes.length
+      );
+      
+      // CRITICAL FIX: Update nodes with guaranteed visibility
+      const updatedNodes = updatePathNodes(path, Math.floor(nextSegmentIndex), this.time, heroGlowIntensity);
+      
+      // CRITICAL FIX: Update path properties for better visibility
+      const { opacity, glowIntensity } = updatePathProperties(path, heroGlowIntensity);
+      
+      // Enhanced visibility
+      const enhancedOpacity = Math.max(opacity, FIBER_ANIMATION_TOKENS.opacity.container.min);
+      const enhancedGlow = Math.max(glowIntensity, FIBER_ANIMATION_TOKENS.glow.min);
+      
+      return {
+        ...path,
+        nodes: updatedNodes,
+        activeSegmentIndex: nextSegmentIndex,
+        opacity: enhancedOpacity,
+        glowIntensity: enhancedGlow
+      };
+    } catch (error) {
+      console.error('Error updating path:', error);
+      return path;
+    }
   }
 }
