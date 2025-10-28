@@ -63,6 +63,13 @@ export const ANIMATION_TOKENS = {
     several: 3,
     infinite: 'infinite',
   },
+
+  // 🌊 Parallax speeds
+  parallax: {
+    heroSpeed: 0.3,
+    slow: 0.2,
+    fast: 0.5,
+  },
 } as const;
 
 // 📊 Logging helper

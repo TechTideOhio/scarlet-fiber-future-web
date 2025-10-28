@@ -3,6 +3,7 @@ import React from 'react';
 import HeroAnimationCanvas from './HeroAnimationCanvas';
 import HeroAnimationContent from './HeroAnimationContent';
 import HeroAnimationStyles from './HeroAnimationStyles';
+import { COLOR_TOKENS } from '../constants';
 
 const HeroAnimationSystem = () => {
   return (
@@ -17,7 +18,7 @@ const HeroAnimationSystem = () => {
       <div 
         className="absolute inset-0 opacity-[0.02]"
         style={{
-          backgroundImage: 'radial-gradient(circle at center, transparent 0%, rgba(187, 0, 0, 0.5) 100%)',
+          backgroundImage: `radial-gradient(circle at center, transparent 0%, ${COLOR_TOKENS.buckeye.scarlet} 100%)`,
           backgroundSize: '100% 100%'
         }}
       />

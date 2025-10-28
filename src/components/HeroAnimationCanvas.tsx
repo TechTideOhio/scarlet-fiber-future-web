@@ -1,6 +1,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { AnimatedFiber } from './AnimatedFiber';
+import { FIBER_ANIMATION_TOKENS, LAYOUT_TOKENS, logFiberToken } from '../constants';
 
 const HeroAnimationCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -18,13 +19,16 @@ const HeroAnimationCanvas = () => {
     canvas.height = window.innerHeight;
 
     // Create fibers
-    for (let i = 0; i < 5; i++) {
+    const fiberCount = FIBER_ANIMATION_TOKENS.count.default.hero;
+    logFiberToken('hero-canvas-init', `Creating ${fiberCount} fibers`);
+    
+    for (let i = 0; i < fiberCount; i++) {
       fibersRef.current.push(new AnimatedFiber(canvas));
     }
 
     // Animation loop
     const animate = () => {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      ctx.fillStyle = `rgba(0, 0, 0, ${FIBER_ANIMATION_TOKENS.opacity.trail})`;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
       fibersRef.current.forEach(fiber => {

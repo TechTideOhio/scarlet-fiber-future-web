@@ -1,3 +1,4 @@
+import { FIBER_ANIMATION_TOKENS, PERFORMANCE_TOKENS, logPerformanceToken } from '../constants';
 
 export interface PerformanceConfig {
   maxPaths: number;
@@ -13,47 +14,61 @@ export const getPerformanceConfig = (
   deviceCapabilities?: any
 ): PerformanceConfig => {
   const baseConfig: PerformanceConfig = {
-    maxPaths: 8,
-    renderLayers: 3,
+    maxPaths: FIBER_ANIMATION_TOKENS.count.default.base,
+    renderLayers: FIBER_ANIMATION_TOKENS.layers.default,
     glowQuality: 'medium',
     enableParticles: false,
-    frameRateTarget: 60
+    frameRateTarget: PERFORMANCE_TOKENS.fps.ideal
   };
 
   if (isMobile) {
-    baseConfig.frameRateTarget = 30;
-    baseConfig.renderLayers = 2;
+    baseConfig.frameRateTarget = PERFORMANCE_TOKENS.fps.target.mobile;
+    baseConfig.renderLayers = FIBER_ANIMATION_TOKENS.layers.min;
   }
+
+  logPerformanceToken('config-created', `quality: ${quality}, mobile: ${isMobile}`);
 
   switch (quality) {
     case 'high':
       return {
         ...baseConfig,
-        maxPaths: isMobile ?  8 : 12,
-        renderLayers: isMobile ? 3 : 4,
+        maxPaths: isMobile 
+          ? FIBER_ANIMATION_TOKENS.count.mobile.high 
+          : FIBER_ANIMATION_TOKENS.count.desktop.high,
+        renderLayers: isMobile 
+          ? FIBER_ANIMATION_TOKENS.layers.default 
+          : FIBER_ANIMATION_TOKENS.layers.max,
         glowQuality: 'high',
         enableParticles: !isMobile,
-        frameRateTarget: isMobile ? 30 : 60
+        frameRateTarget: isMobile 
+          ? PERFORMANCE_TOKENS.fps.target.mobile 
+          : PERFORMANCE_TOKENS.fps.ideal
       };
     
     case 'medium':
       return {
         ...baseConfig,
-        maxPaths: isMobile ? 6 : 9,
-        renderLayers: 3,
+        maxPaths: isMobile 
+          ? FIBER_ANIMATION_TOKENS.count.mobile.medium 
+          : FIBER_ANIMATION_TOKENS.count.desktop.medium,
+        renderLayers: FIBER_ANIMATION_TOKENS.layers.default,
         glowQuality: 'medium',
         enableParticles: false,
-        frameRateTarget: isMobile ? 30 : 45
+        frameRateTarget: isMobile 
+          ? PERFORMANCE_TOKENS.fps.target.mobile 
+          : PERFORMANCE_TOKENS.fps.target.desktop
       };
     
     case 'low':
       return {
         ...baseConfig,
-        maxPaths: isMobile ? 4 : 6,
-        renderLayers: 2,
+        maxPaths: isMobile 
+          ? FIBER_ANIMATION_TOKENS.count.mobile.low 
+          : FIBER_ANIMATION_TOKENS.count.desktop.low,
+        renderLayers: FIBER_ANIMATION_TOKENS.layers.min,
         glowQuality: 'low',
         enableParticles: false,
-        frameRateTarget: 30
+        frameRateTarget: PERFORMANCE_TOKENS.fps.target.mobile
       };
     
     default:
@@ -70,7 +85,10 @@ export const calculateAdaptiveOpacity = (
   heroIntensity: number,
   performanceRatio: number
 ): number => {
-  const heroBoost = heroIntensity * 0.2;
-  const performanceFactor = Math.max(0.5, performanceRatio);
+  const heroBoost = heroIntensity * FIBER_ANIMATION_TOKENS.opacity.heroBoost;
+  const performanceFactor = Math.max(
+    FIBER_ANIMATION_TOKENS.opacity.performanceMin, 
+    performanceRatio
+  );
   return Math.min(1, (baseOpacity + heroBoost) * performanceFactor);
 };

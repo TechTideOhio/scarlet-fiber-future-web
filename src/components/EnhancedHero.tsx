@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import HeroAnimationSystem from './HeroAnimationSystem';
+import { ANIMATION_TOKENS } from '../constants';
 
 const EnhancedHero = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -18,7 +19,7 @@ const EnhancedHero = () => {
     <div 
       className="relative h-full"
       style={{
-        transform: `translateY(${scrollY * 0.3}px)`,
+        transform: `translateY(${scrollY * ANIMATION_TOKENS.parallax.heroSpeed}px)`,
       }}
     >
       <HeroAnimationSystem />

@@ -20,6 +20,32 @@ export const FIBER_ANIMATION_TOKENS = {
     },
   },
 
+  // 🔢 Fiber count (alias for pathCount)
+  count: {
+    min: 8,
+    default: {
+      base: 8,
+      hero: 5,
+    },
+    mobile: {
+      low: 4,
+      medium: 6,
+      high: 8,
+    },
+    desktop: {
+      low: 6,
+      medium: 9,
+      high: 12,
+    },
+  },
+
+  // 📚 Layer depth
+  layers: {
+    min: 2,
+    default: 3,
+    max: 4,
+  },
+
   // 📏 Segment lengths
   segmentLength: {
     mobile: {
@@ -56,6 +82,9 @@ export const FIBER_ANIMATION_TOKENS = {
       base: 0.7,
       max: 1,
     },
+    trail: 0.05,
+    heroBoost: 0.2,
+    performanceMin: 0.5,
   },
 
   // ✨ Glow intensity
@@ -85,6 +114,12 @@ export const FIBER_ANIMATION_TOKENS = {
   colorIntensity: {
     contrast: 1.6,
     saturation: 1.8,
+  },
+
+  // 🎨 Visual effects
+  effects: {
+    contrast: 1.1,
+    saturation: 1.2,
   },
 
   // 💨 Pulse effect
