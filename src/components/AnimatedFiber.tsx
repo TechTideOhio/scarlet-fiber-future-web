@@ -56,10 +56,15 @@ export class AnimatedFiber {
     
     const estimatedFrames = Math.floor(1 / this.speed);
     const estimatedDuration = estimatedFrames / 60; // Assuming 60fps
+    const targetMin = FIBER_ANIMATION_TOKENS.targetDuration.fiber.min;
+    const targetMax = FIBER_ANIMATION_TOKENS.targetDuration.fiber.max;
+    const inRange = estimatedDuration >= targetMin && estimatedDuration <= targetMax;
+    
     console.log(
-      `🎨 FIBER RESET v3.0: speed=${this.speed.toFixed(6)}/frame, ` +
-      `duration=${estimatedDuration.toFixed(1)}s @ 60fps, ` +
-      `base=${baseSpeed.toFixed(4)} × global=${ANIMATION_TOKENS.masterSpeed.global} × canvas=${ANIMATION_TOKENS.masterSpeed.fiber.canvas}`
+      `🎨 FIBER RESET v4.0: speed=${this.speed.toFixed(8)}/frame, ` +
+      `duration=${estimatedDuration.toFixed(1)}s @ 60fps ` +
+      `${inRange ? '✅' : '⚠️ OUT OF RANGE'} (target: ${targetMin}-${targetMax}s), ` +
+      `base=${baseSpeed.toFixed(6)} × global=${ANIMATION_TOKENS.masterSpeed.global}`
     );
     
     // Control points for bezier curve
@@ -87,7 +92,7 @@ export class AnimatedFiber {
       const frames = Math.floor(1 / this.speed);
       const duration = frames / 60;
       console.log(
-        `🔄 FIBER COMPLETE v3.0: progress=${this.progress.toFixed(3)}, ` +
+        `🔄 FIBER COMPLETE v4.0: progress=${this.progress.toFixed(3)}, ` +
         `took ${frames} frames (${duration.toFixed(1)}s @ 60fps), resetting...`
       );
       this.reset();

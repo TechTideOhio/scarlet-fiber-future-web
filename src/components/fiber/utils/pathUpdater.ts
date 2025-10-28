@@ -65,11 +65,12 @@ export const calculateNextSegmentIndex = (
   // Log snake movement periodically (every ~120 frames at 60fps)
   const shouldLog = Math.random() < 0.008; // ~1/120 chance
   if (shouldLog) {
-    const estimatedDuration = (nodeCount / (progressionRate / deltaTime)) / 1000;
+    const effectiveSpeed = progressionRate / deltaTime;
+    const estimatedDuration = (nodeCount / effectiveSpeed) / 1000;
     console.log(
-      `🐍 SNAKE v3.0 [${pathType}]: speed=${(progressionRate/deltaTime).toFixed(8)}/ms, ` +
+      `🐍 SNAKE v4.0 [${pathType}]: speed=${effectiveSpeed.toFixed(8)}/ms, ` +
       `estimated_cycle=${estimatedDuration.toFixed(1)}s, ` +
-      `masterSpeed=${masterSpeedMultiplier.toFixed(6)}x (${(1/ANIMATION_TOKENS.masterSpeed.global).toFixed(1)}x slower)`
+      `masterSpeed=${masterSpeedMultiplier.toFixed(4)}x`
     );
   }
   

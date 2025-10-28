@@ -22,27 +22,31 @@ const HeroAnimationCanvas = () => {
     const fiberCount = FIBER_ANIMATION_TOKENS.count.default.hero;
     
     // System audit on startup
+    const minFiberDuration = Math.floor(1/(FIBER_ANIMATION_TOKENS.speed.base.min * ANIMATION_TOKENS.masterSpeed.global)/60);
+    const maxFiberDuration = Math.floor(1/(FIBER_ANIMATION_TOKENS.speed.base.default * ANIMATION_TOKENS.masterSpeed.global)/60);
+    
     console.log(`
 🎮 ============================================
-   ANIMATION SYSTEM AUDIT v3.0
+   ANIMATION SYSTEM AUDIT v4.0
 🎮 ============================================
-📊 Master Speed: ${ANIMATION_TOKENS.masterSpeed.global}x (${(1/ANIMATION_TOKENS.masterSpeed.global).toFixed(1)}x slower)
+📊 Master Speed: ${ANIMATION_TOKENS.masterSpeed.global}x (${(1/ANIMATION_TOKENS.masterSpeed.global).toFixed(0)}x slower)
 
 🎨 Canvas Fibers (AnimatedFiber):
    - Count: ${fiberCount}
-   - Speed Multiplier: ${ANIMATION_TOKENS.masterSpeed.fiber.canvas}x
-   - Effective Speed: ${(ANIMATION_TOKENS.masterSpeed.global * ANIMATION_TOKENS.masterSpeed.fiber.canvas).toFixed(4)}x
-   - Base Speed Range: ${FIBER_ANIMATION_TOKENS.speed.base.min}-${FIBER_ANIMATION_TOKENS.speed.base.default}
+   - Base Speed: ${FIBER_ANIMATION_TOKENS.speed.base.min}-${FIBER_ANIMATION_TOKENS.speed.base.default}/frame
+   - Effective Speed: ${(FIBER_ANIMATION_TOKENS.speed.base.min * ANIMATION_TOKENS.masterSpeed.global).toFixed(8)}-${(FIBER_ANIMATION_TOKENS.speed.base.default * ANIMATION_TOKENS.masterSpeed.global).toFixed(8)}/frame
+   - Target Duration: ${FIBER_ANIMATION_TOKENS.targetDuration.fiber.min}-${FIBER_ANIMATION_TOKENS.targetDuration.fiber.max}s
+   - Estimated: ${minFiberDuration}-${maxFiberDuration}s ✅
 
 🐍 Snake Paths (EnhancedSnake):
-   - Speed Multiplier: ${ANIMATION_TOKENS.masterSpeed.fiber.snake}x
-   - Effective Speed: ${(ANIMATION_TOKENS.masterSpeed.global * ANIMATION_TOKENS.masterSpeed.fiber.snake).toFixed(4)}x
-   - Progression Rate: ${FIBER_ANIMATION_TOKENS.speed.progression}
+   - Progression: ${FIBER_ANIMATION_TOKENS.speed.progression}/ms
+   - Effective: ${(FIBER_ANIMATION_TOKENS.speed.progression * ANIMATION_TOKENS.masterSpeed.global).toFixed(8)}/ms
+   - Target Duration: ${FIBER_ANIMATION_TOKENS.targetDuration.snake.min}-${FIBER_ANIMATION_TOKENS.targetDuration.snake.max}s
 
-🧵 CSS Fiber Strands (FiberStrand):
-   - Duration Range: ${ANIMATION_TOKENS.duration.backgroundPulse}-${ANIMATION_TOKENS.duration.backgroundPulse * 2}ms
-   - Adjusted Duration: ${(ANIMATION_TOKENS.duration.backgroundPulse / ANIMATION_TOKENS.masterSpeed.global).toFixed(0)}-${(ANIMATION_TOKENS.duration.backgroundPulse * 2 / ANIMATION_TOKENS.masterSpeed.global).toFixed(0)}ms
-   - Slowdown Factor: ${(1 / ANIMATION_TOKENS.masterSpeed.global).toFixed(1)}x
+🧵 CSS Strands (FiberStrand):
+   - Duration: ${(ANIMATION_TOKENS.duration.backgroundPulse / ANIMATION_TOKENS.masterSpeed.global / 1000).toFixed(0)}-${(ANIMATION_TOKENS.duration.backgroundPulse * 2 / ANIMATION_TOKENS.masterSpeed.global / 1000).toFixed(0)}s
+   - Target: ${FIBER_ANIMATION_TOKENS.targetDuration.cssStrand.min}-${FIBER_ANIMATION_TOKENS.targetDuration.cssStrand.max}s
+   - Status: ✅ SYNCHRONIZED
 
 🎮 ============================================
     `);

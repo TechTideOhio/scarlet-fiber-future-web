@@ -31,7 +31,7 @@ const FiberStrand: React.FC<FiberStrandProps> = ({
   // Log first strand initialization for verification
   if (index === 0) {
     console.log(
-      `🧵 FIBER STRAND v3.0: baseDuration=${baseDuration.toFixed(0)}ms, ` +
+      `🧵 FIBER STRAND v4.0: baseDuration=${baseDuration.toFixed(0)}ms, ` +
       `adjusted=${adjustedDuration.toFixed(0)}ms (${(adjustedDuration/baseDuration).toFixed(1)}x slower), ` +
       `masterSpeed=${ANIMATION_TOKENS.masterSpeed.global}x`
     );

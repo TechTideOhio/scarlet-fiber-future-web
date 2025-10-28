@@ -61,14 +61,33 @@ export const FIBER_ANIMATION_TOKENS = {
   // 🏃 Speed multipliers
   speed: {
     base: {
-      min: 0.25,
-      default: 0.5,
+      min: 0.005,     // Reduced from 0.25 (50x slower) for 40-80s fiber cycles
+      default: 0.01,  // Reduced from 0.5 (50x slower)
     },
     multiplier: {
       main: 0.3,
       branch: 0.4,
     },
     progression: 0.001, // Reduced from 0.002 for 50% slower
+  },
+
+  // 🎯 Target duration ranges (for validation & documentation)
+  targetDuration: {
+    fiber: {
+      min: 40,      // seconds - canvas fiber minimum cycle time
+      max: 80,      // seconds - canvas fiber maximum cycle time
+      ideal: 60,    // seconds - target sweet spot
+    },
+    snake: {
+      min: 50,      // seconds - snake path minimum cycle time
+      max: 100,     // seconds - snake path maximum cycle time
+      ideal: 75,    // seconds - target sweet spot
+    },
+    cssStrand: {
+      min: 75,      // seconds - CSS strand minimum animation time
+      max: 150,     // seconds - CSS strand maximum animation time
+      ideal: 100,   // seconds - target sweet spot
+    },
   },
 
   // 💫 Visual properties
