@@ -1,5 +1,6 @@
 
 import { useState, useEffect, useRef } from 'react';
+import { PERFORMANCE_TOKENS, logPerformanceToken } from '../constants';
 
 interface PerformanceMetrics {
   fps: number;
@@ -9,7 +10,7 @@ interface PerformanceMetrics {
 
 export const useHeroAnimationPerformance = () => {
   const [metrics, setMetrics] = useState<PerformanceMetrics>({
-    fps: 60,
+    fps: PERFORMANCE_TOKENS.fps.ideal,
     isLowPerformance: false,
     shouldReduceEffects: false
   });
@@ -24,14 +25,18 @@ export const useHeroAnimationPerformance = () => {
       frameCountRef.current++;
 
       // Calculate FPS every second
-      if (currentTime - lastTimeRef.current >= 1000) {
+      if (currentTime - lastTimeRef.current >= PERFORMANCE_TOKENS.monitoring.measureInterval) {
         const fps = Math.round((frameCountRef.current * 1000) / (currentTime - lastTimeRef.current));
         
         setMetrics(prev => ({
           fps,
-          isLowPerformance: fps < 30,
-          shouldReduceEffects: fps < 25 || prev.shouldReduceEffects
+          isLowPerformance: fps < PERFORMANCE_TOKENS.fps.lowPerformanceThreshold,
+          shouldReduceEffects: fps < PERFORMANCE_TOKENS.fps.degradeThreshold || prev.shouldReduceEffects
         }));
+
+        if (fps < PERFORMANCE_TOKENS.fps.degradeThreshold) {
+          logPerformanceToken('hero-performance-degraded', `${fps}fps`);
+        }
 
         frameCountRef.current = 0;
         lastTimeRef.current = currentTime;

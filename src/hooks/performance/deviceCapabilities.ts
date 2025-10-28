@@ -1,5 +1,6 @@
 
 import { QualityLevel } from './types';
+import { PERFORMANCE_TOKENS } from '../../constants';
 
 export const prefersReducedMotion = (): boolean => {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -10,9 +11,9 @@ export const getDeviceSpecificDefaults = (deviceCapabilities: any): QualityLevel
   
   const { isMobile, ram, isOldBrowser } = deviceCapabilities;
   if (isOldBrowser) return 'static';
-  if (isMobile && ram < 3) return 'low';
+  if (isMobile && ram < PERFORMANCE_TOKENS.memory.low) return 'low';
   if (isMobile) return 'medium';
-  if (ram < 4) return 'medium';
+  if (ram < PERFORMANCE_TOKENS.memory.medium) return 'medium';
   return 'high';
 };
 

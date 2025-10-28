@@ -2,6 +2,7 @@
 import { useCallback } from 'react';
 import { QualityLevel, PerformanceState } from './types';
 import { saveQualityPreference } from './deviceCapabilities';
+import { PERFORMANCE_TOKENS, logPerformanceToken } from '../../constants';
 
 export const useQualityManager = (
   performanceState: PerformanceState,
@@ -11,7 +12,9 @@ export const useQualityManager = (
     if (!performanceState.shouldAutoDegrade || performanceState.isPaused) return;
 
     const { isMobile } = performanceState.deviceCapabilities;
-    const minFPS = isMobile ? 25 : 30;
+    const minFPS = isMobile 
+      ? PERFORMANCE_TOKENS.fps.min.mobile 
+      : PERFORMANCE_TOKENS.fps.min.desktop;
     
     let newQuality: QualityLevel = performanceState.currentQuality;
 
@@ -30,7 +33,10 @@ export const useQualityManager = (
     }
 
     if (newQuality !== performanceState.currentQuality) {
-      console.log(`Auto-downgrading quality from ${performanceState.currentQuality} to ${newQuality} (${performanceState.fps}fps)`);
+      logPerformanceToken(
+        'quality-downgrade', 
+        `${performanceState.currentQuality} → ${newQuality} (${performanceState.fps}fps)`
+      );
       setPerformanceState(prev => ({ ...prev, currentQuality: newQuality }));
       saveQualityPreference(newQuality);
     }

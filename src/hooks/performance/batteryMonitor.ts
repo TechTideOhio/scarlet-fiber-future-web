@@ -1,6 +1,7 @@
 
 import { useEffect, useRef } from 'react';
 import { QualityLevel } from './types';
+import { PERFORMANCE_TOKENS, logPerformanceToken } from '../../constants';
 
 export const useBatteryMonitor = (
   setPerformanceState: React.Dispatch<React.SetStateAction<any>>
@@ -13,8 +14,8 @@ export const useBatteryMonitor = (
         batteryApiRef.current = battery;
         
         const checkBattery = () => {
-          if (battery.level < 0.2 && !battery.charging) {
-            console.log('Low battery detected, reducing animation quality');
+          if (battery.level < PERFORMANCE_TOKENS.battery.lowLevel && !battery.charging) {
+            logPerformanceToken('low-battery', `${Math.round(battery.level * 100)}%`);
             setPerformanceState((prev: any) => ({ 
               ...prev, 
               currentQuality: prev.currentQuality === 'high' ? 'medium' : 'low'
