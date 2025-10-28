@@ -10,7 +10,7 @@ import {
   calculateNextSegmentIndex, 
   updatePathProperties 
 } from '../utils/pathUpdater';
-import { FIBER_ANIMATION_TOKENS, logFiberToken } from '../../../constants';
+import { FIBER_ANIMATION_TOKENS, ANIMATION_TOKENS, logFiberToken } from '../../../constants';
 
 export class SnakeGenerator {
   private containerWidth: number;
@@ -46,7 +46,7 @@ export class SnakeGenerator {
     };
 
     // CRITICAL FIX: Ensure deterministic path generation with proper spacing
-    const mainPathCount = Math.max(Math.floor(pathCount * 0.7), 1);
+    const mainPathCount = Math.max(Math.floor(pathCount * ANIMATION_TOKENS.opacity.bright), 1);
     const branchPathCount = pathCount - mainPathCount;
 
     console.log('Path distribution:', { mainPathCount, branchPathCount });
