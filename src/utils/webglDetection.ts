@@ -18,6 +18,7 @@ export const detectWebGLCapabilities = (): PerformanceScore => {
   
   // Test WebGL features and performance
   try {
+    // WebGL capability scoring system
     // Check max texture size (indicates GPU power)
     const maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
     if (maxTextureSize >= 4096) score += 30;
@@ -62,10 +63,13 @@ export const detectWebGLCapabilities = (): PerformanceScore => {
   // Cleanup
   canvas.remove();
 
+  // WebGL quality threshold
+  const WEBGL_QUALITY_THRESHOLD = 70;
+  
   return {
     webglSupported: true,
     score,
-    shouldUseWebGL: score >= 70 // Require high score for WebGL
+    shouldUseWebGL: score >= WEBGL_QUALITY_THRESHOLD
   };
 };
 

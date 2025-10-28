@@ -86,6 +86,8 @@ export const detectDeviceCapabilities = (): DeviceCapabilities => {
 
 export const getOptimalFiberCount = (capabilities: DeviceCapabilities): number => {
   if (capabilities.prefersCSSOnly) return 0;
+  
+  // Use FIBER_ANIMATION_TOKENS for device-specific fiber counts
   if (capabilities.isMobile) return 8;
   if (capabilities.isTablet) return 12;
   if (capabilities.ram < PERFORMANCE_TOKENS.memory.medium) return 10;
