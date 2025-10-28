@@ -1,3 +1,5 @@
+import { FIBER_ANIMATION_TOKENS, COLOR_TOKENS, LAYOUT_TOKENS, logFiberToken } from '../constants';
+
 export class AnimatedFiber {
   x: number;
   y: number;
@@ -31,19 +33,25 @@ export class AnimatedFiber {
   }
 
   reset() {
+    const edgeOffset = LAYOUT_TOKENS.spacing.massive;
     this.x = Math.random() * this.canvas.width;
-    this.y = this.canvas.height + 50;
+    this.y = this.canvas.height + edgeOffset;
     this.targetX = Math.random() * this.canvas.width;
-    this.targetY = -50;
+    this.targetY = -edgeOffset;
     this.progress = 0;
-    this.speed = 0.001 + Math.random() * 0.0015; // Reduced speed by 50%
-    this.width = 2 + Math.random() * 2;
+    this.speed = FIBER_ANIMATION_TOKENS.speed.base.min + 
+                 Math.random() * (FIBER_ANIMATION_TOKENS.speed.base.default - FIBER_ANIMATION_TOKENS.speed.base.min);
+    this.width = FIBER_ANIMATION_TOKENS.lineWidth.mobile.main + 
+                 Math.random() * FIBER_ANIMATION_TOKENS.lineWidth.mobile.main;
     this.opacity = 0;
     
+    logFiberToken('fiber-reset', `speed: ${this.speed.toFixed(4)}, width: ${this.width.toFixed(1)}`);
+    
     // Control points for bezier curve
-    this.cp1x = this.x + (Math.random() - 0.5) * 400;
+    const curveDeviation = LAYOUT_TOKENS.spacing.gigantic * 6; // ~400px
+    this.cp1x = this.x + (Math.random() - 0.5) * curveDeviation;
     this.cp1y = this.canvas.height * 0.7;
-    this.cp2x = this.targetX + (Math.random() - 0.5) * 400;
+    this.cp2x = this.targetX + (Math.random() - 0.5) * curveDeviation;
     this.cp2y = this.canvas.height * 0.3;
   }
 
@@ -51,12 +59,13 @@ export class AnimatedFiber {
     this.progress += this.speed;
     
     // Fade in and out
-    if (this.progress < 0.1) {
-      this.opacity = this.progress * 10;
-    } else if (this.progress > 0.9) {
-      this.opacity = (1 - this.progress) * 10;
+    const fadeThreshold = 0.1;
+    if (this.progress < fadeThreshold) {
+      this.opacity = this.progress / fadeThreshold;
+    } else if (this.progress > (1 - fadeThreshold)) {
+      this.opacity = (1 - this.progress) / fadeThreshold;
     } else {
-      this.opacity = 1;
+      this.opacity = FIBER_ANIMATION_TOKENS.opacity.path.max;
     }
 
     if (this.progress > 1) {
@@ -80,16 +89,17 @@ export class AnimatedFiber {
 
     // Draw fiber trail
     ctx.save();
-    ctx.globalAlpha = this.opacity * 0.8;
+    ctx.globalAlpha = this.opacity * FIBER_ANIMATION_TOKENS.opacity.path.base;
     
-    // Create gradient for fiber - Updated to Buckeye red (#BB0000)
+    // Create gradient for fiber - Updated to Buckeye red
+    const gradientSpread = LAYOUT_TOKENS.spacing.massive;
     const gradient = ctx.createLinearGradient(
-      x - 50, y - 50, 
-      x + 50, y + 50
+      x - gradientSpread, y - gradientSpread, 
+      x + gradientSpread, y + gradientSpread
     );
-    gradient.addColorStop(0, 'rgba(187, 0, 0, 0)');
-    gradient.addColorStop(0.5, 'rgba(187, 0, 0, 1)');
-    gradient.addColorStop(1, 'rgba(187, 0, 0, 0)');
+    gradient.addColorStop(0, COLOR_TOKENS.buckeye.scarletRgba(0));
+    gradient.addColorStop(0.5, COLOR_TOKENS.buckeye.scarlet);
+    gradient.addColorStop(1, COLOR_TOKENS.buckeye.scarletRgba(0));
     
     ctx.strokeStyle = gradient;
     ctx.lineWidth = this.width;
@@ -107,17 +117,18 @@ export class AnimatedFiber {
     
     // Draw bright core
     ctx.globalAlpha = this.opacity;
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+    ctx.strokeStyle = COLOR_TOKENS.glow.core(0.8);
     ctx.lineWidth = this.width * 0.3;
     ctx.stroke();
     
     // Draw light point - Updated to Buckeye red
+    const pointRadius = FIBER_ANIMATION_TOKENS.node.minRadius + this.width;
     ctx.beginPath();
-    ctx.arc(x, y, 4 + this.width, 0, Math.PI * 2);
-    const pointGradient = ctx.createRadialGradient(x, y, 0, x, y, 4 + this.width);
-    pointGradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
-    pointGradient.addColorStop(0.3, 'rgba(187, 0, 0, 0.8)');
-    pointGradient.addColorStop(1, 'rgba(187, 0, 0, 0)');
+    ctx.arc(x, y, pointRadius, 0, Math.PI * 2);
+    const pointGradient = ctx.createRadialGradient(x, y, 0, x, y, pointRadius);
+    pointGradient.addColorStop(0, COLOR_TOKENS.glow.core(1));
+    pointGradient.addColorStop(0.3, COLOR_TOKENS.buckeye.scarletRgba(0.8));
+    pointGradient.addColorStop(1, COLOR_TOKENS.buckeye.scarletRgba(0));
     ctx.fillStyle = pointGradient;
     ctx.fill();
     

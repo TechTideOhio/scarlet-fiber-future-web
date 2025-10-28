@@ -1,5 +1,6 @@
 
 import { useEffect, useRef, useState } from 'react';
+import { PERFORMANCE_TOKENS, FIBER_ANIMATION_TOKENS, LAYOUT_TOKENS } from '../constants';
 
 export const useFiberInteraction = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -12,7 +13,7 @@ export const useFiberInteraction = () => {
 
     let animationFrameId: number;
     let lastUpdate = 0;
-    const throttleDelay = 1000 / 60;
+    const throttleDelay = 1000 / PERFORMANCE_TOKENS.fps.ideal;
 
     const updateFiberPositions = (timestamp: number) => {
       if (timestamp - lastUpdate >= throttleDelay) {
@@ -28,13 +29,20 @@ export const useFiberInteraction = () => {
             Math.pow(mousePosition.x - fiberCenterX, 2) + Math.pow(mousePosition.y - fiberCenterY, 2)
           );
           
-          const layer = index % 3;
-          const parallaxMultiplier = layer === 0 ? 0.02 : layer === 1 ? 0.01 : 0.005;
+          const layer = index % FIBER_ANIMATION_TOKENS.layers.default;
+          const parallaxMultiplier = layer === 0 
+            ? 0.02 
+            : layer === 1 
+              ? 0.01 
+              : 0.005;
           
           const offsetX = (mousePosition.x - window.innerWidth / 2) * parallaxMultiplier;
           const offsetY = (mousePosition.y - window.innerHeight / 2) * parallaxMultiplier;
           
-          const glowIntensity = distance < 100 ? Math.max(0.3, 1 - distance / 100) : 0.3;
+          const interactionRadius = LAYOUT_TOKENS.spacing.gigantic + LAYOUT_TOKENS.spacing.huge; // ~100px
+          const glowIntensity = distance < interactionRadius 
+            ? Math.max(FIBER_ANIMATION_TOKENS.glow.min, FIBER_ANIMATION_TOKENS.glow.max - distance / interactionRadius) 
+            : FIBER_ANIMATION_TOKENS.glow.min;
           
           element.style.setProperty('--mouse-offset-x', `${offsetX}px`);
           element.style.setProperty('--mouse-offset-y', `${offsetY}px`);
