@@ -1,6 +1,6 @@
 
 import { EnhancedSnakePath, EnhancedSnakeNode } from '../types/snakeTypes';
-import { FIBER_ANIMATION_TOKENS, logFiberToken } from '../../../constants';
+import { FIBER_ANIMATION_TOKENS, ANIMATION_TOKENS, logFiberToken } from '../../../constants';
 
 export const updatePathNodes = (
   path: EnhancedSnakePath,
@@ -51,20 +51,27 @@ export const calculateNextSegmentIndex = (
   deltaTime: number,
   nodeCount: number
 ): number => {
-  // CRITICAL FIX: Ensure smooth, predictable progression with minimum speed
+  // Ensure smooth, predictable progression with minimum speed
   const baseSpeed = Math.max(speed, FIBER_ANIMATION_TOKENS.speed.base.min);
   const speedMultiplier = pathType === 'main' 
     ? FIBER_ANIMATION_TOKENS.speed.multiplier.main 
     : FIBER_ANIMATION_TOKENS.speed.multiplier.branch;
   
-  // CRITICAL FIX: Use consistent time-based progression that's more visible
-  const progressionRate = baseSpeed * speedMultiplier * deltaTime * FIBER_ANIMATION_TOKENS.speed.progression;
+  // Apply master speed controls: global × fiber.snake × progression
+  const masterSpeedMultiplier = ANIMATION_TOKENS.masterSpeed.global * ANIMATION_TOKENS.masterSpeed.fiber.snake;
+  const progressionRate = baseSpeed * speedMultiplier * deltaTime * FIBER_ANIMATION_TOKENS.speed.progression * masterSpeedMultiplier;
   let nextIndex = currentIndex + progressionRate;
   
-  // CRITICAL FIX: Proper wraparound ensuring continuous animation
+  // Log snake movement periodically (every ~120 frames at 60fps)
+  const shouldLog = Math.random() < 0.008; // ~1/120 chance
+  if (shouldLog) {
+    console.log(`🐍 Snake ${pathType}: idx=${currentIndex.toFixed(2)}→${nextIndex.toFixed(2)}, dt=${deltaTime.toFixed(1)}ms, speed=${(progressionRate / deltaTime).toFixed(6)}/ms, global=${ANIMATION_TOKENS.masterSpeed.global}x`);
+  }
+  
+  // Proper wraparound ensuring continuous animation
   if (nextIndex >= nodeCount - 1) {
     nextIndex = 0;
-    logFiberToken('path-cycle-complete', `${pathType} path reset`);
+    console.log(`🔁 Snake Wraparound: ${pathType} path cycled`);
   }
   
   return nextIndex;
@@ -74,20 +81,27 @@ export const updatePathProperties = (
   path: EnhancedSnakePath,
   heroGlowIntensity: number
 ): { opacity: number; glowIntensity: number } => {
-  return {
-    opacity: Math.min(
-      Math.max(
-        path.opacity + heroGlowIntensity * FIBER_ANIMATION_TOKENS.glow.heroPathBoost, 
-        FIBER_ANIMATION_TOKENS.opacity.path.base
-      ), 
-      FIBER_ANIMATION_TOKENS.opacity.path.max
-    ),
-    glowIntensity: Math.min(
-      Math.max(
-        path.glowIntensity + heroGlowIntensity * FIBER_ANIMATION_TOKENS.glow.heroBoost, 
-        FIBER_ANIMATION_TOKENS.glow.base
-      ), 
-      FIBER_ANIMATION_TOKENS.glow.max
-    )
-  };
+  const opacity = Math.min(
+    Math.max(
+      path.opacity + heroGlowIntensity * FIBER_ANIMATION_TOKENS.glow.heroPathBoost, 
+      FIBER_ANIMATION_TOKENS.opacity.path.base
+    ), 
+    FIBER_ANIMATION_TOKENS.opacity.path.max
+  );
+  
+  const glowIntensity = Math.min(
+    Math.max(
+      path.glowIntensity + heroGlowIntensity * FIBER_ANIMATION_TOKENS.glow.heroBoost, 
+      FIBER_ANIMATION_TOKENS.glow.base
+    ), 
+    FIBER_ANIMATION_TOKENS.glow.max
+  );
+  
+  // Log property updates periodically
+  const shouldLog = Math.random() < 0.01; // ~1% of frames
+  if (shouldLog) {
+    console.log(`✨ Path Properties: opacity=${opacity.toFixed(3)}, glow=${glowIntensity.toFixed(3)}, heroBoost=${heroGlowIntensity.toFixed(2)}`);
+  }
+  
+  return { opacity, glowIntensity };
 };

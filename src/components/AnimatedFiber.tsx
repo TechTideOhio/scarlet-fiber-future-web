@@ -1,4 +1,4 @@
-import { FIBER_ANIMATION_TOKENS, COLOR_TOKENS, LAYOUT_TOKENS, logFiberToken } from '../constants';
+import { FIBER_ANIMATION_TOKENS, COLOR_TOKENS, LAYOUT_TOKENS, ANIMATION_TOKENS, logFiberToken } from '../constants';
 
 export class AnimatedFiber {
   x: number;
@@ -39,16 +39,25 @@ export class AnimatedFiber {
     this.targetX = Math.random() * this.canvas.width;
     this.targetY = -edgeOffset;
     this.progress = 0;
-    this.speed = FIBER_ANIMATION_TOKENS.speed.base.min + 
-                 Math.random() * (FIBER_ANIMATION_TOKENS.speed.base.default - FIBER_ANIMATION_TOKENS.speed.base.min);
+    
+    // Calculate base speed with master speed multiplier
+    const baseSpeed = FIBER_ANIMATION_TOKENS.speed.base.min + 
+                      Math.random() * (FIBER_ANIMATION_TOKENS.speed.base.default - FIBER_ANIMATION_TOKENS.speed.base.min);
+    
+    // Apply master speed controls (global * fiber.progress * fiber.canvas)
+    this.speed = baseSpeed * 
+                 ANIMATION_TOKENS.masterSpeed.global * 
+                 ANIMATION_TOKENS.masterSpeed.fiber.progress *
+                 ANIMATION_TOKENS.masterSpeed.fiber.canvas;
+    
     this.width = FIBER_ANIMATION_TOKENS.lineWidth.mobile.main + 
                  Math.random() * FIBER_ANIMATION_TOKENS.lineWidth.mobile.main;
     this.opacity = 0;
     
-    logFiberToken('fiber-reset', `speed: ${this.speed.toFixed(4)}, width: ${this.width.toFixed(1)}`);
+    console.log(`🎨 Fiber Reset: speed=${this.speed.toFixed(4)} (base=${baseSpeed.toFixed(4)} × global=${ANIMATION_TOKENS.masterSpeed.global}), width=${this.width.toFixed(1)}px`);
     
     // Control points for bezier curve
-    const curveDeviation = LAYOUT_TOKENS.spacing.gigantic * 6; // ~400px
+    const curveDeviation = LAYOUT_TOKENS.spacing.gigantic * 6;
     this.cp1x = this.x + (Math.random() - 0.5) * curveDeviation;
     this.cp1y = this.canvas.height * 0.7;
     this.cp2x = this.targetX + (Math.random() - 0.5) * curveDeviation;
@@ -58,8 +67,8 @@ export class AnimatedFiber {
   update() {
     this.progress += this.speed;
     
-    // Fade in and out
-    const fadeThreshold = 0.1;
+    // Fade in and out using token values
+    const fadeThreshold = ANIMATION_TOKENS.opacity.subtle;
     if (this.progress < fadeThreshold) {
       this.opacity = this.progress / fadeThreshold;
     } else if (this.progress > (1 - fadeThreshold)) {
@@ -69,6 +78,7 @@ export class AnimatedFiber {
     }
 
     if (this.progress > 1) {
+      console.log(`🔄 Fiber Complete: progress=${this.progress.toFixed(2)}, resetting...`);
       this.reset();
     }
   }

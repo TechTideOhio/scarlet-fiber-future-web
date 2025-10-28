@@ -2,7 +2,7 @@
 import { useEffect } from 'react';
 import { renderEnhancedPaths } from '../../utils/snakeRenderer';
 import { AnimationLoopProps } from './types';
-import { PERFORMANCE_TOKENS, logPerformanceToken } from '../../constants';
+import { PERFORMANCE_TOKENS, ANIMATION_TOKENS, logPerformanceToken } from '../../constants';
 
 export const useAnimationLoop = ({
   isVisible,
@@ -47,7 +47,7 @@ export const useAnimationLoop = ({
         }
 
         try {
-          // CRITICAL FIX: Proper timing calculation with bounds
+          // Proper timing calculation with bounds
           const deltaTime = lastTimeRef.current === 0 
             ? PERFORMANCE_TOKENS.deltaTime.default 
             : Math.min(
@@ -55,6 +55,12 @@ export const useAnimationLoop = ({
                 PERFORMANCE_TOKENS.deltaTime.max
               );
           lastTimeRef.current = currentTime;
+          
+          // Log frame timing every 120 frames (~2 seconds @ 60fps)
+          const newFrameCount = (animationState.frameCount || 0) + 1;
+          if (newFrameCount % 120 === 0) {
+            console.log(`🎬 Animation Frame #${newFrameCount}: dt=${deltaTime.toFixed(1)}ms, masterSpeed=${ANIMATION_TOKENS.masterSpeed.global}x, heroGlow=${heroGlowIntensity.toFixed(2)}`);
+          }
 
           setAnimationState(prevState => {
             const newFrameCount = prevState.frameCount + 1;
@@ -73,22 +79,23 @@ export const useAnimationLoop = ({
               }
             });
 
-            // Debug logging for first few frames and periodically (using token for frame check)
+            // Debug logging for first few frames (using token for frame check)
             if (!prevState.animationStarted && newFrameCount <= PERFORMANCE_TOKENS.logging.initialFrames) {
               const activePathsCount = updatedPaths.filter(path => {
                 const activeNodes = path.nodes.filter(n => n.isActive && n.intensity > 0);
                 return activeNodes.length > 0;
               }).length;
               
-              console.log(`Frame ${newFrameCount} debug:`, {
+              console.log(`🚀 Frame ${newFrameCount} Init:`, {
                 totalPaths: updatedPaths.length,
-                activePathsCount,
-                deltaTime,
-                heroGlowIntensity
+                activePaths: activePathsCount,
+                deltaTime: deltaTime.toFixed(1) + 'ms',
+                speedMultiplier: ANIMATION_TOKENS.masterSpeed.global + 'x',
+                heroGlow: heroGlowIntensity.toFixed(2)
               });
               
               if (newFrameCount === PERFORMANCE_TOKENS.logging.initialFrames) {
-                console.log('Animation initialization complete');
+                console.log(`✅ Animation Init Complete: ${ANIMATION_TOKENS.masterSpeed.global}x speed, ${updatedPaths.length} paths`);
               }
             }
 

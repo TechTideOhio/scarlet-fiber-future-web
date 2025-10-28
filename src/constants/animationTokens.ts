@@ -70,6 +70,31 @@ export const ANIMATION_TOKENS = {
     slow: 0.2,
     fast: 0.5,
   },
+
+  // 🎮 Master Animation Speed Controls
+  // These control the overall animation speed across all systems
+  masterSpeed: {
+    // Global multiplier - affects ALL animations (1.0 = normal, 0.2 = 5x slower)
+    global: 0.2,
+    
+    // Specific system multipliers (applied on top of global)
+    fiber: {
+      progress: 1.0,      // Fiber path progression speed
+      snake: 1.0,         // Snake animation speed
+      canvas: 1.0,        // Canvas-based animations
+    },
+    
+    // Semantic presets for easy adjustment
+    presets: {
+      ultraSlow: 0.1,
+      verySlow: 0.2,
+      slow: 0.4,
+      normal: 1.0,
+      fast: 1.5,
+      veryFast: 2.0,
+      ultraFast: 3.0,
+    },
+  },
 } as const;
 
 // 📊 Logging helper
