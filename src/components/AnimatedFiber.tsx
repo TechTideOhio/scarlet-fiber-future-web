@@ -54,7 +54,7 @@ export class AnimatedFiber {
                  Math.random() * FIBER_ANIMATION_TOKENS.lineWidth.mobile.main;
     this.opacity = 0;
     
-    console.log(`🎨 Fiber Reset: speed=${this.speed.toFixed(4)} (base=${baseSpeed.toFixed(4)} × global=${ANIMATION_TOKENS.masterSpeed.global}), width=${this.width.toFixed(1)}px`);
+    console.log(`🎨 FIBER RESET v2.0: speed=${this.speed.toFixed(6)} (base=${baseSpeed.toFixed(4)} × ${ANIMATION_TOKENS.masterSpeed.global}), width=${this.width.toFixed(1)}px, masterSpeed=${ANIMATION_TOKENS.masterSpeed.global}`);
     
     // Control points for bezier curve
     const curveDeviation = LAYOUT_TOKENS.spacing.gigantic * 6;
@@ -78,7 +78,7 @@ export class AnimatedFiber {
     }
 
     if (this.progress > 1) {
-      console.log(`🔄 Fiber Complete: progress=${this.progress.toFixed(2)}, resetting...`);
+      console.log(`🔄 FIBER COMPLETE v2.0: progress=${this.progress.toFixed(3)}, took ${(1 / this.speed).toFixed(0)} frames @ ${(this.speed * 1000).toFixed(3)}ms/frame, resetting...`);
       this.reset();
     }
   }

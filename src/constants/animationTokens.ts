@@ -74,8 +74,9 @@ export const ANIMATION_TOKENS = {
   // 🎮 Master Animation Speed Controls
   // These control the overall animation speed across all systems
   masterSpeed: {
-    // Global multiplier - affects ALL animations (1.0 = normal, 0.2 = 5x slower)
-    global: 0.2,
+    // Global multiplier - affects ALL animations (1.0 = normal, 0.04 = 25x slower for smooth, elegant motion)
+    // Changed from 0.2 to 0.04 for proper 500% slower effect
+    global: 0.04,
     
     // Specific system multipliers (applied on top of global)
     fiber: {
