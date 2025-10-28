@@ -10,3 +10,9 @@ A modern, high-performance website for a fiber optic installation and networking
 - **Vite** - Fast build tool and development server
 - **Three.js** - 3D graphics and WebGL animations
 - **Shadcn/UI** - Modern component library
+
+## 🎯 Design Token System
+
+This project uses a comprehensive design token system to ensure maintainability and consistency. All magic numbers have been replaced with semantic constants.
+
+See [Design Token Documentation](./docs/design-tokens.md) for details.

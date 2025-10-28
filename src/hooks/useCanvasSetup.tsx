@@ -1,6 +1,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { EnhancedSnakeGenerator } from '../components/fiber/EnhancedSnakeGenerator';
+import { PERFORMANCE_TOKENS, COLOR_TOKENS, logPerformanceToken } from '../constants';
 
 interface UseCanvasSetupProps {
   pathCount: number;
@@ -23,7 +24,12 @@ export const useCanvasSetup = ({ pathCount, isMobile }: UseCanvasSetupProps) => 
     const updateCanvasSize = () => {
       try {
         const rect = canvas.getBoundingClientRect();
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const dpr = Math.min(
+          window.devicePixelRatio || 1, 
+          PERFORMANCE_TOKENS.canvas.maxDevicePixelRatio
+        );
+        
+        logPerformanceToken('canvas-dpr', dpr);
         
         console.log('Canvas setup - rect:', { width: rect.width, height: rect.height });
         console.log('Canvas setup - dpr:', dpr);
@@ -50,7 +56,7 @@ export const useCanvasSetup = ({ pathCount, isMobile }: UseCanvasSetupProps) => 
         ctx.scale(dpr, dpr);
         
         // CRITICAL FIX: Clear canvas using display dimensions, not buffer dimensions
-        ctx.fillStyle = 'rgba(5, 5, 10, 1)';
+        ctx.fillStyle = COLOR_TOKENS.background.dark;
         ctx.fillRect(0, 0, rect.width, rect.height);
         
         console.log('Canvas cleared with dark background using display dimensions:', rect.width, 'x', rect.height);
@@ -74,7 +80,7 @@ export const useCanvasSetup = ({ pathCount, isMobile }: UseCanvasSetupProps) => 
     };
 
     // Add slight delay to ensure DOM is ready
-    const timeoutId = setTimeout(updateCanvasSize, 50);
+    const timeoutId = setTimeout(updateCanvasSize, PERFORMANCE_TOKENS.canvas.updateDelay);
     window.addEventListener('resize', updateCanvasSize);
     
     return () => {

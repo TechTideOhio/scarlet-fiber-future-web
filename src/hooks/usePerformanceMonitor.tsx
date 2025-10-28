@@ -6,6 +6,7 @@ import { loadSavedQuality, prefersReducedMotion } from './performance/deviceCapa
 import { useFPSMonitor, createFPSMonitorConfig } from './performance/fpsMonitor';
 import { useBatteryMonitor } from './performance/batteryMonitor';
 import { useQualityManager } from './performance/qualityManager';
+import { PERFORMANCE_TOKENS, logPerformanceToken } from '../constants';
 
 export type { QualityLevel } from './performance/types';
 
@@ -39,11 +40,12 @@ export const usePerformanceMonitor = () => {
       // Check if we need to downgrade during monitoring period
       if (!shouldStopMonitoring(now)) {
         if (fps < config.minFPS && !performanceState.shouldAutoDegrade) {
-          console.log(`Low FPS detected (${fps}fps), enabling auto-degradation`);
+          logPerformanceToken('low-fps-detected', `${fps}fps < ${config.minFPS}fps`);
           setPerformanceState(prev => ({ ...prev, shouldAutoDegrade: true }));
         }
       } else {
         // Stop monitoring after duration
+        logPerformanceToken('monitoring-stopped', 'Duration reached');
         setPerformanceState(prev => ({ ...prev, isMonitoring: false }));
         if (animationIdRef.current) {
           cancelAnimationFrame(animationIdRef.current);

@@ -1,5 +1,6 @@
 
 import { EnhancedSnakePath } from '../components/fiber/types/snakeTypes';
+import { ANIMATION_TOKENS, FIBER_ANIMATION_TOKENS, COLOR_TOKENS, PERFORMANCE_TOKENS, logFiberToken } from '../constants';
 
 export const renderEnhancedPaths = (
   ctx: CanvasRenderingContext2D, 
@@ -20,7 +21,7 @@ export const renderEnhancedPaths = (
   ctx.clearRect(0, 0, displayWidth, displayHeight);
   
   // Add subtle background to prevent pure black
-  ctx.fillStyle = 'rgba(8, 8, 15, 0.95)';
+  ctx.fillStyle = COLOR_TOKENS.background.subtle;
   ctx.fillRect(0, 0, displayWidth, displayHeight);
 
   // Sort paths by layer for proper depth
@@ -53,8 +54,8 @@ export const renderEnhancedPaths = (
         segmentLength: path.segmentLength
       });
     });
-  } else if (Math.random() < 0.02) { // 2% chance to log success
-    console.log(`Successfully rendered ${renderedCount}/${sortedPaths.length} paths with ${totalActiveNodes} active nodes`);
+  } else if (Math.random() < PERFORMANCE_TOKENS.logging.successRate) {
+    logFiberToken('render-success', `${renderedCount}/${sortedPaths.length} paths, ${totalActiveNodes} nodes`);
   }
 };
 
@@ -63,7 +64,9 @@ export const renderEnhancedPath = (
   path: EnhancedSnakePath,
   isMobile: boolean
 ): { rendered: boolean; activeNodes: number } => {
-  const activeNodes = path.nodes.filter(node => node.isActive && node.intensity > 0.1);
+  const activeNodes = path.nodes.filter(
+    node => node.isActive && node.intensity > FIBER_ANIMATION_TOKENS.node.visibilityThreshold
+  );
   
   if (activeNodes.length < 2) {
     return { rendered: false, activeNodes: 0 };
@@ -72,7 +75,10 @@ export const renderEnhancedPath = (
   ctx.save();
   
   // CRITICAL FIX: Enhanced visibility settings with guaranteed opacity
-  const pathOpacity = Math.max(path.opacity * 0.9, 0.6);
+  const pathOpacity = Math.max(
+    path.opacity * ANIMATION_TOKENS.opacity.nearFull, 
+    FIBER_ANIMATION_TOKENS.opacity.path.min
+  );
   ctx.globalAlpha = pathOpacity;
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
@@ -105,20 +111,20 @@ export const renderEnhancedPath = (
     }
 
     // CRITICAL FIX: Enhanced layer styling with guaranteed visibility
-    const glowMultiplier = Math.max(path.glowIntensity, 0.8);
+    const glowMultiplier = Math.max(path.glowIntensity, FIBER_ANIMATION_TOKENS.glow.min);
     
     if (layer === 0) {
       // Outer glow - most prominent
-      ctx.strokeStyle = `rgba(255, 50, 50, ${Math.min(0.4 * glowMultiplier, 0.8)})`;
+      ctx.strokeStyle = COLOR_TOKENS.glow.outer(Math.min(0.4 * glowMultiplier, 0.8));
       ctx.lineWidth = path.width * 12;
       ctx.shadowBlur = isMobile ? 50 : 80;
-      ctx.shadowColor = 'rgba(255, 50, 50, 1)';
+      ctx.shadowColor = COLOR_TOKENS.buckeye.scarletRgba(1);
     } else if (layer === 1) {
       // Middle glow - enhanced brightness
-      ctx.strokeStyle = `rgba(255, 100, 100, ${Math.min(0.6 * glowMultiplier, 1)})`;
+      ctx.strokeStyle = COLOR_TOKENS.glow.middle(Math.min(0.6 * glowMultiplier, 1));
       ctx.lineWidth = path.width * 8;
       ctx.shadowBlur = isMobile ? 35 : 60;
-      ctx.shadowColor = 'rgba(255, 100, 100, 0.9)';
+      ctx.shadowColor = COLOR_TOKENS.glow.middle(0.9);
     } else if (layer === 2) {
       // Inner glow - bright and visible
       ctx.strokeStyle = path.color;
@@ -127,16 +133,16 @@ export const renderEnhancedPath = (
       ctx.shadowColor = path.color;
     } else if (layer === 3) {
       // Core line - always visible white core
-      ctx.strokeStyle = `rgba(255, 255, 255, ${Math.min(glowMultiplier, 1)})`;
+      ctx.strokeStyle = COLOR_TOKENS.glow.core(Math.min(glowMultiplier, 1));
       ctx.lineWidth = Math.max(path.width * 2.5, 4);
       ctx.shadowBlur = isMobile ? 12 : 20;
-      ctx.shadowColor = 'rgba(255, 255, 255, 1)';
+      ctx.shadowColor = COLOR_TOKENS.glow.core(1);
     } else {
       // Ultra bright center for main paths
-      ctx.strokeStyle = `rgba(255, 255, 255, 1)`;
+      ctx.strokeStyle = COLOR_TOKENS.glow.core(1);
       ctx.lineWidth = Math.max(path.width * 1.5, 3);
       ctx.shadowBlur = isMobile ? 8 : 15;
-      ctx.shadowColor = 'rgba(255, 255, 255, 1)';
+      ctx.shadowColor = COLOR_TOKENS.glow.core(1);
     }
     
     ctx.stroke();
@@ -145,7 +151,7 @@ export const renderEnhancedPath = (
   // Enhanced node rendering with guaranteed visibility
   let renderedNodeCount = 0;
   activeNodes.forEach(node => {
-    if (node.intensity > 0.1) {
+    if (node.intensity > FIBER_ANIMATION_TOKENS.node.visibilityThreshold) {
       renderEnhancedNode(ctx, node, path, isMobile);
       renderedNodeCount++;
     }
@@ -161,8 +167,11 @@ export const renderEnhancedNode = (
   path: EnhancedSnakePath,
   isMobile: boolean
 ) => {
-  const baseRadius = Math.max(path.width * 1.5, 5);
-  const nodeRadius = baseRadius * Math.max(node.intensity, 0.5);
+  const baseRadius = Math.max(
+    path.width * FIBER_ANIMATION_TOKENS.node.radiusMultiplier, 
+    FIBER_ANIMATION_TOKENS.node.minRadius
+  );
+  const nodeRadius = baseRadius * Math.max(node.intensity, ANIMATION_TOKENS.opacity.medium);
   const pulseRadius = nodeRadius * (1 + Math.sin(Date.now() * 0.01 + node.pulsePhase) * 0.4);
   
   // CRITICAL FIX: Enhanced node visibility with multiple layers
@@ -171,26 +180,29 @@ export const renderEnhancedNode = (
   // Outer pulse - very prominent
   ctx.beginPath();
   ctx.arc(node.x, node.y, pulseRadius * 4, 0, Math.PI * 2);
-  ctx.fillStyle = `rgba(255, 50, 50, ${Math.min(node.intensity * 0.3, 0.6)})`;
+  ctx.fillStyle = COLOR_TOKENS.glow.outer(Math.min(node.intensity * ANIMATION_TOKENS.opacity.dim, ANIMATION_TOKENS.opacity.visible));
   ctx.shadowBlur = isMobile ? 60 : 100;
-  ctx.shadowColor = 'rgba(255, 50, 50, 1)';
+  ctx.shadowColor = COLOR_TOKENS.buckeye.scarletRgba(1);
   ctx.fill();
   
   // Middle glow
   ctx.beginPath();
   ctx.arc(node.x, node.y, pulseRadius * 2, 0, Math.PI * 2);
-  ctx.fillStyle = `rgba(255, 100, 100, ${Math.min(node.intensity * 0.5, 0.8)})`;
+  ctx.fillStyle = COLOR_TOKENS.glow.middle(Math.min(node.intensity * ANIMATION_TOKENS.opacity.medium, ANIMATION_TOKENS.opacity.veryBright));
   ctx.shadowBlur = isMobile ? 40 : 60;
-  ctx.shadowColor = 'rgba(255, 100, 100, 0.9)';
+  ctx.shadowColor = COLOR_TOKENS.glow.middle(ANIMATION_TOKENS.opacity.nearFull);
   ctx.fill();
   
   // Core node - always bright and visible
   ctx.beginPath();
   ctx.arc(node.x, node.y, Math.max(nodeRadius, 4), 0, Math.PI * 2);
-  const coreOpacity = Math.min(Math.max(node.intensity * node.connectionStrength, 0.8), 1);
-  ctx.fillStyle = `rgba(255, 255, 255, ${coreOpacity})`;
+  const coreOpacity = Math.min(
+    Math.max(node.intensity * node.connectionStrength, ANIMATION_TOKENS.opacity.veryBright), 
+    ANIMATION_TOKENS.opacity.full
+  );
+  ctx.fillStyle = COLOR_TOKENS.glow.core(coreOpacity);
   ctx.shadowBlur = isMobile ? 30 : 45;
-  ctx.shadowColor = 'rgba(255, 255, 255, 1)';
+  ctx.shadowColor = COLOR_TOKENS.glow.core(1);
   ctx.fill();
   
   ctx.restore();

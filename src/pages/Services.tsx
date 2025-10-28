@@ -5,13 +5,16 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import CTAButton from '../components/CTAButton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
+import { LAYOUT_TOKENS, logLayoutToken } from '../constants';
 
 const Services = () => {
   const [showStickyButton, setShowStickyButton] = useState(false);
 
   useEffect(() => {
+    logLayoutToken('sticky-threshold', LAYOUT_TOKENS.scroll.stickyButtonThreshold);
+    
     const handleScroll = () => {
-      if (window.scrollY > 500) {
+      if (window.scrollY > LAYOUT_TOKENS.scroll.stickyButtonThreshold) {
         setShowStickyButton(true);
       } else {
         setShowStickyButton(false);

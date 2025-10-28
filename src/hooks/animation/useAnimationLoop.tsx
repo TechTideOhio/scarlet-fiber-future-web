@@ -2,6 +2,7 @@
 import { useEffect } from 'react';
 import { renderEnhancedPaths } from '../../utils/snakeRenderer';
 import { AnimationLoopProps } from './types';
+import { PERFORMANCE_TOKENS, logPerformanceToken } from '../../constants';
 
 export const useAnimationLoop = ({
   isVisible,
@@ -47,7 +48,12 @@ export const useAnimationLoop = ({
 
         try {
           // CRITICAL FIX: Proper timing calculation with bounds
-          const deltaTime = lastTimeRef.current === 0 ? 16 : Math.min(Math.max(currentTime - lastTimeRef.current, 8), 100);
+          const deltaTime = lastTimeRef.current === 0 
+            ? PERFORMANCE_TOKENS.deltaTime.default 
+            : Math.min(
+                Math.max(currentTime - lastTimeRef.current, PERFORMANCE_TOKENS.deltaTime.min), 
+                PERFORMANCE_TOKENS.deltaTime.max
+              );
           lastTimeRef.current = currentTime;
 
           setAnimationState(prevState => {
@@ -68,7 +74,7 @@ export const useAnimationLoop = ({
             });
 
             // Debug logging for first few frames and periodically
-            if (!prevState.animationStarted && newFrameCount <= 10) {
+            if (!prevState.animationStarted && newFrameCount <= PERFORMANCE_TOKENS.logging.initialFrames) {
               const activePathsCount = updatedPaths.filter(path => {
                 const activeNodes = path.nodes.filter(n => n.isActive && n.intensity > 0);
                 return activeNodes.length > 0;
@@ -96,13 +102,14 @@ export const useAnimationLoop = ({
               }
             } catch (renderErr) {
               console.error('Render error:', renderErr);
-              if (newFrameCount % 120 === 0) { // Log every 2 seconds to avoid spam
+              if (newFrameCount % PERFORMANCE_TOKENS.logging.renderErrorInterval === 0) {
                 setRenderError(renderErr instanceof Error ? renderErr.message : 'Rendering failed');
               }
             }
 
             // Periodic performance logging
-            if (newFrameCount % 300 === 0) { // Every 5 seconds
+            if (newFrameCount % PERFORMANCE_TOKENS.logging.periodicInterval === 0) {
+              logPerformanceToken('frame-milestone', `Frame ${newFrameCount}`);
               console.log(`Animation performance check - Frame ${newFrameCount}:`, {
                 pathsLength: updatedPaths.length,
                 deltaTime,
