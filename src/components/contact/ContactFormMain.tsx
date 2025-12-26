@@ -5,9 +5,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Loader2 } from 'lucide-react';
 import { validateEmail, validatePhone, sanitizeInput, validateTextLength } from './ContactFormValidation';
 import { FormData, FormErrors } from './types';
+import { supabase } from '@/integrations/supabase/client';
 
 const ContactFormMain = () => {
   const { toast } = useToast();
@@ -84,7 +85,7 @@ const ContactFormMain = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Rate limiting check (simple frontend implementation)
@@ -125,11 +126,24 @@ const ContactFormMain = () => {
     setLastSubmitTime(now);
     setSubmitAttempts(prev => prev + 1);
 
-    // Simulate form submission
-    setTimeout(() => {
+    try {
+      const { error } = await supabase
+        .from('contact_submissions')
+        .insert({
+          name: formData.name.trim(),
+          email: formData.email.trim().toLowerCase(),
+          phone: formData.phone?.trim() || null,
+          company: formData.company?.trim() || null,
+          message: formData.message.trim(),
+        });
+
+      if (error) {
+        throw error;
+      }
+
       toast({
-        title: "Form submitted successfully!",
-        description: "We'll contact you soon about your inquiry.",
+        title: "Message sent successfully!",
+        description: "We'll get back to you within 24 hours.",
         duration: 5000,
       });
       
@@ -142,9 +156,18 @@ const ContactFormMain = () => {
       });
       
       setErrors({});
-      setIsSubmitting(false);
       setSubmitAttempts(0);
-    }, 1000);
+    } catch (error) {
+      console.error('Error submitting contact form:', error);
+      toast({
+        title: "Submission failed",
+        description: "There was an error sending your message. Please try again.",
+        variant: "destructive",
+        duration: 5000,
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -168,6 +191,7 @@ const ContactFormMain = () => {
               aria-describedby={errors.name ? "name-error" : undefined}
               className={errors.name ? "border-red-500 focus:border-red-500" : ""}
               maxLength={100}
+              disabled={isSubmitting}
             />
             {errors.name && (
               <div id="name-error" className="flex items-center gap-1 text-sm text-red-600" role="alert">
@@ -193,6 +217,7 @@ const ContactFormMain = () => {
               aria-describedby={errors.email ? "email-error" : undefined}
               className={errors.email ? "border-red-500 focus:border-red-500" : ""}
               maxLength={254}
+              disabled={isSubmitting}
             />
             {errors.email && (
               <div id="email-error" className="flex items-center gap-1 text-sm text-red-600" role="alert">
@@ -217,6 +242,7 @@ const ContactFormMain = () => {
               aria-describedby={errors.phone ? "phone-error" : undefined}
               className={errors.phone ? "border-red-500 focus:border-red-500" : ""}
               maxLength={20}
+              disabled={isSubmitting}
             />
             {errors.phone && (
               <div id="phone-error" className="flex items-center gap-1 text-sm text-red-600" role="alert">
@@ -238,6 +264,7 @@ const ContactFormMain = () => {
               aria-describedby={errors.company ? "company-error" : undefined}
               className={errors.company ? "border-red-500 focus:border-red-500" : ""}
               maxLength={100}
+              disabled={isSubmitting}
             />
             {errors.company && (
               <div id="company-error" className="flex items-center gap-1 text-sm text-red-600" role="alert">
@@ -264,6 +291,7 @@ const ContactFormMain = () => {
             aria-invalid={!!errors.message}
             aria-describedby={errors.message ? "message-error" : "message-help"}
             maxLength={2000}
+            disabled={isSubmitting}
           />
           <div id="message-help" className="text-sm text-gray-500">
             {formData.message.length}/2000 characters
@@ -282,7 +310,14 @@ const ContactFormMain = () => {
           disabled={isSubmitting}
           aria-describedby="submit-help"
         >
-          {isSubmitting ? 'Submitting...' : 'Submit Request'}
+          {isSubmitting ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Submitting...
+            </>
+          ) : (
+            'Submit Request'
+          )}
         </Button>
         <div id="submit-help" className="text-sm text-gray-500 text-center">
           * Required fields. We'll respond within 24 hours.

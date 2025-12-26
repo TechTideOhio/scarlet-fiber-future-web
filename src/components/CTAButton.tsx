@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -9,6 +10,8 @@ type CTAButtonProps = {
   size?: 'sm' | 'md' | 'lg';
   className?: string;
   onClick?: () => void;
+  href?: string;
+  navigateTo?: string;
 };
 
 const CTAButton = ({ 
@@ -17,8 +20,11 @@ const CTAButton = ({
   size = 'md',
   className,
   onClick,
+  href,
+  navigateTo,
   ...props 
 }: CTAButtonProps & React.ButtonHTMLAttributes<HTMLButtonElement>) => {
+  const navigate = useNavigate();
   
   const getVariantClasses = () => {
     switch (variant) {
@@ -46,6 +52,19 @@ const CTAButton = ({
     }
   };
 
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    } else if (href) {
+      window.open(href, '_blank', 'noopener,noreferrer');
+    } else if (navigateTo) {
+      navigate(navigateTo);
+    } else {
+      // Default behavior: navigate to contact page
+      navigate('/contact');
+    }
+  };
+
   return (
     <Button
       className={cn(
@@ -54,7 +73,7 @@ const CTAButton = ({
         getSizeClasses(),
         className
       )}
-      onClick={onClick}
+      onClick={handleClick}
       {...props}
     >
       {children}
