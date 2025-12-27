@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 const adminEmail = Deno.env.get("ADMIN_EMAIL");
@@ -9,24 +10,94 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-interface ContactEmailRequest {
-  name: string;
-  email: string;
-  phone?: string;
-  company?: string;
-  message: string;
+// Zod schema for input validation
+const contactEmailSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters").max(100, "Name too long").trim(),
+  email: z.string().email("Invalid email address").max(254, "Email too long").trim().toLowerCase(),
+  phone: z.string().max(20, "Phone too long").optional().nullable(),
+  company: z.string().max(100, "Company name too long").optional().nullable(),
+  message: z.string().min(10, "Message must be at least 10 characters").max(2000, "Message too long").trim(),
+});
+
+type ContactEmailRequest = z.infer<typeof contactEmailSchema>;
+
+// Simple in-memory rate limiting (resets on function cold start)
+const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
+const RATE_LIMIT = 5; // requests per window
+const RATE_WINDOW = 60 * 1000; // 1 minute window
+
+function checkRateLimit(identifier: string): { allowed: boolean; remaining: number; resetIn: number } {
+  const now = Date.now();
+  const record = rateLimitMap.get(identifier);
+  
+  if (!record || now > record.resetTime) {
+    rateLimitMap.set(identifier, { count: 1, resetTime: now + RATE_WINDOW });
+    return { allowed: true, remaining: RATE_LIMIT - 1, resetIn: RATE_WINDOW };
+  }
+  
+  if (record.count >= RATE_LIMIT) {
+    return { allowed: false, remaining: 0, resetIn: record.resetTime - now };
+  }
+  
+  record.count++;
+  return { allowed: true, remaining: RATE_LIMIT - record.count, resetIn: record.resetTime - now };
 }
 
 const handler = async (req: Request): Promise<Response> => {
   console.log("send-contact-email function invoked");
+  const startTime = Date.now();
 
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Get client IP for rate limiting
+  const clientIP = req.headers.get("x-forwarded-for")?.split(",")[0] || 
+                   req.headers.get("cf-connecting-ip") || 
+                   "unknown";
+  
+  // Check rate limit
+  const rateLimit = checkRateLimit(clientIP);
+  const rateLimitHeaders = {
+    "X-RateLimit-Limit": RATE_LIMIT.toString(),
+    "X-RateLimit-Remaining": rateLimit.remaining.toString(),
+    "X-RateLimit-Reset": Math.ceil(rateLimit.resetIn / 1000).toString(),
+  };
+
+  if (!rateLimit.allowed) {
+    console.warn(`Rate limit exceeded for IP: ${clientIP}`);
+    return new Response(
+      JSON.stringify({ error: "Too many requests. Please try again later." }),
+      {
+        status: 429,
+        headers: { "Content-Type": "application/json", ...corsHeaders, ...rateLimitHeaders },
+      }
+    );
+  }
+
   try {
-    const { name, email, phone, company, message }: ContactEmailRequest = await req.json();
+    const rawBody = await req.json();
+    console.log("Received request body, validating...");
+    
+    // Validate input with Zod
+    const validationResult = contactEmailSchema.safeParse(rawBody);
+    
+    if (!validationResult.success) {
+      console.error("Validation failed:", validationResult.error.errors);
+      return new Response(
+        JSON.stringify({ 
+          error: "Validation failed", 
+          details: validationResult.error.errors.map(e => ({ field: e.path.join('.'), message: e.message }))
+        }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json", ...corsHeaders, ...rateLimitHeaders },
+        }
+      );
+    }
+
+    const { name, email, phone, company, message }: ContactEmailRequest = validationResult.data;
     console.log(`Processing contact email for: ${email}`);
 
     // Send confirmation email to user
@@ -135,9 +206,12 @@ const handler = async (req: Request): Promise<Response> => {
       console.warn("ADMIN_EMAIL not configured, skipping admin notification");
     }
 
+    const duration = Date.now() - startTime;
+    console.log(`Contact email processed successfully in ${duration}ms`);
+
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
-      headers: { "Content-Type": "application/json", ...corsHeaders },
+      headers: { "Content-Type": "application/json", ...corsHeaders, ...rateLimitHeaders },
     });
   } catch (error: any) {
     console.error("Error in send-contact-email function:", error);

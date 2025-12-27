@@ -33,6 +33,9 @@ const SecureQuoteWidget = () => {
   const [phone, setPhone] = useState('');
   const [projectType, setProjectType] = useState('');
   const [notes, setNotes] = useState('');
+  
+  // Honeypot field for bot detection
+  const [honeypot, setHoneypot] = useState('');
 
   const allowedFileTypes = [
     'application/pdf',
@@ -186,6 +189,14 @@ const SecureQuoteWidget = () => {
     const calculatedPrice = calculatePrice();
     if (calculatedPrice === null) return;
 
+    // Honeypot check - if filled, silently reject
+    if (honeypot) {
+      console.log('Honeypot triggered - rejecting quote submission');
+      setIsSubmitted(true);
+      setEstimatedPrice(calculatedPrice);
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -270,6 +281,7 @@ const SecureQuoteWidget = () => {
     setPhone('');
     setProjectType('');
     setNotes('');
+    setHoneypot('');
     setIsSubmitted(false);
   };
 
@@ -477,6 +489,20 @@ const SecureQuoteWidget = () => {
               'Submit Quote Request'
             )}
           </Button>
+        </div>
+        
+        {/* Honeypot field - hidden from real users */}
+        <div className="absolute -left-[9999px] opacity-0 pointer-events-none" aria-hidden="true">
+          <label htmlFor="quote-website">Website</label>
+          <input
+            type="text"
+            id="quote-website"
+            name="quote-website"
+            value={honeypot}
+            onChange={(e) => setHoneypot(e.target.value)}
+            tabIndex={-1}
+            autoComplete="off"
+          />
         </div>
       </div>
     </div>
