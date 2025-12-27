@@ -1,90 +1,87 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;500;600&display=swap');
 
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 10%;
+:root {
+  --background: 0 0% 100%;
+  --foreground: 0 0% 10%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 10%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 10%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 10%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 10%;
 
-    --primary: 0 100% 36.7%;
-    --primary-foreground: 0 0% 100%;
+  --primary: 0 100% 36.7%;
+  --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 40%;
-    --secondary-foreground: 0 0% 100%;
+  --secondary: 0 0% 40%;
+  --secondary-foreground: 0 0% 100%;
 
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
+  --muted: 0 0% 96.1%;
+  --muted-foreground: 0 0% 45.1%;
 
-    --accent: 0 0% 93%;
-    --accent-foreground: 0 0% 10%;
+  --accent: 0 0% 93%;
+  --accent-foreground: 0 0% 10%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 100% 36.7%;
+  --border: 0 0% 89.8%;
+  --input: 0 0% 89.8%;
+  --ring: 0 100% 36.7%;
 
-    --radius: 0.5rem;
+  --radius: 0.5rem;
 
-    /* Hero-specific variables */
-    --fiber-primary: rgba(187, 0, 0, 1);
-    --glow-intensity: 0.3;
-    --cta-primary: #BB0000;
-    --cta-hover: #990000;
-  }
+  /* Hero-specific variables */
+  --fiber-primary: rgba(187, 0, 0, 1);
+  --glow-intensity: 0.3;
+  --cta-primary: #BB0000;
+  --cta-hover: #990000;
+}
 
-  * {
-    @apply border-border;
-  }
+* {
+  @apply border-border;
+}
 
-  html {
-    scroll-behavior: smooth;
-    scroll-snap-type: y mandatory;
-    /* Performance optimization for scrolling */
-    -webkit-overflow-scrolling: touch;
-  }
+html {
+  scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
+  /* Performance optimization for scrolling */
+  -webkit-overflow-scrolling: touch;
+}
 
-  body {
-    @apply bg-background text-foreground font-['Open_Sans'];
-    overflow-x: hidden;
-    /* Optimize font rendering */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeSpeed;
-  }
+body {
+  @apply bg-background text-foreground font-['Open_Sans'];
+  overflow-x: hidden;
+  /* Optimize font rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeSpeed;
+}
 
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-['Montserrat'] font-bold tracking-tight;
-    /* Optimize heading rendering */
-    text-rendering: optimizeLegibility;
-  }
+h1, h2, h3, h4, h5, h6 {
+  @apply font-['Montserrat'] font-bold tracking-tight;
+  /* Optimize heading rendering */
+  text-rendering: optimizeLegibility;
+}
 
-  /* Scroll snap for sections */
-  section {
-    scroll-snap-align: start;
-    /* Performance: use transform instead of changing layout properties */
-    contain: layout style paint;
-  }
+/* Scroll snap for sections */
+section {
+  scroll-snap-align: start;
+  /* Performance: use transform instead of changing layout properties */
+  contain: layout style paint;
+}
 
-  /* Performance optimizations - Apply transform only where needed */
-  .parallax-element {
-    will-change: transform;
-    transform: translateZ(0);
-    /* Promote to composite layer only when needed */
-    backface-visibility: hidden;
-  }
+/* Performance optimizations - Apply transform only where needed */
+.parallax-element {
+  will-change: transform;
+  transform: translateZ(0);
+  /* Promote to composite layer only when needed */
+  backface-visibility: hidden;
+}
 
-  /* Specific transforms for animated elements */
-  .animate-fade-in,
-  .animate-fade-in-delay,
-  .animate-fade-in-delay-2 {
-    transform: translateZ(0);
-  }
+/* Specific transforms for animated elements */
+.animate-fade-in,
+.animate-fade-in-delay,
+.animate-fade-in-delay-2 {
+  transform: translateZ(0);
 }

@@ -1,4 +1,3 @@
-
 export interface FormData {
   name: string;
   email: string;
@@ -13,10 +12,4 @@ export interface FormErrors {
   phone?: string;
   company?: string;
   message?: string;
-}
-
-export interface ContactInfoItem {
-  icon: React.ReactNode;
-  title: string;
-  details: string;
 }
