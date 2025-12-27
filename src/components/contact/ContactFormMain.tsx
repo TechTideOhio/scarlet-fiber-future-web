@@ -23,6 +23,9 @@ const ContactFormMain = () => {
     message: ''
   });
   
+  // Honeypot field for bot detection (invisible to real users)
+  const [honeypot, setHoneypot] = useState('');
+  
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitAttempts, setSubmitAttempts] = useState(0);
@@ -136,6 +139,19 @@ const ContactFormMain = () => {
         variant: "destructive",
         duration: 5000,
       });
+      return;
+    }
+
+    // Honeypot check - if filled, silently reject (bots fill hidden fields)
+    if (honeypot) {
+      console.log('Honeypot triggered - rejecting submission');
+      toast({
+        title: "Message sent successfully!",
+        description: "We'll get back to you within 24 hours.",
+        duration: 5000,
+      });
+      // Fake success to not alert bots
+      setFormData({ name: '', email: '', phone: '', company: '', message: '' });
       return;
     }
 
@@ -365,6 +381,20 @@ const ContactFormMain = () => {
         </Button>
         <div id="submit-help" className="text-sm text-gray-500 text-center">
           * Required fields. We'll respond within 24 hours.
+        </div>
+        
+        {/* Honeypot field - hidden from real users, bots will fill it */}
+        <div className="absolute -left-[9999px] opacity-0 pointer-events-none" aria-hidden="true">
+          <label htmlFor="website">Website</label>
+          <input
+            type="text"
+            id="website"
+            name="website"
+            value={honeypot}
+            onChange={(e) => setHoneypot(e.target.value)}
+            tabIndex={-1}
+            autoComplete="off"
+          />
         </div>
       </form>
     </div>
