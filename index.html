@@ -1,6 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- Google Analytics 4 -->
+    <script>
+      // Only load GA if measurement ID is configured
+      (function() {
+        var gaMeasurementId = '%VITE_GA_MEASUREMENT_ID%';
+        if (gaMeasurementId && gaMeasurementId !== '%' + 'VITE_GA_MEASUREMENT_ID%') {
+          var script = document.createElement('script');
+          script.async = true;
+          script.src = 'https://www.googletagmanager.com/gtag/js?id=' + gaMeasurementId;
+          document.head.appendChild(script);
+          
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', gaMeasurementId, {
+            send_page_view: false // We'll send page views manually for SPA
+          });
+          window.gtag = gtag;
+        }
+      })();
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     

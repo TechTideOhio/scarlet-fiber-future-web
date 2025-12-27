@@ -1,8 +1,9 @@
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { trackCTAClick } from '@/lib/analytics';
 
 type CTAButtonProps = {
   children: React.ReactNode;
@@ -12,6 +13,8 @@ type CTAButtonProps = {
   onClick?: () => void;
   href?: string;
   navigateTo?: string;
+  trackingLabel?: string;
+  trackingLocation?: string;
 };
 
 const CTAButton = ({ 
@@ -22,9 +25,12 @@ const CTAButton = ({
   onClick,
   href,
   navigateTo,
+  trackingLabel,
+  trackingLocation,
   ...props 
 }: CTAButtonProps & React.ButtonHTMLAttributes<HTMLButtonElement>) => {
   const navigate = useNavigate();
+  const location = useLocation();
   
   const getVariantClasses = () => {
     switch (variant) {
@@ -53,6 +59,13 @@ const CTAButton = ({
   };
 
   const handleClick = () => {
+    // Track the CTA click
+    const label = trackingLabel || (typeof children === 'string' ? children : 'CTA Button');
+    const destination = href || navigateTo || '/contact';
+    const pageLocation = trackingLocation || location.pathname;
+    
+    trackCTAClick(label, destination, pageLocation);
+
     if (onClick) {
       onClick();
     } else if (href) {

@@ -12,6 +12,8 @@ import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import SecurityHeaders from "./components/SecurityHeaders";
 import { OrganizationSchema, WebsiteSchema } from "./components/StructuredData";
+import ErrorBoundary from "./components/ErrorBoundary";
+import PageErrorBoundary from "./components/PageErrorBoundary";
 
 const queryClient = new QueryClient();
 
@@ -19,22 +21,48 @@ const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <SecurityHeaders />
-        <OrganizationSchema />
-        <WebsiteSchema />
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/our-work" element={<OurWork />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+        <ErrorBoundary>
+          <SecurityHeaders />
+          <OrganizationSchema />
+          <WebsiteSchema />
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={
+                <PageErrorBoundary pageName="Home">
+                  <Index />
+                </PageErrorBoundary>
+              } />
+              <Route path="/services" element={
+                <PageErrorBoundary pageName="Services">
+                  <Services />
+                </PageErrorBoundary>
+              } />
+              <Route path="/our-work" element={
+                <PageErrorBoundary pageName="Our Work">
+                  <OurWork />
+                </PageErrorBoundary>
+              } />
+              <Route path="/about" element={
+                <PageErrorBoundary pageName="About">
+                  <About />
+                </PageErrorBoundary>
+              } />
+              <Route path="/contact" element={
+                <PageErrorBoundary pageName="Contact">
+                  <Contact />
+                </PageErrorBoundary>
+              } />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={
+                <PageErrorBoundary pageName="Not Found">
+                  <NotFound />
+                </PageErrorBoundary>
+              } />
+            </Routes>
+          </BrowserRouter>
+        </ErrorBoundary>
       </TooltipProvider>
     </QueryClientProvider>
   </HelmetProvider>
