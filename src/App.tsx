@@ -18,7 +18,7 @@ import { OrganizationSchema, WebsiteSchema } from "./components/StructuredData";
 import ErrorBoundary from "./components/ErrorBoundary";
 import PageErrorBoundary from "./components/PageErrorBoundary";
 import ProtectedRoute from "./components/ProtectedRoute";
-import SkipLinks from "./components/SkipLinks";
+
 import { AnnouncerProvider } from "./components/Announcer";
 
 const queryClient = new QueryClient();
@@ -35,7 +35,7 @@ const App = () => (
               <WebsiteSchema />
               <Toaster />
               <Sonner />
-              <SkipLinks />
+              
               <AnnouncerProvider>
                 <Routes>
                   <Route path="/" element={
