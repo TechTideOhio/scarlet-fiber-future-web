@@ -1,6 +1,7 @@
 import React from 'react';
 import { Linkedin } from 'lucide-react';
 import { Tables } from '@/integrations/supabase/types';
+import { OptimizedImage } from '@/components/ui/optimized-image';
 
 type TeamMember = Tables<"team_members">;
 
@@ -13,12 +14,17 @@ const TeamMemberCard = ({ member }: TeamMemberCardProps) => {
   const imageUrl = member.image_url || defaultImage;
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+    <article 
+      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+      aria-label={`Team member: ${member.name}, ${member.role}`}
+    >
       <div className="aspect-square overflow-hidden">
-        <img
+        <OptimizedImage
           src={imageUrl}
-          alt={member.name}
-          className="w-full h-full object-cover"
+          alt={`${member.name}, ${member.role} at Buckeye DataCom`}
+          className="w-full h-full"
+          width={300}
+          aspectRatio="1/1"
         />
       </div>
       <div className="p-4 text-center">
@@ -32,14 +38,15 @@ const TeamMemberCard = ({ member }: TeamMemberCardProps) => {
             href={member.linkedin_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 mt-3 text-buckeye-gray hover:text-buckeye-scarlet transition-colors"
+            className="inline-flex items-center gap-1 mt-3 text-buckeye-gray hover:text-buckeye-scarlet transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded"
+            aria-label={`Connect with ${member.name} on LinkedIn`}
           >
-            <Linkedin size={18} />
+            <Linkedin size={18} aria-hidden="true" />
             <span className="text-sm">Connect</span>
           </a>
         )}
       </div>
-    </div>
+    </article>
   );
 };
 

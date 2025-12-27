@@ -1,5 +1,6 @@
 import React from 'react';
 import { Project, getProjectImageUrl } from '@/types/project';
+import { OptimizedImage } from '@/components/ui/optimized-image';
 
 type ProjectCardProps = {
   project: Project;
@@ -9,16 +10,28 @@ type ProjectCardProps = {
 const ProjectCard = ({ project, onClick }: ProjectCardProps) => {
   const imageUrl = getProjectImageUrl(project.image_url);
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onClick();
+    }
+  };
+
   return (
-    <div
+    <article
       onClick={onClick}
-      className="cursor-pointer group bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+      onKeyDown={handleKeyDown}
+      role="button"
+      tabIndex={0}
+      aria-label={`View details for ${project.title}`}
+      className="cursor-pointer group bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
     >
       <div className="relative overflow-hidden">
-        <img
+        <OptimizedImage
           src={imageUrl}
-          alt={project.title}
-          className="w-full h-48 object-cover transition-all duration-300 group-hover:scale-105 filter grayscale group-hover:grayscale-0"
+          alt={`${project.title} - ${project.industry || 'Project'} project`}
+          className="w-full h-48 transition-all duration-300 group-hover:scale-105 filter grayscale group-hover:grayscale-0"
+          width={600}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         <div className="absolute top-4 right-4">
@@ -44,7 +57,7 @@ const ProjectCard = ({ project, onClick }: ProjectCardProps) => {
           </span>
         </div>
       </div>
-    </div>
+    </article>
   );
 };
 
