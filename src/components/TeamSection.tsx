@@ -1,10 +1,30 @@
-
 import React from 'react';
 import { Users, GraduationCap, Award } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import FiberBackground from './FiberBackground';
 import CTAButton from './CTAButton';
+import TeamMemberCard from './TeamMemberCard';
+import { Skeleton } from '@/components/ui/skeleton';
+import { supabase } from '@/integrations/supabase/client';
+import { Tables } from '@/integrations/supabase/types';
+
+type TeamMember = Tables<"team_members">;
 
 const TeamSection = () => {
+  const { data: teamMembers = [], isLoading } = useQuery({
+    queryKey: ['team-members'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('team_members')
+        .select('*')
+        .eq('is_published', true)
+        .order('display_order', { ascending: true });
+      
+      if (error) throw error;
+      return data as TeamMember[];
+    }
+  });
+
   return (
     <>
       <section className="py-20 bg-white">
@@ -18,7 +38,7 @@ const TeamSection = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
             <div className="text-center bg-gray-50 p-8 rounded-lg">
               <div className="flex justify-center mb-4">
                 <Users className="w-12 h-12 text-buckeye-scarlet" />
@@ -52,6 +72,28 @@ const TeamSection = () => {
               </p>
             </div>
           </div>
+
+          {/* Team Members Grid */}
+          {isLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="bg-white rounded-lg shadow-md overflow-hidden">
+                  <Skeleton className="aspect-square w-full" />
+                  <div className="p-4 space-y-2">
+                    <Skeleton className="h-5 w-24 mx-auto" />
+                    <Skeleton className="h-4 w-32 mx-auto" />
+                    <Skeleton className="h-12 w-full" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : teamMembers.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {teamMembers.map((member) => (
+                <TeamMemberCard key={member.id} member={member} />
+              ))}
+            </div>
+          ) : null}
         </div>
       </section>
 

@@ -1,18 +1,5 @@
-
 import React from 'react';
-
-type ProjectType = 'Data Center' | 'Smart Building' | 'Network Infrastructure' | 'IoT Systems' | 'Security Systems' | 'Cloud Integration' | 'Education/Conservation';
-
-type Project = {
-  id: number;
-  title: string;
-  type: ProjectType;
-  description: string;
-  image: string;
-  details: string;
-  industry: string;
-  features: string[];
-};
+import { Project, getProjectImageUrl } from '@/types/project';
 
 type ProjectCardProps = {
   project: Project;
@@ -20,10 +7,7 @@ type ProjectCardProps = {
 };
 
 const ProjectCard = ({ project, onClick }: ProjectCardProps) => {
-  // Check if it's an uploaded image or Unsplash image
-  const imageUrl = project.image.startsWith('/lovable-uploads/') 
-    ? project.image 
-    : `https://images.unsplash.com/${project.image}?auto=format&fit=crop&w=600&q=80`;
+  const imageUrl = getProjectImageUrl(project.image_url);
 
   return (
     <div
