@@ -8,10 +8,22 @@ import WhyChooseUs from '../components/WhyChooseUs';
 import SimpleCTA from '../components/SimpleCTA';
 import Footer from '../components/Footer';
 import ScrollIndicator from '../components/ScrollIndicator';
+import SEO from '../components/SEO';
+import { LocalBusinessSchema, BreadcrumbSchema } from '../components/StructuredData';
+import { SEO_CONFIG } from '../config/seo';
 
 const Index = () => {
   return (
     <div className="min-h-screen overflow-x-hidden">
+      <SEO 
+        title={SEO_CONFIG.pages.home.title}
+        description={SEO_CONFIG.pages.home.description}
+        keywords={SEO_CONFIG.pages.home.keywords}
+        canonicalUrl="/"
+      />
+      <LocalBusinessSchema />
+      <BreadcrumbSchema items={[{ name: 'Home', url: '/' }]} />
+      
       <Navbar />
       <ScrollIndicator />
       

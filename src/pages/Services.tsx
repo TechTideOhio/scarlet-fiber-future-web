@@ -6,6 +6,24 @@ import Footer from '../components/Footer';
 import CTAButton from '../components/CTAButton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
 import { LAYOUT_TOKENS, logLayoutToken } from '../constants';
+import SEO from '../components/SEO';
+import { ServiceSchema, BreadcrumbSchema } from '../components/StructuredData';
+import { SEO_CONFIG } from '../config/seo';
+
+const servicesData = [
+  {
+    name: 'Structured Fiber Cabling',
+    description: 'Enterprise-grade fiber optic infrastructure delivering unmatched reliability and performance with lightning-fast data transmission and minimal latency.'
+  },
+  {
+    name: 'Low-Voltage Installations',
+    description: 'Comprehensive low-voltage solutions including voice/data systems, security cameras, access control, and building automation.'
+  },
+  {
+    name: 'AI-Driven Network Monitoring',
+    description: 'Intelligent monitoring using advanced AI algorithms to analyze performance, predict issues, and automatically optimize traffic flow.'
+  }
+];
 
 const Services = () => {
   const [showStickyButton, setShowStickyButton] = useState(false);
@@ -111,6 +129,18 @@ const Services = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      <SEO 
+        title={SEO_CONFIG.pages.services.title}
+        description={SEO_CONFIG.pages.services.description}
+        keywords={SEO_CONFIG.pages.services.keywords}
+        canonicalUrl="/services"
+      />
+      <ServiceSchema services={servicesData} />
+      <BreadcrumbSchema items={[
+        { name: 'Home', url: '/' },
+        { name: 'Services', url: '/services' }
+      ]} />
+      
       <Navbar />
       
       {/* Header */}

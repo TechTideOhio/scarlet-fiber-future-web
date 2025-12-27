@@ -8,6 +8,9 @@ import CTAButton from '../components/CTAButton';
 import { Skeleton } from '@/components/ui/skeleton';
 import { supabase } from '@/integrations/supabase/client';
 import { Project } from '@/types/project';
+import SEO from '../components/SEO';
+import { BreadcrumbSchema } from '../components/StructuredData';
+import { SEO_CONFIG } from '../config/seo';
 
 const OurWork = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
@@ -39,6 +42,17 @@ const OurWork = () => {
 
   return (
     <div className="min-h-screen">
+      <SEO 
+        title={SEO_CONFIG.pages.ourWork.title}
+        description={SEO_CONFIG.pages.ourWork.description}
+        keywords={SEO_CONFIG.pages.ourWork.keywords}
+        canonicalUrl="/our-work"
+      />
+      <BreadcrumbSchema items={[
+        { name: 'Home', url: '/' },
+        { name: 'Our Work', url: '/our-work' }
+      ]} />
+      
       <Navbar />
       
       {/* Hero Section */}
