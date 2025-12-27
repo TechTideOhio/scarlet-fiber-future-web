@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { FileUp, Shield, AlertTriangle, Loader2, Check } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,9 +8,18 @@ import { cn } from "@/lib/utils";
 import { validateFileType, validateFileSize, sanitizeInput } from '@/utils/security';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { 
+  trackFormStart, 
+  trackFormSubmission, 
+  trackQuoteCalculate, 
+  trackQuoteSubmit, 
+  trackFileUpload 
+} from '@/lib/analytics';
 
 const SecureQuoteWidget = () => {
   const { toast } = useToast();
+  const hasTrackedStart = useRef(false);
+  
   const [projectSize, setProjectSize] = useState<string>('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [estimatedPrice, setEstimatedPrice] = useState<number | null>(null);
@@ -42,10 +51,17 @@ const SecureQuoteWidget = () => {
       setSelectedFile(null);
       return;
     }
+    
+    // Track form start on first interaction
+    if (!hasTrackedStart.current) {
+      trackFormStart('quote_widget');
+      hasTrackedStart.current = true;
+    }
 
     // Validate file type
     if (!validateFileType(file, allowedFileTypes)) {
       setFileError('Invalid file type. Please upload PDF, JPEG, PNG, or WebP files only.');
+      trackFileUpload(file.type, false);
       e.target.value = '';
       return;
     }
@@ -53,6 +69,7 @@ const SecureQuoteWidget = () => {
     // Validate file size
     if (!validateFileSize(file, maxFileSizeMB)) {
       setFileError(`File too large. Maximum size is ${maxFileSizeMB}MB.`);
+      trackFileUpload(file.type, false);
       e.target.value = '';
       return;
     }
@@ -72,11 +89,14 @@ const SecureQuoteWidget = () => {
     const extensionCount = (fileName.match(/\./g) || []).length;
     if (extensionCount > 1) {
       setFileError('Files with multiple extensions are not allowed.');
+      trackFileUpload(file.type, false);
       e.target.value = '';
       return;
     }
 
     setSelectedFile(file);
+    trackFileUpload(file.type, true);
+    
     toast({
       title: "File uploaded securely",
       description: `${file.name} has been validated and uploaded safely.`,
@@ -88,7 +108,11 @@ const SecureQuoteWidget = () => {
     const value = e.target.value;
     const sanitizedValue = sanitizeInput(value);
     
-    // Only allow numbers and decimal points
+    // Track form start on first interaction
+    if (!hasTrackedStart.current) {
+      trackFormStart('quote_widget');
+      hasTrackedStart.current = true;
+    }
     const numericValue = sanitizedValue.replace(/[^0-9.]/g, '');
     
     // Prevent multiple decimal points
@@ -139,6 +163,9 @@ const SecureQuoteWidget = () => {
     // Set reasonable maximum
     const maxPrice = 2500000;
     const finalPrice = Math.min(calculatedPrice, maxPrice);
+    
+    // Track price calculation
+    trackQuoteCalculate(size, finalPrice);
     
     setEstimatedPrice(finalPrice);
     return finalPrice;
@@ -198,7 +225,20 @@ const SecureQuoteWidget = () => {
         // Don't fail the submission if email fails
       }
 
+      // Track successful quote submission
+      trackQuoteSubmit(
+        parseFloat(projectSize),
+        projectType.trim() || 'not_specified',
+        calculatedPrice
+      );
+      trackFormSubmission('quote_widget', true, {
+        project_size: parseFloat(projectSize),
+        has_file: !!selectedFile,
+      });
+
       setIsSubmitted(true);
+      hasTrackedStart.current = false; // Reset for next quote
+      
       toast({
         title: "Quote request submitted!",
         description: "We'll review your request and contact you within 24 hours.",
@@ -206,6 +246,10 @@ const SecureQuoteWidget = () => {
       });
     } catch (error) {
       console.error('Error submitting quote request:', error);
+      
+      // Track failed submission
+      trackFormSubmission('quote_widget', false);
+      
       toast({
         title: "Submission failed",
         description: "There was an error submitting your quote request. Please try again.",

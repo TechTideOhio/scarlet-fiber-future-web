@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,9 +9,12 @@ import { AlertCircle, Loader2 } from 'lucide-react';
 import { validateEmail, validatePhone, sanitizeInput, validateTextLength } from './ContactFormValidation';
 import { FormData, FormErrors } from './types';
 import { supabase } from '@/integrations/supabase/client';
+import { trackFormStart, trackFormSubmission, trackFormError } from '@/lib/analytics';
 
 const ContactFormMain = () => {
   const { toast } = useToast();
+  const hasTrackedStart = useRef(false);
+  
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
@@ -71,6 +74,12 @@ const ContactFormMain = () => {
     const { name, value } = e.target;
     const sanitizedValue = sanitizeInput(value);
     
+    // Track form start on first interaction
+    if (!hasTrackedStart.current) {
+      trackFormStart('contact_form');
+      hasTrackedStart.current = true;
+    }
+    
     setFormData({
       ...formData,
       [name]: sanitizedValue
@@ -113,6 +122,14 @@ const ContactFormMain = () => {
 
     if (!validateForm()) {
       setSubmitAttempts(prev => prev + 1);
+      
+      // Track validation errors
+      Object.entries(errors).forEach(([field, error]) => {
+        if (error) {
+          trackFormError('contact_form', field, error);
+        }
+      });
+      
       toast({
         title: "Validation Error",
         description: "Please correct the errors below and try again.",
@@ -157,6 +174,12 @@ const ContactFormMain = () => {
         // Don't fail the submission if email fails
       }
 
+      // Track successful submission
+      trackFormSubmission('contact_form', true, {
+        has_phone: !!formData.phone,
+        has_company: !!formData.company,
+      });
+
       toast({
         title: "Message sent successfully!",
         description: "We'll get back to you within 24 hours.",
@@ -173,8 +196,13 @@ const ContactFormMain = () => {
       
       setErrors({});
       setSubmitAttempts(0);
+      hasTrackedStart.current = false; // Reset for next submission
     } catch (error) {
       console.error('Error submitting contact form:', error);
+      
+      // Track failed submission
+      trackFormSubmission('contact_form', false);
+      
       toast({
         title: "Submission failed",
         description: "There was an error sending your message. Please try again.",

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import { trackNavClick, trackMobileMenuToggle, trackSubmenuClick } from '@/lib/analytics';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -55,7 +56,10 @@ const Navbar = () => {
     { name: 'Contact', href: '/contact' },
   ];
 
-  const handleMenuClick = (href: string) => {
+  const handleMenuClick = (href: string, itemName: string) => {
+    // Track navigation click
+    trackNavClick(itemName, location.pathname);
+    
     setIsMenuOpen(false);
     setIsServicesOpen(false);
     
@@ -67,6 +71,18 @@ const Navbar = () => {
       }
     }
     // For routes like '/services', React Router will handle the navigation
+  };
+
+  const handleSubmenuClick = (parentName: string, subItemName: string, href: string) => {
+    // Track submenu click
+    trackSubmenuClick(parentName, subItemName);
+    handleMenuClick(href, subItemName);
+  };
+
+  const handleMobileMenuToggle = () => {
+    const newState = !isMenuOpen;
+    setIsMenuOpen(newState);
+    trackMobileMenuToggle(newState ? 'open' : 'close');
   };
 
   const isActiveRoute = (href: string) => {
@@ -88,7 +104,7 @@ const Navbar = () => {
             {/* Hamburger button */}
             <div className="flex items-center">
               <button 
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                onClick={handleMobileMenuToggle}
                 className={`p-2 transition-colors ${isScrolled ? 'text-buckeye-gray hover:text-buckeye-scarlet' : 'text-white hover:text-gray-200'}`}
                 aria-label="Toggle menu"
               >
@@ -145,7 +161,7 @@ const Navbar = () => {
                         <div className="flex items-center justify-between">
                           <Link
                             to={item.href}
-                            onClick={() => handleMenuClick(item.href)}
+                            onClick={() => handleMenuClick(item.href, item.name)}
                             className={`flex-1 py-4 px-2 text-xl font-medium transition-colors min-h-[48px] flex items-center ${
                               isActiveRoute(item.href) 
                                 ? 'text-buckeye-scarlet border-l-4 border-buckeye-scarlet pl-4' 
@@ -174,7 +190,7 @@ const Navbar = () => {
                               <Link
                                 key={subItem.name}
                                 to={subItem.href}
-                                onClick={() => handleMenuClick(subItem.href)}
+                                onClick={() => handleSubmenuClick(item.name, subItem.name, subItem.href)}
                                 className={`block py-3 px-4 text-lg transition-colors min-h-[48px] flex items-center ${
                                   isActiveRoute(subItem.href)
                                     ? 'text-buckeye-scarlet bg-buckeye-scarlet/10'
@@ -190,7 +206,7 @@ const Navbar = () => {
                     ) : (
                       <Link
                         to={item.href}
-                        onClick={() => handleMenuClick(item.href)}
+                        onClick={() => handleMenuClick(item.href, item.name)}
                         className={`block py-4 px-2 text-xl font-medium transition-colors min-h-[48px] flex items-center ${
                           isActiveRoute(item.href)
                             ? 'text-buckeye-scarlet border-l-4 border-buckeye-scarlet pl-4'
