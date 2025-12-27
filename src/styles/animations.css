@@ -1,39 +1,36 @@
-
-@layer base {
-  /* Enhanced animations for hero with performance optimization */
-  @keyframes heroFadeIn {
-    from {
-      opacity: 0;
-      transform: translate3d(0, 20px, 0);
-    }
-    to {
-      opacity: 1;
-      transform: translate3d(0, 0, 0);
-    }
+/* Enhanced animations for hero with performance optimization */
+@keyframes heroFadeIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
   }
-
-  @keyframes syncedPulse {
-    0%, 100% {
-      opacity: 1;
-      transform: scale3d(1, 1, 1);
-    }
-    50% {
-      opacity: 0.8;
-      transform: scale3d(1.02, 1.02, 1);
-    }
-  }
-
-  .hero-fade-in {
-    animation: heroFadeIn 0.8s ease-out forwards;
-    /* Performance: use transform instead of changing layout */
+  to {
+    opacity: 1;
     transform: translate3d(0, 0, 0);
   }
+}
 
-  .synced-pulse {
-    animation: syncedPulse 2s ease-in-out infinite;
-    /* Ensure GPU acceleration */
-    will-change: transform, opacity;
+@keyframes syncedPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
   }
+  50% {
+    opacity: 0.8;
+    transform: scale3d(1.02, 1.02, 1);
+  }
+}
+
+.hero-fade-in {
+  animation: heroFadeIn 0.8s ease-out forwards;
+  /* Performance: use transform instead of changing layout */
+  transform: translate3d(0, 0, 0);
+}
+
+.synced-pulse {
+  animation: syncedPulse 2s ease-in-out infinite;
+  /* Ensure GPU acceleration */
+  will-change: transform, opacity;
 }
 
 /* Critical performance optimization for initial paint */
