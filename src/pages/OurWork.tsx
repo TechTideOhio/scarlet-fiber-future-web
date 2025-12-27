@@ -1,102 +1,37 @@
-
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import ProjectCard from '../components/ProjectCard';
 import ProjectModal from '../components/ProjectModal';
 import CTAButton from '../components/CTAButton';
-
-type ProjectType = 'Data Center' | 'Smart Building' | 'Network Infrastructure' | 'IoT Systems' | 'Security Systems' | 'Cloud Integration' | 'Education/Conservation';
-
-type Project = {
-  id: number;
-  title: string;
-  type: ProjectType;
-  description: string;
-  image: string;
-  details: string;
-  industry: string;
-  features: string[];
-};
-
-const projects: Project[] = [
-  {
-    id: 1,
-    title: "Enterprise Data Center",
-    type: "Data Center",
-    description: "High-density fiber infrastructure deployment supporting 100Gb/s throughput",
-    image: "photo-1487958449943-2429e8be8625",
-    details: "Complete overhaul of legacy infrastructure with state-of-the-art fiber optic cabling, supporting 100Gb/s throughput across 50,000 square feet of data center space. This project included redundant power systems, advanced cooling solutions, and comprehensive monitoring systems.",
-    industry: "Technology",
-    features: ["100Gb/s Fiber Network", "Redundant Power Systems", "Advanced Cooling", "24/7 Monitoring"]
-  },
-  {
-    id: 2,
-    title: "Smart Building Integration",
-    type: "Smart Building",
-    description: "IoT-enabled building management system across 30-story commercial tower",
-    image: "photo-1518770660439-4636190af475",
-    details: "Implementation of smart building technology across a 30-story commercial tower, integrating HVAC, security, and lighting systems into a unified control platform. Features include predictive maintenance, energy optimization, and centralized monitoring.",
-    industry: "Commercial Real Estate",
-    features: ["Unified Control Platform", "Energy Optimization", "Predictive Maintenance", "Centralized Monitoring"]
-  },
-  {
-    id: 3,
-    title: "Campus Network Upgrade",
-    type: "Network Infrastructure",
-    description: "University-wide network modernization with Wi-Fi 6E deployment",
-    image: "photo-1461749280684-dccba630e2f6",
-    details: "Comprehensive upgrade of campus-wide network infrastructure, including Wi-Fi 6E deployment and 40Gb backbone installation across 15 buildings. The project supports 50,000+ concurrent users and includes advanced security protocols.",
-    industry: "Education",
-    features: ["Wi-Fi 6E Technology", "40Gb Backbone", "50,000+ User Support", "Advanced Security"]
-  },
-  {
-    id: 4,
-    title: "Manufacturing IoT Network",
-    type: "IoT Systems",
-    description: "Industrial IoT sensor network with real-time machine learning analytics",
-    image: "photo-1486312338219-ce68d2c6f44d",
-    details: "Design and installation of robust IoT network supporting 1,000+ sensors and real-time machine learning analytics for predictive maintenance. Includes edge computing nodes and cloud integration for comprehensive data analysis.",
-    industry: "Manufacturing",
-    features: ["1,000+ IoT Sensors", "Edge Computing", "Predictive Analytics", "Cloud Integration"]
-  },
-  {
-    id: 5,
-    title: "Hospital Security Network",
-    type: "Security Systems",
-    description: "Comprehensive security and access control system for healthcare facility",
-    image: "photo-1488590528505-98d2b5aba04b",
-    details: "Implementation of advanced security infrastructure including IP cameras, access control systems, and emergency communication networks across a 500-bed hospital. Features HIPAA-compliant data handling and 99.9% uptime guarantee.",
-    industry: "Healthcare",
-    features: ["IP Camera Network", "Access Control", "Emergency Communications", "HIPAA Compliance"]
-  },
-  {
-    id: 6,
-    title: "Financial Cloud Migration",
-    type: "Cloud Integration",
-    description: "Secure cloud infrastructure for financial services company",
-    image: "photo-1496307653780-42ee777d4833",
-    details: "Complete migration of financial services infrastructure to secure cloud environment with hybrid connectivity. Includes encrypted data channels, compliance monitoring, and disaster recovery systems with 15-minute RTO.",
-    industry: "Financial Services",
-    features: ["Hybrid Cloud Setup", "Encrypted Channels", "Compliance Monitoring", "15-min RTO"]
-  },
-  {
-    id: 7,
-    title: "Columbus Zoo Network Modernization",
-    type: "Education/Conservation",
-    description: "Complete infrastructure overhaul for the Columbus Zoo and Aquarium, supporting both guest experiences and critical animal care systems",
-    image: "/lovable-uploads/5abebf68-15fe-4395-a93d-89fa7ac4cc89.png",
-    details: "Buckeye DataCom partnered with the Columbus Zoo to modernize their aging network infrastructure. The project included installing redundant fiber paths to ensure 24/7 uptime for temperature-controlled habitats, veterinary facilities, and security systems. We also implemented high-density Wi-Fi for the 2.3 million annual visitors and created a separate secure network for research and conservation data. The new infrastructure supports innovative guest experiences like interactive exhibits and mobile apps while maintaining the strict reliability required for animal care systems.",
-    industry: "Education/Conservation",
-    features: ["580-Acre Campus Coverage", "Habitat Monitoring Systems", "Interactive Guest Experiences", "Mission-Critical Reliability"]
-  }
-];
-
-const projectTypes: ProjectType[] = ['Data Center', 'Smart Building', 'Network Infrastructure', 'IoT Systems', 'Security Systems', 'Cloud Integration', 'Education/Conservation'];
+import { Skeleton } from '@/components/ui/skeleton';
+import { supabase } from '@/integrations/supabase/client';
+import { Project } from '@/types/project';
 
 const OurWork = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [activeFilter, setActiveFilter] = useState<ProjectType | 'All'>('All');
+  const [activeFilter, setActiveFilter] = useState<string>('All');
+
+  const { data: projects = [], isLoading, error } = useQuery({
+    queryKey: ['projects'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('status', 'published')
+        .order('display_order', { ascending: true });
+      
+      if (error) throw error;
+      return data as Project[];
+    }
+  });
+
+  // Extract unique project types from data
+  const projectTypes = useMemo(() => {
+    const types = [...new Set(projects.map(p => p.type))];
+    return types.sort();
+  }, [projects]);
 
   const filteredProjects = activeFilter === 'All' 
     ? projects 
@@ -152,15 +87,52 @@ const OurWork = () => {
       {/* Projects Grid */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredProjects.map((project) => (
-              <ProjectCard
-                key={project.id}
-                project={project}
-                onClick={() => setSelectedProject(project)}
-              />
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="bg-white rounded-lg shadow-md overflow-hidden">
+                  <Skeleton className="w-full h-48" />
+                  <div className="p-6 space-y-3">
+                    <Skeleton className="h-6 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                    <Skeleton className="h-16 w-full" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : error ? (
+            <div className="text-center py-12">
+              <p className="text-red-600 mb-4">Failed to load projects</p>
+              <button 
+                onClick={() => window.location.reload()}
+                className="text-buckeye-scarlet hover:underline"
+              >
+                Try again
+              </button>
+            </div>
+          ) : filteredProjects.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-buckeye-gray text-lg">No projects found</p>
+              {activeFilter !== 'All' && (
+                <button 
+                  onClick={() => setActiveFilter('All')}
+                  className="mt-4 text-buckeye-scarlet hover:underline"
+                >
+                  View all projects
+                </button>
+              )}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredProjects.map((project) => (
+                <ProjectCard
+                  key={project.id}
+                  project={project}
+                  onClick={() => setSelectedProject(project)}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

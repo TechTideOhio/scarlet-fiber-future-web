@@ -1,20 +1,7 @@
-
 import React from 'react';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { X, CheckCircle } from 'lucide-react';
-
-type ProjectType = 'Data Center' | 'Smart Building' | 'Network Infrastructure' | 'IoT Systems' | 'Security Systems' | 'Cloud Integration' | 'Education/Conservation';
-
-type Project = {
-  id: number;
-  title: string;
-  type: ProjectType;
-  description: string;
-  image: string;
-  details: string;
-  industry: string;
-  features: string[];
-};
+import { Project, getProjectImageUrl } from '@/types/project';
 
 type ProjectModalProps = {
   project: Project | null;
@@ -25,10 +12,8 @@ type ProjectModalProps = {
 const ProjectModal = ({ project, isOpen, onClose }: ProjectModalProps) => {
   if (!project) return null;
 
-  // Check if it's an uploaded image or Unsplash image
-  const imageUrl = project.image.startsWith('/lovable-uploads/') 
-    ? project.image 
-    : `https://images.unsplash.com/${project.image}?auto=format&fit=crop&w=1200&q=90`;
+  const imageUrl = getProjectImageUrl(project.image_url);
+  const features = project.features || [];
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -63,27 +48,26 @@ const ProjectModal = ({ project, isOpen, onClose }: ProjectModalProps) => {
             </div>
             
             <p className="text-gray-600 leading-relaxed text-lg">
-              {project.details}
+              {project.details || project.description}
             </p>
             
-            <div>
-              <h3 className="text-xl font-bold text-buckeye-black mb-4">Key Features</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {project.features.map((feature, index) => (
-                  <div key={index} className="flex items-center gap-3">
-                    <CheckCircle className="text-buckeye-scarlet" size={20} />
-                    <span className="text-gray-700">{feature}</span>
-                  </div>
-                ))}
+            {features.length > 0 && (
+              <div>
+                <h3 className="text-xl font-bold text-buckeye-black mb-4">Key Features</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {features.map((feature, index) => (
+                    <div key={index} className="flex items-center gap-3">
+                      <CheckCircle className="text-buckeye-scarlet flex-shrink-0" size={20} />
+                      <span className="text-gray-700">{feature}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
             
             <div className="pt-6 border-t border-gray-200">
               <p className="text-buckeye-gray text-center">
-                {project.title === "Columbus Zoo Network Modernization" 
-                  ? "Interested in modernizing your campus network?"
-                  : "Interested in a similar project?"
-                }
+                Interested in a similar project?
                 <span className="text-buckeye-scarlet font-medium cursor-pointer hover:underline ml-1">
                   Contact us today
                 </span>
