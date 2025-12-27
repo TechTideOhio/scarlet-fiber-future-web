@@ -1,5 +1,66 @@
+/* ===== Skip Links ===== */
+.skip-links {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+}
 
-/* Print styles for clean static version */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  padding: 0.75rem 1.5rem;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 0 0 0.5rem 0;
+  transition: top 0.2s ease-in-out;
+  z-index: 9999;
+}
+
+.skip-link:focus {
+  top: 0;
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+.skip-link + .skip-link:focus {
+  left: 200px;
+}
+
+/* ===== Screen Reader Only ===== */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ===== Enhanced Focus Indicators ===== */
+:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* Ensure buttons and links have visible focus */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* ===== Print styles for clean static version ===== */
 @media print {
   .fiber-background,
   .static-fiber-background > *:not(.print-safe) {
@@ -16,12 +77,13 @@
     text-shadow: none !important;
   }
   
-  .accessibility-controls {
+  .accessibility-controls,
+  .skip-links {
     display: none !important;
   }
 }
 
-/* High contrast mode support */
+/* ===== High contrast mode support ===== */
 @media (prefers-contrast: high) {
   .fiber-strand {
     --strand-opacity: 0.8 !important;
@@ -29,6 +91,11 @@
   
   .static-fiber-background {
     background: linear-gradient(135deg, #000000 0%, #333333 100%) !important;
+  }
+  
+  /* Increase focus indicator thickness */
+  :focus-visible {
+    outline-width: 3px;
   }
 }
 
