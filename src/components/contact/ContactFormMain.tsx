@@ -141,6 +141,22 @@ const ContactFormMain = () => {
         throw error;
       }
 
+      // Send email notifications (don't block on failure)
+      try {
+        await supabase.functions.invoke('send-contact-email', {
+          body: {
+            name: formData.name.trim(),
+            email: formData.email.trim().toLowerCase(),
+            phone: formData.phone?.trim() || null,
+            company: formData.company?.trim() || null,
+            message: formData.message.trim(),
+          },
+        });
+      } catch (emailError) {
+        console.error('Email notification failed:', emailError);
+        // Don't fail the submission if email fails
+      }
+
       toast({
         title: "Message sent successfully!",
         description: "We'll get back to you within 24 hours.",

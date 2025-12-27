@@ -179,6 +179,25 @@ const SecureQuoteWidget = () => {
         throw error;
       }
 
+      // Send email notifications (don't block on failure)
+      try {
+        await supabase.functions.invoke('send-quote-email', {
+          body: {
+            name: name.trim() || null,
+            email: email.trim().toLowerCase() || null,
+            phone: phone.trim() || null,
+            projectType: projectType.trim() || null,
+            projectSize: parseFloat(projectSize),
+            estimatedPrice: calculatedPrice,
+            fileName: selectedFile?.name || null,
+            notes: notes.trim() || null,
+          },
+        });
+      } catch (emailError) {
+        console.error('Email notification failed:', emailError);
+        // Don't fail the submission if email fails
+      }
+
       setIsSubmitted(true);
       toast({
         title: "Quote request submitted!",
