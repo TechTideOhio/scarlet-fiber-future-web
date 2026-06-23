@@ -12,6 +12,8 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
 import AdminDashboard from "./pages/admin/Dashboard";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
 import SecurityHeaders from "./components/SecurityHeaders";
 import { OrganizationSchema, WebsiteSchema } from "./components/StructuredData";
@@ -66,6 +68,16 @@ const App = () => (
                   <Route path="/login" element={
                     <PageErrorBoundary pageName="Login">
                       <Login />
+                    </PageErrorBoundary>
+                  } />
+                  <Route path="/privacy" element={
+                    <PageErrorBoundary pageName="Privacy">
+                      <Privacy />
+                    </PageErrorBoundary>
+                  } />
+                  <Route path="/terms" element={
+                    <PageErrorBoundary pageName="Terms">
+                      <Terms />
                     </PageErrorBoundary>
                   } />
                   <Route path="/admin" element={
