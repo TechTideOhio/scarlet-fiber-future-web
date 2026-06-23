@@ -1,97 +1,75 @@
 
-# Buckeye DataCom — Full Buildout Plan
+## Goal
+Make every CTA on the site reliably navigate, raise accessibility to AA across all routes, and produce a Lighthouse performance + SEO report with fixes applied for the highest-impact findings.
 
-Scope: turn the existing 5-page React/Vite + Supabase site into a finished, production-ready landing site. No backend schema changes. No business-logic changes — UI/UX, routing, copy, and configuration only.
+## Scope (routes covered)
+`/`, `/services`, `/our-work`, `/about`, `/contact`, `/privacy`, `/terms`, `/login`, `/admin/*`, `/404`
 
-## 1. Home page — natural scroll narrative (`src/pages/Index.tsx`)
+## Workstream 1 — CTA & navigation audit
+Read every component that renders a button or link and verify it routes to the intended destination at mobile (375), tablet (768), and desktop (1280).
 
-Remove the three forced `h-screen` blocks. New flow, top to bottom:
+Components to audit:
+- `Hero.tsx`, `EnhancedHero.tsx`, `AboutHero.tsx`
+- `CTAButton.tsx`, `SimpleCTA.tsx`
+- `Navbar.tsx` (desktop nav, mobile sheet, "Get a Quote")
+- `Footer.tsx` (all column links, legal links, social)
+- `Services.tsx`, `IndustriesStrip.tsx`, `WhyChooseUs.tsx`, `WhyChooseUsDetailed.tsx`
+- `PortfolioTeaser.tsx`, `ProjectCard.tsx`, `ProjectGallery.tsx`
+- `TestimonialsHome.tsx`, `Testimonials.tsx`
+- `CertificationsSection.tsx`, `CompanyValues.tsx`, `CompanyStory.tsx`, `TeamSection.tsx`
+- `ContactInfo.tsx`, `ContactMap.tsx`, `ServiceAreaMap.tsx`
 
-1. `<Hero />` — keep as-is, full viewport (`min-h-dvh`)
-2. `<StatsStrip />` — full-width band
-3. `<Services />` — three service cards
-4. **NEW** `<IndustriesStrip />` — icon row: Corporate, Healthcare, Education, Manufacturing, Retail, Government (lucide icons, no new images)
-5. `<WhyChooseUs />`
-6. **NEW** `<TestimonialsHome />` — 3 short client quotes (static copy, plain cards)
-7. **NEW** `<PortfolioTeaser />` — pulls top 3 published `projects` from Supabase (reuses `ProjectCard`), "View all work →" links to `/our-work`
-8. `<SimpleCTA />` — wired to `/contact`
-9. `<Footer />` (new expanded version, see §3)
+For each CTA confirm: it is an `<a>`/`<Link>` (not a bare `<button>` masquerading as navigation), it points to a real route in `App.tsx`, it scrolls to top on navigation, and external links carry `target="_blank" rel="noopener noreferrer"`. Add missing `Link` wrappers or `onClick` handlers where buttons currently no-op. Phone/email CTAs use `tel:` / `mailto:`.
 
-Drop the `h-1/3` / `h-2/3` / `h-1/2` math. Each section gets its own `py-16 md:py-24`.
+Verification: Playwright walk of each page at 375 and 1280 — click every visible CTA, assert resulting URL, screenshot.
 
-## 2. Navbar — desktop links + mobile hamburger (`src/components/Navbar.tsx`)
+## Workstream 2 — Accessibility audit + fixes
+Static read pass + Playwright + axe-core run on each route. Fix in priority order:
 
-- Below `lg`: current hamburger overlay, unchanged.
-- `lg:` and up: horizontal nav — Home · Services (with dropdown: Fiber, Low-Voltage, AI Monitoring) · Our Work · About · Contact — plus a red **Get a Quote** button routing to `/contact`.
-- Hamburger button hidden at `lg:` (`lg:hidden`).
-- Active route gets a scarlet underline. Color states already adapt to `isScrolled`; reuse that.
+Critical
+- Icon-only buttons missing `aria-label` (Navbar hamburger, social icons, close buttons, theme/menu toggles)
+- Images missing meaningful `alt` (industry tiles, portfolio cards, team photos, hero decoration → `alt=""`)
+- Form inputs without associated labels (`SecureContactForm`, `SecureQuoteWidget`, `ContactFormMain`)
+- Non-interactive elements with `onClick` lacking role + keyboard handlers
+- Color-contrast failures from arbitrary Tailwind grays — replace with semantic tokens (`text-muted-foreground`, `text-foreground`)
+- Single `<main>` per route; verify landmark structure
+- Focus-visible rings on all interactive elements
 
-## 3. Footer — expanded (`src/components/Footer.tsx`)
+Warning
+- Heading order (one `h1` per page, no skipped levels)
+- Tap targets ≥ 44×44 on mobile (Navbar icon button, footer social)
+- `h-screen` → `h-dvh` where used for full-height sections
+- Skip-to-content link restored as a single visually-hidden anchor (since `SkipLinks.tsx` was removed)
+- `lang="en"` on `<html>`, `prefers-reduced-motion` respected by fiber animation (already partially handled — verify)
+- ARIA on Sheet/Dialog (shadcn already correct — confirm no custom widgets bypass)
 
-Replace current 2-column footer with 4 columns on `md+`:
+Verification: axe-core run via Playwright on every route; zero critical violations target.
 
-- **Buckeye DataCom** — address, phone, email, short tagline
-- **Services** — links to `/services` deep anchors (#fiber, #low-voltage, #ai-monitoring)
-- **Company** — About, Our Work, Contact, Login
-- **Legal** — Privacy Policy (`/privacy`), Terms of Service (`/terms`)
+## Workstream 3 — Lighthouse performance + SEO audit
+Run Lighthouse (mobile profile, simulated throttling) via Playwright + `lighthouse` CLI against each route on `localhost:8080`. Capture: Performance, Accessibility, Best Practices, SEO scores plus the failing audits.
 
-Bottom bar: copyright + "Serving Central Ohio & surrounding regions". No social icons unless handles are provided later.
+Report deliverable: a table per page with scores and the specific failing audits (LCP element, CLS sources, unused JS, image sizing, missing meta description, canonical, etc.).
 
-## 4. Legal pages
+Apply the highest-impact fixes:
+- LCP image preload (hero image) + `fetchpriority="high"`
+- Convert hero + industry tiles to AVIF/WebP via `vite-imagetools` if not already
+- Add explicit `width`/`height` to every `<img>` to eliminate CLS
+- Lazy-load below-the-fold images (`loading="lazy"`, `decoding="async"`)
+- Code-split admin routes and Three/WebGL fiber renderers
+- Ensure `SEO.tsx` emits unique `<title>`, meta description, canonical, `og:*`, `twitter:*`, JSON-LD per route — fill gaps on Privacy/Terms/Login/404
+- `robots.txt` + `sitemap.xml` sanity check (sitemap edge function already exists — verify routes listed)
 
-Two new routes, both registered in `src/App.tsx` with `PageErrorBoundary`:
-
-- `src/pages/Privacy.tsx` — standard privacy policy scoped to Buckeye DataCom: what's collected via the contact/quote forms (name, email, phone, message), how it's stored (Lovable Cloud / Supabase), email handling via edge functions, no third-party sale, contact-to-delete instructions.
-- `src/pages/Terms.tsx` — standard site terms: use of site, intellectual property, no warranty, governing law (Ohio), contact.
-
-Both use `Navbar`, prose layout (`max-w-3xl prose`), `Footer`, and the existing `SEO` component with `noindex={false}` and canonical URLs.
-
-The pages carry a visible "This page is maintained by Buckeye DataCom" qualifier and ask the user to review the boilerplate before publishing — no compliance/certification claims are made.
-
-## 5. Fix Google Maps embed on `/contact`
-
-Root cause: `src/components/SecurityHeaders.tsx` injects a meta CSP with `default-src 'self'` and no `frame-src` exception, so the Google Maps `<iframe>` is blocked.
-
-Fix: in `SecurityHeaders.tsx`, add `frame-src https://www.google.com https://maps.google.com;` to the CSP `content`. Also drop `frame-ancestors` and `X-Frame-Options` from the meta tag (they're invalid in meta — that's the recurring console error).
-
-## 6. Wire every CTA
-
-Audit and fix to ensure every visible CTA navigates correctly. Wrap `CTAButton`s in `<Link to="/contact">` (or add `onClick={() => navigate('/contact')}`) in:
-
-- `src/components/SimpleCTA.tsx`
-- `src/components/TeamSection.tsx` ("Meet Our Team")
-- `src/pages/OurWork.tsx` ("Start Your Project")
-- Any other unwired `CTAButton` instance found in the audit.
-
-The Services-page sticky CTA already routes — verify only.
-
-## 7. Cleanup pass
-
-- Remove `<SecurityHeaders />` duplicate render in `src/pages/Contact.tsx` (it's already rendered globally in `App.tsx`).
-- Delete `src/components/QuoteWidget` reference if any stale import remains (it was deleted earlier).
+Out of scope: SEO content rewriting, new copy, redesign work, hero card or color changes.
 
 ## Technical notes
+- All link routing through `react-router-dom` `<Link>` / `useNavigate`; never raw `window.location` for internal nav.
+- New `aria-label`s and alt text use existing copy tone; no design token changes.
+- Lighthouse run script lands in `/tmp/` (not committed). Findings summarized inline in chat.
+- No schema changes, no new dependencies beyond `lighthouse` + `axe-core` as dev-only audit tools (run from `/tmp/`, not added to `package.json`).
 
-- No database migrations. No new tables. Existing `projects` and `team_members` tables are reused.
-- No new dependencies. Icons via existing `lucide-react`. Routing via existing `react-router-dom`.
-- All colors via existing `buckeye-scarlet` / `buckeye-black` / `buckeye-gray` tokens — no hardcoded hex.
-- Mobile-first: each new section uses `py-16 md:py-24`, grids collapse to single column under `md`, tap targets ≥ 44px on the new nav + footer links.
-- SEO: new `/privacy` and `/terms` pages get `SEO` + `BreadcrumbSchema` entries, plus additions to `src/config/seo.ts`.
+## Deliverables
+1. CTA audit table (route × CTA × destination × pass/fail) + fixes applied
+2. a11y violations list (before/after) + fixes applied
+3. Lighthouse score table per route + applied perf/SEO fixes + remaining recommendations
 
-## Acceptance checks
-
-- Home scrolls naturally with 9 sections; no horizontal scroll at 375px; no `h-screen` mathematical splits.
-- Desktop nav visible at ≥1024px; hamburger replaces it below.
-- Footer shows 4 columns at `md+`, has working Privacy/Terms links.
-- `/privacy` and `/terms` render with Navbar + Footer.
-- `/contact` Google Map renders (no CSP refusal in console).
-- Every primary CTA navigates to `/contact`.
-- All 7 routes (`/`, `/services`, `/our-work`, `/about`, `/contact`, `/privacy`, `/terms`) return 200 in a Playwright sweep with no new console errors.
-
-## Out of scope
-
-- Backend schema, auth flows, admin dashboard internals.
-- Blog/resources section.
-- New imagery or photography.
-- Hero animation system changes.
-- Visual redesign of existing components beyond layout/wiring.
+Plan Mode first — approve before I switch to build.

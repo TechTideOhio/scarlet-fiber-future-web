@@ -31,13 +31,16 @@ const HeroAnimationContent = () => {
         </p>
         
         <button
-          className="relative px-12 py-5 font-medium overflow-hidden group animate-fade-in-delay-2"
+          className="relative px-12 py-5 font-medium overflow-hidden group animate-fade-in-delay-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-buckeye-black"
           onMouseEnter={() => setIsButtonHovered(true)}
           onMouseLeave={() => setIsButtonHovered(false)}
+          aria-label="Start your project — scroll to services"
           onClick={() => {
             const element = document.querySelector('#services-section');
             if (element) {
-              element.scrollIntoView({ behavior: 'smooth' });
+              element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+              window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
             }
           }}
         >

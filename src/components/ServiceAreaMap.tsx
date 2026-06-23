@@ -78,9 +78,9 @@ const ServiceAreaMap = () => {
               </div>
             </div>
             
-            <div className="mt-8 p-4 bg-buckeye-gray rounded-lg">
-              <p className="text-gray-700 text-sm">
-                <strong>Don't see your city listed?</strong> We serve communities throughout Ohio. 
+            <div className="mt-8 p-4 bg-buckeye-black rounded-lg">
+              <p className="text-white text-sm">
+                <strong>Don't see your city listed?</strong> We serve communities throughout Ohio.
                 Contact us to confirm service availability in your area.
               </p>
             </div>

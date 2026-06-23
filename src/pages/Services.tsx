@@ -142,7 +142,8 @@ const Services = () => {
       ]} />
       
       <Navbar />
-      
+
+      <main id="main-content">
       {/* Header */}
       <section className="bg-buckeye-black text-white py-16 mt-16">
         <div className="container mx-auto px-4 text-center">
@@ -154,7 +155,7 @@ const Services = () => {
       </section>
 
       {/* Service 1: Structured Fiber Cabling */}
-      <section className="py-20 bg-white">
+      <section id="fiber" className="py-20 bg-white scroll-mt-24">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="flex items-center mb-8">
@@ -205,7 +206,7 @@ const Services = () => {
       </section>
 
       {/* Service 2: Low-Voltage Installations */}
-      <section className="py-20 bg-gray-50">
+      <section id="low-voltage" className="py-20 bg-gray-50 scroll-mt-24">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="flex items-center mb-8">
@@ -257,7 +258,7 @@ const Services = () => {
       </section>
 
       {/* Service 3: AI-Driven Network Monitoring */}
-      <section className="py-20 bg-white">
+      <section id="ai-monitoring" className="py-20 bg-white scroll-mt-24">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="flex items-center mb-8">
@@ -366,6 +367,8 @@ const Services = () => {
           </div>
         </div>
       </section>
+
+      </main>
 
       {/* Sticky CTA Button */}
       <div className={`fixed bottom-6 right-6 z-50 transition-all duration-300 ${

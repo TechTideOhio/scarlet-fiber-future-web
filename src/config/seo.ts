@@ -3,7 +3,7 @@
 
 export const SEO_CONFIG = {
   siteName: 'Buckeye DataCom',
-  siteUrl: 'https://buckeyedatacom.com',
+  siteUrl: 'https://buckeyedatacom.lovable.app',
   defaultTitle: 'Enterprise Fiber & Network Solutions in Ohio',
   defaultDescription: 'Professional fiber optic cabling, low-voltage installations, and AI-driven network monitoring for Ohio businesses. Get a quote in 24 hours.',
   defaultImage: '/lovable-uploads/5abebf68-15fe-4395-a93d-89fa7ac4cc89.png',
