@@ -136,6 +136,7 @@ const Login: React.FC = () => {
         </Link>
 
         <Card className="w-full max-w-md">
+          <h2 className="sr-only">{isLogin ? 'Sign in form' : 'Sign up form'}</h2>
           <CardHeader className="space-y-1 text-center">
             <div className="flex justify-center mb-4">
               <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
@@ -146,8 +147,8 @@ const Login: React.FC = () => {
               {isLogin ? 'Welcome Back' : 'Create Account'}
             </CardTitle>
             <CardDescription>
-              {isLogin 
-                ? 'Enter your credentials to access your account' 
+              {isLogin
+                ? 'Enter your credentials to access your account'
                 : 'Sign up for a new account'}
             </CardDescription>
           </CardHeader>
