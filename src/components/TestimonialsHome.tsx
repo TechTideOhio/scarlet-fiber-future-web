@@ -1,52 +1,57 @@
 import React from 'react';
-import { Quote } from 'lucide-react';
 
 const testimonials = [
   {
     quote:
-      'Buckeye DataCom delivered our campus fiber upgrade on schedule and under budget. Their team is responsive, certified, and detail-obsessed.',
+      'Delivered our campus fiber upgrade on schedule and under budget. Responsive, certified, detail-obsessed.',
     name: 'Director of IT',
     org: 'Central Ohio Healthcare System',
   },
   {
     quote:
-      'We moved three facilities to a unified low-voltage backbone with zero downtime. Communication was flawless from quote to closeout.',
+      'We moved three facilities to a unified low-voltage backbone with zero downtime. Communication was flawless.',
     name: 'Facilities Manager',
-    org: 'Manufacturing Client, Columbus OH',
+    org: 'Manufacturing client, Columbus OH',
   },
   {
     quote:
-      'Their AI-driven monitoring caught a switch failure before it impacted operations. Worth every dollar.',
+      'AI monitoring caught a switch failure before it impacted operations. Worth every dollar.',
     name: 'Network Administrator',
-    org: 'Regional Financial Services Firm',
+    org: 'Regional financial services firm',
   },
 ];
 
 const TestimonialsHome = () => {
   return (
-    <section className="w-full py-16 md:py-24 bg-white">
+    <section className="w-full py-20 md:py-28 bg-gray-50" aria-labelledby="testimonials-heading">
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-buckeye-black mb-3">
-            What Our Clients Say
-          </h2>
-          <p className="text-buckeye-gray max-w-2xl mx-auto">
-            Trusted by IT leaders across Ohio's healthcare, education, and enterprise sectors.
+        <div className="max-w-2xl mb-14">
+          <p className="text-xs uppercase tracking-[0.2em] text-buckeye-scarlet font-medium mb-4">
+            02 / Field reports
           </p>
+          <h2
+            id="testimonials-heading"
+            className="font-display text-4xl md:text-5xl lg:text-6xl text-buckeye-black leading-[1.05]"
+          >
+            Trusted by Ohio's <em className="italic font-normal text-buckeye-scarlet">IT leaders</em>.
+          </h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-gray-200 border border-gray-200">
           {testimonials.map((t, i) => (
             <figure
               key={i}
-              className="bg-gray-50 rounded-lg p-6 border border-gray-100 flex flex-col"
+              className="bg-white p-8 md:p-10 flex flex-col gap-6"
             >
-              <Quote className="w-8 h-8 text-buckeye-scarlet mb-4" aria-hidden="true" />
-              <blockquote className="text-buckeye-black leading-relaxed flex-1">
-                "{t.quote}"
+              <span aria-hidden className="font-display text-6xl leading-none text-buckeye-scarlet/80">
+                &ldquo;
+              </span>
+              <blockquote className="font-display text-xl md:text-[1.4rem] leading-snug text-buckeye-black flex-1">
+                {t.quote}
               </blockquote>
-              <figcaption className="mt-5 pt-4 border-t border-gray-200">
-                <div className="font-semibold text-buckeye-black">{t.name}</div>
-                <div className="text-sm text-buckeye-gray">{t.org}</div>
+              <figcaption className="pt-5 border-t border-gray-200">
+                <div className="text-sm font-semibold text-buckeye-black">{t.name}</div>
+                <div className="text-xs uppercase tracking-wider text-buckeye-gray mt-1">{t.org}</div>
               </figcaption>
             </figure>
           ))}

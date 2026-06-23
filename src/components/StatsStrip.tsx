@@ -1,30 +1,28 @@
-
 import React from 'react';
-import { Separator } from "@/components/ui/separator";
+
+const stats = [
+  { value: '99.99%', label: 'Uptime guaranteed' },
+  { value: '24-hr', label: 'Quote response' },
+  { value: '20+', label: 'Years Ohio-built reliability' },
+];
 
 const StatsStrip = () => {
   return (
-    <section className="bg-buckeye-black py-12">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
-          <div className="text-center animate-fade-in" style={{ animationDelay: '0.1s' }}>
-            <p className="text-buckeye-scarlet text-3xl md:text-4xl font-bold">99.99%</p>
-            <p className="text-white text-sm mt-2">Uptime Guaranteed</p>
-          </div>
-          
-          <Separator orientation="vertical" className="hidden md:block h-16 bg-gray-700" />
-          
-          <div className="text-center animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            <p className="text-buckeye-scarlet text-3xl md:text-4xl font-bold">24-Hr</p>
-            <p className="text-white text-sm mt-2">Quote Response</p>
-          </div>
-          
-          <Separator orientation="vertical" className="hidden md:block h-16 bg-gray-700" />
-          
-          <div className="text-center animate-fade-in" style={{ animationDelay: '0.3s' }}>
-            <p className="text-buckeye-scarlet text-3xl md:text-4xl font-bold">20+</p>
-            <p className="text-white text-sm mt-2">Years Ohio-Built Reliability</p>
-          </div>
+    <section className="bg-buckeye-black py-16 md:py-20 border-y border-white/5">
+      <div className="container mx-auto px-4 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/10">
+          {stats.map((s, i) => (
+            <div
+              key={s.label}
+              className="py-8 md:py-0 md:px-10 first:md:pl-0 last:md:pr-0 animate-fade-in"
+              style={{ animationDelay: `${0.1 + i * 0.1}s` }}
+            >
+              <p className="font-display text-5xl md:text-6xl lg:text-7xl text-buckeye-scarlet leading-none mb-3">
+                {s.value}
+              </p>
+              <p className="text-white/70 text-xs uppercase tracking-[0.2em]">{s.label}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>

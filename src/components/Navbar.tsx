@@ -79,12 +79,12 @@ const Navbar = () => {
       >
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex justify-between items-center gap-6">
-            <Link to="/" className="flex items-center shrink-0" onClick={() => handleNavClick('Logo')}>
-              <span className="font-['Montserrat'] text-xl md:text-2xl font-extrabold text-buckeye-scarlet">
-                BUCKEYE
+            <Link to="/" className="flex items-baseline shrink-0" onClick={() => handleNavClick('Logo')}>
+              <span className="font-display text-xl md:text-2xl font-semibold text-buckeye-scarlet tracking-tight">
+                Buckeye
               </span>
-              <span className="font-['Montserrat'] text-xl md:text-2xl font-light ml-1 text-buckeye-scarlet">
-                DATACOM
+              <span className={`font-display text-xl md:text-2xl font-normal italic ml-1.5 ${isScrolled ? 'text-buckeye-black/70' : 'text-white/80'}`}>
+                DataCom
               </span>
             </Link>
 
@@ -188,9 +188,9 @@ const Navbar = () => {
         >
           <div className="h-full flex flex-col">
             <div className="flex items-center justify-between p-6 pt-20 border-b border-gray-700">
-              <div className="flex items-center">
-                <span className="text-buckeye-scarlet font-['Montserrat'] text-xl font-extrabold">BUCKEYE</span>
-                <span className="text-buckeye-scarlet font-['Montserrat'] text-xl font-light ml-1">DATACOM</span>
+              <div className="flex items-baseline">
+                <span className="text-buckeye-scarlet font-display text-xl font-semibold tracking-tight">Buckeye</span>
+                <span className="text-white/70 font-display text-xl font-normal italic ml-1.5">DataCom</span>
               </div>
               <button
                 onClick={() => setIsMenuOpen(false)}

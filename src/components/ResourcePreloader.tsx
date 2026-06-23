@@ -5,16 +5,7 @@ const ResourcePreloader = () => {
   useEffect(() => {
     // Enhanced resource preloading for performance targets
     const preloadResources = () => {
-      // Critical font preloading with font-display: swap
-      const fontLink = document.createElement('link');
-      fontLink.rel = 'preload';
-      fontLink.href = 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;500;600&display=swap';
-      fontLink.as = 'style';
-      fontLink.onload = () => {
-        // Convert to stylesheet after preload
-        fontLink.rel = 'stylesheet';
-      };
-      document.head.appendChild(fontLink);
+      // Fonts are bundled via @fontsource (see src/main.tsx). No external font preload needed.
 
       // Preload critical CSS for immediate paint
       const criticalCSS = document.createElement('link');
@@ -23,24 +14,11 @@ const ResourcePreloader = () => {
       criticalCSS.as = 'style';
       document.head.appendChild(criticalCSS);
 
-      // DNS prefetch for external resources
-      const dnsPrefetch = document.createElement('link');
-      dnsPrefetch.rel = 'dns-prefetch';
-      dnsPrefetch.href = '//fonts.googleapis.com';
-      document.head.appendChild(dnsPrefetch);
-
       // Prefetch potential next navigation
       const prefetchLink = document.createElement('link');
       prefetchLink.rel = 'prefetch';
       prefetchLink.href = '/api/fiber-data';
       document.head.appendChild(prefetchLink);
-
-      // Performance optimization: preconnect to font provider
-      const preconnect = document.createElement('link');
-      preconnect.rel = 'preconnect';
-      preconnect.href = 'https://fonts.gstatic.com';
-      preconnect.crossOrigin = 'anonymous';
-      document.head.appendChild(preconnect);
     };
 
     // Critical rendering path optimization
@@ -52,20 +30,6 @@ const ResourcePreloader = () => {
         viewport.content = 'width=device-width, initial-scale=1.0';
         document.head.appendChild(viewport);
       }
-
-      // Add performance hints
-      const resourceHints = [
-        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous' }
-      ];
-
-      resourceHints.forEach(hint => {
-        const link = document.createElement('link');
-        link.rel = hint.rel;
-        link.href = hint.href;
-        if (hint.crossOrigin) link.crossOrigin = hint.crossOrigin;
-        document.head.appendChild(link);
-      });
     };
 
     preloadResources();

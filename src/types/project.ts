@@ -1,4 +1,5 @@
 import { Tables } from "@/integrations/supabase/types";
+import portfolioFallback from "@/assets/portfolio-fallback.jpg";
 
 export type Project = Tables<"projects">;
 
@@ -7,14 +8,13 @@ export type ProjectType = string;
 // Helper to get image URL from project
 export const getProjectImageUrl = (imageUrl: string | null): string => {
   if (!imageUrl) {
-    return "https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=600&q=80";
+    return portfolioFallback;
   }
-  
-  // Check if it's an uploaded image, full URL, or Unsplash ID
+
   if (imageUrl.startsWith('/lovable-uploads/') || imageUrl.startsWith('http')) {
     return imageUrl;
   }
-  
-  // Assume it's an Unsplash photo ID
-  return `https://images.unsplash.com/${imageUrl}?auto=format&fit=crop&w=600&q=80`;
+
+  // Legacy Unsplash photo ID support
+  return `https://images.unsplash.com/${imageUrl}?auto=format&fit=crop&w=1200&q=80`;
 };
