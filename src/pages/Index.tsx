@@ -1,10 +1,12 @@
-
 import React from 'react';
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
 import StatsStrip from '../components/StatsStrip';
 import Services from '../components/Services';
+import IndustriesStrip from '../components/IndustriesStrip';
 import WhyChooseUs from '../components/WhyChooseUs';
+import TestimonialsHome from '../components/TestimonialsHome';
+import PortfolioTeaser from '../components/PortfolioTeaser';
 import SimpleCTA from '../components/SimpleCTA';
 import Footer from '../components/Footer';
 import ScrollIndicator from '../components/ScrollIndicator';
@@ -15,7 +17,7 @@ import { SEO_CONFIG } from '../config/seo';
 const Index = () => {
   return (
     <div className="min-h-screen overflow-x-hidden">
-      <SEO 
+      <SEO
         title={SEO_CONFIG.pages.home.title}
         description={SEO_CONFIG.pages.home.description}
         keywords={SEO_CONFIG.pages.home.keywords}
@@ -23,37 +25,22 @@ const Index = () => {
       />
       <LocalBusinessSchema />
       <BreadcrumbSchema items={[{ name: 'Home', url: '/' }]} />
-      
+
       <Navbar />
       <ScrollIndicator />
-      
-      {/* First Viewport: Hero + Navigation */}
-      <section id="hero-section" className="h-screen relative">
+
+      <section id="hero-section" className="relative min-h-dvh">
         <Hero />
       </section>
-      
-      {/* Second Viewport: Stats + Services */}
-      <section id="services-section" className="h-screen relative bg-gradient-to-b from-gray-50 to-white">
-        <div className="h-1/3">
-          <StatsStrip />
-        </div>
-        <div className="h-2/3 flex items-center">
-          <Services />
-        </div>
-      </section>
-      
-      {/* Third Viewport: Why Choose Us + CTA + Footer */}
-      <section id="final-section" className="h-screen relative bg-gradient-to-b from-white to-gray-50">
-        <div className="h-1/2 flex items-center">
-          <WhyChooseUs />
-        </div>
-        <div className="h-1/4 flex items-center">
-          <SimpleCTA />
-        </div>
-        <div className="h-1/4">
-          <Footer />
-        </div>
-      </section>
+
+      <StatsStrip />
+      <Services />
+      <IndustriesStrip />
+      <WhyChooseUs />
+      <TestimonialsHome />
+      <PortfolioTeaser />
+      <SimpleCTA />
+      <Footer />
     </div>
   );
 };
