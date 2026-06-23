@@ -10,7 +10,7 @@ const Privacy = () => {
   return (
     <div className="min-h-screen bg-white">
       <SEO
-        title="Privacy Policy | Buckeye DataCom"
+        title="Privacy Policy"
         description="How Buckeye DataCom collects, uses, and protects information submitted through this website."
         canonicalUrl="/privacy"
       />

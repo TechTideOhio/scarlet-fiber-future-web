@@ -10,7 +10,7 @@ const Terms = () => {
   return (
     <div className="min-h-screen bg-white">
       <SEO
-        title="Terms of Service | Buckeye DataCom"
+        title="Terms of Service"
         description="The terms governing use of the Buckeye DataCom website."
         canonicalUrl="/terms"
       />
