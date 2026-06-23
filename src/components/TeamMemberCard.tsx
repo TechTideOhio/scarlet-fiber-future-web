@@ -2,6 +2,7 @@ import React from 'react';
 import { Linkedin } from 'lucide-react';
 import { Tables } from '@/integrations/supabase/types';
 import { OptimizedImage } from '@/components/ui/optimized-image';
+import teamFallback from '@/assets/team-fallback.jpg';
 
 type TeamMember = Tables<"team_members">;
 
@@ -10,8 +11,7 @@ type TeamMemberCardProps = {
 };
 
 const TeamMemberCard = ({ member }: TeamMemberCardProps) => {
-  const defaultImage = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80";
-  const imageUrl = member.image_url || defaultImage;
+  const imageUrl = member.image_url || teamFallback;
 
   return (
     <article 

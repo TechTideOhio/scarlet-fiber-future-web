@@ -19,6 +19,11 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				display: ['Fraunces', 'ui-serif', 'Georgia', 'serif'],
+				serif: ['Fraunces', 'ui-serif', 'Georgia', 'serif'],
+				sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',

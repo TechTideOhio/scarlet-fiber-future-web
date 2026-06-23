@@ -4,6 +4,17 @@ import './index.css'
 import { validateTokens } from './constants'
 import { setupGlobalErrorHandlers } from './lib/errorLogger'
 
+// Editorial type system
+import '@fontsource/fraunces/400.css'
+import '@fontsource/fraunces/500.css'
+import '@fontsource/fraunces/600.css'
+import '@fontsource/fraunces/700.css'
+import '@fontsource/fraunces/400-italic.css'
+import '@fontsource/inter/400.css'
+import '@fontsource/inter/500.css'
+import '@fontsource/inter/600.css'
+import '@fontsource/inter/700.css'
+
 // 🎯 Validate design tokens on startup
 validateTokens();
 
@@ -17,20 +28,18 @@ const registerServiceWorker = async () => {
       const registration = await navigator.serviceWorker.register('/sw.js', {
         scope: '/',
       });
-      
-      // Check for updates
+
       registration.addEventListener('updatefound', () => {
         const newWorker = registration.installing;
         if (newWorker) {
           newWorker.addEventListener('statechange', () => {
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              // New content is available, notify user if needed
               console.log('[SW] New content available, refresh to update');
             }
           });
         }
       });
-      
+
       console.log('[SW] Service worker registered successfully');
     } catch (error) {
       console.error('[SW] Service worker registration failed:', error);
@@ -38,7 +47,6 @@ const registerServiceWorker = async () => {
   }
 };
 
-// Register SW after page load
 window.addEventListener('load', registerServiceWorker);
 
 createRoot(document.getElementById("root")!).render(<App />);

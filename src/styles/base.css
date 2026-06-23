@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;500;600&display=swap');
-
 :root {
   --background: 0 0% 100%;
   --foreground: 0 0% 10%;
@@ -31,6 +29,11 @@
 
   --radius: 0.5rem;
 
+  /* Editorial type tokens */
+  --font-display: 'Fraunces', ui-serif, Georgia, serif;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-brand: 'Inter', system-ui, sans-serif;
+
   /* Hero-specific variables */
   --fiber-primary: rgba(187, 0, 0, 1);
   --glow-intensity: 0.3;
@@ -44,30 +47,36 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-snap-type: y mandatory;
-  /* Performance optimization for scrolling */
   -webkit-overflow-scrolling: touch;
 }
 
 body {
-  @apply bg-background text-foreground font-['Open_Sans'];
+  @apply bg-background text-foreground;
+  font-family: var(--font-body);
   overflow-x: hidden;
-  /* Optimize font rendering */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeSpeed;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "ss01", "cv11";
 }
 
 h1, h2, h3, h4, h5, h6 {
-  @apply font-['Montserrat'] font-bold tracking-tight;
-  /* Optimize heading rendering */
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.02em;
   text-rendering: optimizeLegibility;
+  font-feature-settings: "ss01";
 }
 
-/* Scroll snap for sections */
+h1 { letter-spacing: -0.035em; }
+h2 { letter-spacing: -0.028em; }
+
+::selection {
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
 section {
-  scroll-snap-align: start;
-  /* Performance: use transform instead of changing layout properties */
   contain: layout style paint;
 }
 
