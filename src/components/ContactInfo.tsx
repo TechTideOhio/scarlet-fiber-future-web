@@ -103,15 +103,15 @@ const ContactInfo = () => {
               </div>
             </div>
             
-            <div className="mt-6 p-4 bg-buckeye-gray rounded-lg">
+            <div className="mt-6 p-4 bg-buckeye-black rounded-lg">
               <div className="flex items-start">
                 <Users className="w-5 h-5 text-buckeye-scarlet mt-0.5 mr-3 flex-shrink-0" />
                 <div>
-                  <p className="text-buckeye-black font-medium mb-1">
+                  <p className="text-white font-medium mb-1">
                     Emergency Support
                   </p>
-                  <p className="text-gray-700 text-sm">
-                    24/7 emergency support available for existing clients. 
+                  <p className="text-gray-200 text-sm">
+                    24/7 emergency support available for existing clients.
                     Call our main number for after-hours assistance.
                   </p>
                 </div>
