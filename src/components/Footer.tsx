@@ -12,9 +12,9 @@ const Footer = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
             {/* Brand */}
             <div className="text-white">
-              <div className="flex items-center mb-4">
-                <span className="font-['Montserrat'] text-xl font-extrabold text-buckeye-scarlet">BUCKEYE</span>
-                <span className="font-['Montserrat'] text-xl font-light ml-1 text-buckeye-scarlet">DATACOM</span>
+              <div className="flex items-baseline mb-4">
+                <span className="font-display text-2xl font-semibold text-buckeye-scarlet tracking-tight">Buckeye</span>
+                <span className="font-display text-2xl font-normal italic ml-2 text-white/70">DataCom</span>
               </div>
               <p className="text-gray-400 text-sm mb-4 leading-relaxed">
                 Ohio's trusted partner for enterprise fiber, low-voltage, and AI-driven network infrastructure.

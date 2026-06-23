@@ -27,20 +27,23 @@ const PortfolioTeaser = () => {
   if (!isLoading && projects.length === 0) return null;
 
   return (
-    <section className="w-full py-16 md:py-24 bg-gray-50">
+    <section className="w-full py-20 md:py-28 bg-gray-50" aria-labelledby="portfolio-heading">
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-10 gap-4">
-          <div>
-            <h2 className="text-3xl md:text-4xl font-bold text-buckeye-black mb-3">
-              Recent Projects
-            </h2>
-            <p className="text-buckeye-gray max-w-2xl">
-              A sample of network infrastructure we've delivered across Ohio.
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-14 gap-6">
+          <div className="max-w-2xl">
+            <p className="text-xs uppercase tracking-[0.2em] text-buckeye-scarlet font-medium mb-4">
+              04 / Recent work
             </p>
+            <h2
+              id="portfolio-heading"
+              className="font-display text-4xl md:text-5xl lg:text-6xl text-buckeye-black leading-[1.05]"
+            >
+              Installed, tested, <em className="italic font-normal text-buckeye-scarlet">documented</em>.
+            </h2>
           </div>
           <Link
             to="/our-work"
-            className="text-buckeye-scarlet hover:text-buckeye-scarlet/80 font-medium whitespace-nowrap"
+            className="text-buckeye-scarlet font-medium border-b border-buckeye-scarlet/40 hover:border-buckeye-scarlet pb-1 self-start md:self-end whitespace-nowrap"
           >
             View all work →
           </Link>
