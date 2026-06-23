@@ -17,7 +17,7 @@ export const useLazyFiberEffects = (quality: QualityLevel) => {
     userInteracted: false
   });
 
-  const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
+  const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const userInteractionListenersRef = useRef<(() => void)[]>([]);
 
   // Clear timeouts helper
