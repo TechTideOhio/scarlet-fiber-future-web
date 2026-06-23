@@ -23,62 +23,51 @@ const NotFound = () => {
         noIndex={true}
       />
       
-      <div className="text-center px-4 max-w-lg">
-        {/* 404 Number */}
+      <main id="main-content" className="text-center px-4 max-w-lg">
         <h1 className="text-8xl md:text-9xl font-bold text-buckeye-scarlet mb-4 animate-pulse">
           404
         </h1>
-        
-        {/* Error Message */}
+
         <h2 className="text-2xl md:text-3xl font-semibold text-white mb-4">
           Page Not Found
         </h2>
-        
-        <p className="text-buckeye-gray mb-8">
-          The page you're looking for doesn't exist or has been moved. 
+
+        <p className="text-gray-200 mb-8">
+          The page you're looking for doesn't exist or has been moved.
           Let's get you back on track.
         </p>
-        
-        {/* Action Buttons */}
+
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button 
-            asChild
-            className="bg-buckeye-scarlet hover:bg-buckeye-scarlet/90 text-white"
-          >
+          <Button asChild className="bg-buckeye-scarlet hover:bg-buckeye-scarlet/90 text-white">
             <Link to="/">
               <Home className="mr-2 h-4 w-4" />
               Back to Home
             </Link>
           </Button>
-          
-          <Button 
-            variant="outline" 
-            asChild
-            className="border-buckeye-gray text-white hover:bg-white/10"
-          >
+
+          <Button variant="outline" asChild className="border-buckeye-gray text-white hover:bg-white/10">
             <Link to="/services">
               <Search className="mr-2 h-4 w-4" />
               View Services
             </Link>
           </Button>
         </div>
-        
-        {/* Quick Links */}
-        <div className="mt-12 pt-8 border-t border-gray-700">
-          <p className="text-buckeye-gray text-sm mb-4">Popular pages:</p>
+
+        <nav aria-label="Popular pages" className="mt-12 pt-8 border-t border-gray-700">
+          <p className="text-gray-200 text-sm mb-4">Popular pages:</p>
           <div className="flex flex-wrap justify-center gap-4 text-sm">
-            <Link to="/our-work" className="text-buckeye-scarlet hover:text-white transition-colors">
+            <Link to="/our-work" className="text-white hover:text-buckeye-scarlet transition-colors underline">
               Our Work
             </Link>
-            <Link to="/about" className="text-buckeye-scarlet hover:text-white transition-colors">
+            <Link to="/about" className="text-white hover:text-buckeye-scarlet transition-colors underline">
               About Us
             </Link>
-            <Link to="/contact" className="text-buckeye-scarlet hover:text-white transition-colors">
+            <Link to="/contact" className="text-white hover:text-buckeye-scarlet transition-colors underline">
               Contact
             </Link>
           </div>
-        </div>
-      </div>
+        </nav>
+      </main>
     </div>
   );
 };

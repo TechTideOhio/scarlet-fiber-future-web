@@ -37,7 +37,7 @@ const Footer = () => {
 
             {/* Services */}
             <div className="text-white">
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-buckeye-scarlet mb-4">Services</h3>
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-white mb-4 border-l-2 border-buckeye-scarlet pl-2">Services</h3>
               <ul className="space-y-2 text-sm">
                 <li><Link to="/services#fiber" className="text-gray-300 hover:text-white transition-colors">Structured Fiber Cabling</Link></li>
                 <li><Link to="/services#low-voltage" className="text-gray-300 hover:text-white transition-colors">Low-Voltage Installations</Link></li>
@@ -48,7 +48,7 @@ const Footer = () => {
 
             {/* Company */}
             <div className="text-white">
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-buckeye-scarlet mb-4">Company</h3>
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-white mb-4 border-l-2 border-buckeye-scarlet pl-2">Company</h3>
               <ul className="space-y-2 text-sm">
                 <li><Link to="/about" className="text-gray-300 hover:text-white transition-colors">About Us</Link></li>
                 <li><Link to="/our-work" className="text-gray-300 hover:text-white transition-colors">Our Work</Link></li>
@@ -59,7 +59,7 @@ const Footer = () => {
 
             {/* Legal + CTA */}
             <div className="text-white">
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-buckeye-scarlet mb-4">Legal</h3>
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-white mb-4 border-l-2 border-buckeye-scarlet pl-2">Legal</h3>
               <ul className="space-y-2 text-sm mb-6">
                 <li><Link to="/privacy" className="text-gray-300 hover:text-white transition-colors">Privacy Policy</Link></li>
                 <li><Link to="/terms" className="text-gray-300 hover:text-white transition-colors">Terms of Service</Link></li>
@@ -78,7 +78,7 @@ const Footer = () => {
           <p className="text-gray-400 text-sm">
             © {year} Buckeye DataCom. All Rights Reserved.
           </p>
-          <p className="text-gray-500 text-xs">Serving Central Ohio & surrounding regions</p>
+          <p className="text-gray-300 text-xs">Serving Central Ohio & surrounding regions</p>
         </div>
       </div>
     </footer>

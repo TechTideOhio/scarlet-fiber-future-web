@@ -1,19 +1,11 @@
-# Buckeye DataCom - Robots.txt
-# https://buckeyedatacom.com
+# Buckeye DataCom — robots.txt
 
-# Allow all crawlers access to the site
 User-agent: *
 Allow: /
-
-# Sitemap location
-Sitemap: https://buckeyedatacom.com/sitemap.xml
-
-# Block admin and API routes
 Disallow: /admin
 Disallow: /admin/
-Disallow: /api/
+Disallow: /login
 
-# Allow major search engines explicitly
 User-agent: Googlebot
 Allow: /
 
@@ -29,6 +21,4 @@ Allow: /
 User-agent: LinkedInBot
 Allow: /
 
-# Crawl-delay for less common bots
-User-agent: *
-Crawl-delay: 1
+Sitemap: https://buckeyedatacom.lovable.app/sitemap.xml

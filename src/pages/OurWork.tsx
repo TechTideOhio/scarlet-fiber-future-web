@@ -54,14 +54,15 @@ const OurWork = () => {
       ]} />
       
       <Navbar />
-      
+
+      <main id="main-content">
       {/* Hero Section */}
       <section className="pt-32 pb-16 bg-gradient-to-br from-buckeye-black via-buckeye-black to-gray-900">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
             Our Work
           </h1>
-          <p className="text-xl text-buckeye-gray max-w-3xl mx-auto">
+          <p className="text-xl text-gray-200 max-w-3xl mx-auto">
             Explore our portfolio of successful network infrastructure projects across various industries
           </p>
         </div>
@@ -156,7 +157,7 @@ const OurWork = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
             Ready to see your project here?
           </h2>
-          <p className="text-xl text-buckeye-gray mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-200 mb-8 max-w-2xl mx-auto">
             Join our growing list of satisfied clients and transform your network infrastructure today.
           </p>
           <CTAButton variant="primary" size="lg">
@@ -164,6 +165,7 @@ const OurWork = () => {
           </CTAButton>
         </div>
       </section>
+      </main>
 
       <Footer />
 

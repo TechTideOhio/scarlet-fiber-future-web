@@ -125,15 +125,16 @@ const Login: React.FC = () => {
         description="Access your Buckeye DataCom account"
         noIndex={true}
       />
-      <div className="min-h-screen flex flex-col items-center justify-center bg-muted/30 px-4">
-        <Link 
+      <main id="main-content" className="min-h-screen flex flex-col items-center justify-center bg-muted/30 px-4">
+        <h1 className="sr-only">{isLogin ? 'Sign in to Buckeye DataCom' : 'Create your Buckeye DataCom account'}</h1>
+        <Link
           to="/"
           className="mb-8 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Home
         </Link>
-        
+
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-1 text-center">
             <div className="flex justify-center mb-4">
@@ -242,7 +243,7 @@ const Login: React.FC = () => {
             </CardFooter>
           </form>
         </Card>
-      </div>
+      </main>
     </>
   );
 };

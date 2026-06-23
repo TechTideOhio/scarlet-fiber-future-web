@@ -28,13 +28,15 @@ const About = () => {
       ]} />
       
       <Navbar />
-      <AboutHero />
-      <CompanyStory />
-      <WhyChooseUsDetailed />
-      <TeamSection />
-      <CertificationsSection />
-      <ServiceAreaMap />
-      <CompanyValues />
+      <main id="main-content">
+        <AboutHero />
+        <CompanyStory />
+        <WhyChooseUsDetailed />
+        <TeamSection />
+        <CertificationsSection />
+        <ServiceAreaMap />
+        <CompanyValues />
+      </main>
       <Footer />
     </div>
   );

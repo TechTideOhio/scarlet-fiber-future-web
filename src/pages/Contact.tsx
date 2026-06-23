@@ -24,11 +24,19 @@ const Contact = () => {
       ]} />
 
       <Navbar />
-      <div className="pt-24">
+      <main id="main-content" className="pt-24">
+        <header className="container mx-auto px-4 lg:px-8 pt-8 pb-2 text-center">
+          <h1 className="font-display text-4xl md:text-5xl font-bold text-buckeye-black">
+            Contact <em className="italic font-normal text-buckeye-scarlet">Buckeye DataCom</em>
+          </h1>
+          <p className="mt-3 text-buckeye-gray max-w-2xl mx-auto">
+            Tell us about your project. We respond to every inquiry within 24 hours.
+          </p>
+        </header>
         <SecureContactForm />
         <ContactInfo />
         <ContactMap />
-      </div>
+      </main>
       <Footer />
     </div>
   );

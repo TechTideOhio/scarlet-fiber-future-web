@@ -29,17 +29,21 @@ const Index = () => {
       <Navbar />
       <ScrollIndicator />
 
-      <section id="hero-section" className="relative min-h-dvh">
-        <Hero />
-      </section>
+      <main id="main-content">
+        <section id="hero-section" className="relative min-h-dvh">
+          <Hero />
+        </section>
 
-      <StatsStrip />
-      <Services />
-      <IndustriesStrip />
-      <WhyChooseUs />
-      <TestimonialsHome />
-      <PortfolioTeaser />
-      <SimpleCTA />
+        <div id="services-section">
+          <StatsStrip />
+          <Services />
+        </div>
+        <IndustriesStrip />
+        <WhyChooseUs />
+        <TestimonialsHome />
+        <PortfolioTeaser />
+        <SimpleCTA />
+      </main>
       <Footer />
     </div>
   );
