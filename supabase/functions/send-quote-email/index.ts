@@ -131,7 +131,7 @@ const handler = async (req: Request): Promise<Response> => {
             </div>
             
             <div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
-              <p style="font-size: 16px;">Hi${name ? ` <strong>${name}</strong>` : ''},</p>
+              <p style="font-size: 16px;">Hi${name ? ` <strong>${he(name)}</strong>` : ''},</p>
               
               <p>Thank you for requesting a quote from Buckeye DataCom! Here's your preliminary estimate:</p>
               
@@ -142,10 +142,10 @@ const handler = async (req: Request): Promise<Response> => {
               
               <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
                 <h3 style="margin-top: 0; color: #BB0000;">Project Details:</h3>
-                ${projectType ? `<p><strong>Project Type:</strong> ${projectType}</p>` : ''}
+                ${projectType ? `<p><strong>Project Type:</strong> ${he(projectType)}</p>` : ''}
                 <p><strong>Project Size:</strong> ${projectSize.toLocaleString()} sq ft</p>
-                ${fileName ? `<p><strong>Floor Plan:</strong> ${fileName}</p>` : ''}
-                ${notes ? `<p><strong>Notes:</strong> ${notes}</p>` : ''}
+                ${fileName ? `<p><strong>Floor Plan:</strong> ${he(fileName)}</p>` : ''}
+                ${notes ? `<p><strong>Notes:</strong> ${he(notes)}</p>` : ''}
               </div>
               
               <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; border-radius: 4px; margin: 20px 0;">
