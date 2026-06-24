@@ -164,7 +164,7 @@ const handler = async (req: Request): Promise<Response> => {
       const adminEmailResponse = await resend.emails.send({
         from: "Buckeye DataCom <onboarding@resend.dev>",
         to: [adminEmail],
-        subject: `🔔 New Contact Submission from ${name}`,
+        subject: `🔔 New Contact Submission from ${name.replace(/[\r\n]/g, ' ').substring(0, 80)}`,
         html: `
           <!DOCTYPE html>
           <html>
@@ -180,25 +180,25 @@ const handler = async (req: Request): Promise<Response> => {
               <table style="width: 100%; border-collapse: collapse;">
                 <tr>
                   <td style="padding: 10px 0; border-bottom: 1px solid #ddd;"><strong>Name:</strong></td>
-                  <td style="padding: 10px 0; border-bottom: 1px solid #ddd;">${name}</td>
+                  <td style="padding: 10px 0; border-bottom: 1px solid #ddd;">${he(name)}</td>
                 </tr>
                 <tr>
                   <td style="padding: 10px 0; border-bottom: 1px solid #ddd;"><strong>Email:</strong></td>
-                  <td style="padding: 10px 0; border-bottom: 1px solid #ddd;"><a href="mailto:${email}">${email}</a></td>
+                  <td style="padding: 10px 0; border-bottom: 1px solid #ddd;"><a href="mailto:${he(email)}">${he(email)}</a></td>
                 </tr>
                 <tr>
                   <td style="padding: 10px 0; border-bottom: 1px solid #ddd;"><strong>Phone:</strong></td>
-                  <td style="padding: 10px 0; border-bottom: 1px solid #ddd;">${phone || 'Not provided'}</td>
+                  <td style="padding: 10px 0; border-bottom: 1px solid #ddd;">${phone ? he(phone) : 'Not provided'}</td>
                 </tr>
                 <tr>
                   <td style="padding: 10px 0; border-bottom: 1px solid #ddd;"><strong>Company:</strong></td>
-                  <td style="padding: 10px 0; border-bottom: 1px solid #ddd;">${company || 'Not provided'}</td>
+                  <td style="padding: 10px 0; border-bottom: 1px solid #ddd;">${company ? he(company) : 'Not provided'}</td>
                 </tr>
               </table>
               
               <div style="margin-top: 20px; background: white; padding: 15px; border-radius: 8px;">
                 <h3 style="margin-top: 0; color: #BB0000;">Message:</h3>
-                <p style="white-space: pre-wrap;">${message}</p>
+                <p style="white-space: pre-wrap;">${he(message)}</p>
               </div>
               
               <p style="margin-top: 20px; color: #666; font-size: 12px;">
