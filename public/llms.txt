@@ -1,0 +1,18 @@
+# Buckeye DataCom
+
+> Enterprise fiber optic cabling, low-voltage installations, and AI-driven network monitoring for businesses across Ohio.
+
+Buckeye DataCom designs and installs network infrastructure for commercial, healthcare, education, government, manufacturing, and retail clients. Services cover fiber optic backbone, structured low-voltage cabling, and intelligent network monitoring. Based in Galloway, OH, serving Columbus and surrounding regions.
+
+## Pages
+
+- [Home](/): Overview of services, industries served, and recent projects.
+- [Services](/services): Fiber optic cabling, low-voltage installations, and AI network monitoring offerings.
+- [Our Work](/our-work): Portfolio of completed network infrastructure projects across Ohio industries.
+- [About](/about): Company story, team, certifications, and 15+ years of experience.
+- [Contact](/contact): Request a quote or get in touch — responses within 24 hours.
+
+## Optional
+
+- [Privacy Policy](/privacy): How we handle visitor and customer data.
+- [Terms of Service](/terms): Terms governing use of this website.

@@ -31,30 +31,30 @@ export const SEO_CONFIG = {
     areaServedRadius: '100 miles'
   },
 
-  // Pages configuration
+  // Pages configuration — keep titles short; SEO component appends " | Buckeye DataCom" (~18 chars)
   pages: {
     home: {
-      title: 'Enterprise Fiber & Network Solutions in Ohio',
+      title: 'Ohio Fiber & Network Solutions',
       description: 'Professional fiber optic cabling, low-voltage installations, and AI-driven network monitoring for Ohio businesses. Get a quote in 24 hours.',
       keywords: 'fiber optic, network infrastructure, Ohio, Columbus, low-voltage, cabling, AI monitoring'
     },
     services: {
-      title: 'Our Services | Fiber, Low-Voltage & AI Network Monitoring',
+      title: 'Services — Fiber & Network',
       description: 'Enterprise-grade fiber cabling, low-voltage installations, and intelligent network monitoring solutions. Serving Columbus, Ohio and surrounding areas.',
       keywords: 'fiber cabling, low-voltage installation, network monitoring, AI, enterprise network'
     },
     ourWork: {
-      title: 'Our Portfolio | Network Infrastructure Projects',
+      title: 'Our Work — Project Portfolio',
       description: 'View our completed fiber optic, data center, and network infrastructure projects across Ohio industries.',
       keywords: 'network projects, fiber installation, data center, portfolio, case studies'
     },
     about: {
-      title: 'About Us | Ohio\'s Trusted Network Infrastructure Experts',
+      title: 'About Our Team',
       description: 'Learn about Buckeye DataCom\'s team, certifications, and 15+ years of experience in enterprise network solutions.',
       keywords: 'about us, team, certifications, network experts, Ohio'
     },
     contact: {
-      title: 'Contact Us | Get a Free Network Infrastructure Quote',
+      title: 'Contact — Free Network Quote',
       description: 'Contact Buckeye DataCom for fiber optic cabling, low-voltage installations, and network monitoring. Quotes returned within 24 hours.',
       keywords: 'contact, quote, free estimate, network services, Ohio'
     },
