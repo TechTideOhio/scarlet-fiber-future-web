@@ -21,6 +21,15 @@ const contactEmailSchema = z.object({
 
 type ContactEmailRequest = z.infer<typeof contactEmailSchema>;
 
+// HTML-escape user-provided values before interpolation into email templates
+const he = (s: string | null | undefined) =>
+  (s ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
 // Simple in-memory rate limiting (resets on function cold start)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 const RATE_LIMIT = 5; // requests per window
@@ -118,7 +127,7 @@ const handler = async (req: Request): Promise<Response> => {
           </div>
           
           <div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
-            <p style="font-size: 16px;">Hi <strong>${name}</strong>,</p>
+            <p style="font-size: 16px;">Hi <strong>${he(name)}</strong>,</p>
             
             <p>Thank you for reaching out to Buckeye DataCom! We've received your message and our team will review it promptly.</p>
             
@@ -126,10 +135,10 @@ const handler = async (req: Request): Promise<Response> => {
             
             <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #BB0000;">
               <h3 style="margin-top: 0; color: #BB0000;">Your Message Summary:</h3>
-              ${company ? `<p><strong>Company:</strong> ${company}</p>` : ''}
-              ${phone ? `<p><strong>Phone:</strong> ${phone}</p>` : ''}
+              ${company ? `<p><strong>Company:</strong> ${he(company)}</p>` : ''}
+              ${phone ? `<p><strong>Phone:</strong> ${he(phone)}</p>` : ''}
               <p><strong>Message:</strong></p>
-              <p style="color: #666;">${message.substring(0, 200)}${message.length > 200 ? '...' : ''}</p>
+              <p style="color: #666;">${he(message.substring(0, 200))}${message.length > 200 ? '...' : ''}</p>
             </div>
             
             <p>In the meantime, feel free to explore our services and past projects on our website.</p>
@@ -155,7 +164,7 @@ const handler = async (req: Request): Promise<Response> => {
       const adminEmailResponse = await resend.emails.send({
         from: "Buckeye DataCom <onboarding@resend.dev>",
         to: [adminEmail],
-        subject: `🔔 New Contact Submission from ${name}`,
+        subject: `🔔 New Contact Submission from ${name.replace(/[\r\n]/g, ' ').substring(0, 80)}`,
         html: `
           <!DOCTYPE html>
           <html>
@@ -171,25 +180,25 @@ const handler = async (req: Request): Promise<Response> => {
               <table style="width: 100%; border-collapse: collapse;">
                 <tr>
                   <td style="padding: 10px 0; border-bottom: 1px solid #ddd;"><strong>Name:</strong></td>
-                  <td style="padding: 10px 0; border-bottom: 1px solid #ddd;">${name}</td>
+                  <td style="padding: 10px 0; border-bottom: 1px solid #ddd;">${he(name)}</td>
                 </tr>
                 <tr>
                   <td style="padding: 10px 0; border-bottom: 1px solid #ddd;"><strong>Email:</strong></td>
-                  <td style="padding: 10px 0; border-bottom: 1px solid #ddd;"><a href="mailto:${email}">${email}</a></td>
+                  <td style="padding: 10px 0; border-bottom: 1px solid #ddd;"><a href="mailto:${he(email)}">${he(email)}</a></td>
                 </tr>
                 <tr>
                   <td style="padding: 10px 0; border-bottom: 1px solid #ddd;"><strong>Phone:</strong></td>
-                  <td style="padding: 10px 0; border-bottom: 1px solid #ddd;">${phone || 'Not provided'}</td>
+                  <td style="padding: 10px 0; border-bottom: 1px solid #ddd;">${phone ? he(phone) : 'Not provided'}</td>
                 </tr>
                 <tr>
                   <td style="padding: 10px 0; border-bottom: 1px solid #ddd;"><strong>Company:</strong></td>
-                  <td style="padding: 10px 0; border-bottom: 1px solid #ddd;">${company || 'Not provided'}</td>
+                  <td style="padding: 10px 0; border-bottom: 1px solid #ddd;">${company ? he(company) : 'Not provided'}</td>
                 </tr>
               </table>
               
               <div style="margin-top: 20px; background: white; padding: 15px; border-radius: 8px;">
                 <h3 style="margin-top: 0; color: #BB0000;">Message:</h3>
-                <p style="white-space: pre-wrap;">${message}</p>
+                <p style="white-space: pre-wrap;">${he(message)}</p>
               </div>
               
               <p style="margin-top: 20px; color: #666; font-size: 12px;">
@@ -216,7 +225,7 @@ const handler = async (req: Request): Promise<Response> => {
   } catch (error: any) {
     console.error("Error in send-contact-email function:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: "An unexpected error occurred. Please try again." }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },

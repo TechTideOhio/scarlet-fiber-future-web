@@ -24,6 +24,15 @@ const quoteEmailSchema = z.object({
 
 type QuoteEmailRequest = z.infer<typeof quoteEmailSchema>;
 
+// HTML-escape user-provided values before interpolation into email templates
+const he = (s: string | null | undefined) =>
+  (s ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
 // Simple in-memory rate limiting
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 const RATE_LIMIT = 10; // requests per window
@@ -122,7 +131,7 @@ const handler = async (req: Request): Promise<Response> => {
             </div>
             
             <div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
-              <p style="font-size: 16px;">Hi${name ? ` <strong>${name}</strong>` : ''},</p>
+              <p style="font-size: 16px;">Hi${name ? ` <strong>${he(name)}</strong>` : ''},</p>
               
               <p>Thank you for requesting a quote from Buckeye DataCom! Here's your preliminary estimate:</p>
               
@@ -133,10 +142,10 @@ const handler = async (req: Request): Promise<Response> => {
               
               <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
                 <h3 style="margin-top: 0; color: #BB0000;">Project Details:</h3>
-                ${projectType ? `<p><strong>Project Type:</strong> ${projectType}</p>` : ''}
+                ${projectType ? `<p><strong>Project Type:</strong> ${he(projectType)}</p>` : ''}
                 <p><strong>Project Size:</strong> ${projectSize.toLocaleString()} sq ft</p>
-                ${fileName ? `<p><strong>Floor Plan:</strong> ${fileName}</p>` : ''}
-                ${notes ? `<p><strong>Notes:</strong> ${notes}</p>` : ''}
+                ${fileName ? `<p><strong>Floor Plan:</strong> ${he(fileName)}</p>` : ''}
+                ${notes ? `<p><strong>Notes:</strong> ${he(notes)}</p>` : ''}
               </div>
               
               <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; border-radius: 4px; margin: 20px 0;">
@@ -190,15 +199,15 @@ const handler = async (req: Request): Promise<Response> => {
               <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
                 <tr>
                   <td style="padding: 8px 0; border-bottom: 1px solid #ddd;"><strong>Name:</strong></td>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #ddd;">${name || 'Not provided'}</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #ddd;">${name ? he(name) : 'Not provided'}</td>
                 </tr>
                 <tr>
                   <td style="padding: 8px 0; border-bottom: 1px solid #ddd;"><strong>Email:</strong></td>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #ddd;">${email ? `<a href="mailto:${email}">${email}</a>` : 'Not provided'}</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #ddd;">${email ? `<a href="mailto:${he(email)}">${he(email)}</a>` : 'Not provided'}</td>
                 </tr>
                 <tr>
                   <td style="padding: 8px 0; border-bottom: 1px solid #ddd;"><strong>Phone:</strong></td>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #ddd;">${phone || 'Not provided'}</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #ddd;">${phone ? he(phone) : 'Not provided'}</td>
                 </tr>
               </table>
               
@@ -206,7 +215,7 @@ const handler = async (req: Request): Promise<Response> => {
               <table style="width: 100%; border-collapse: collapse;">
                 <tr>
                   <td style="padding: 8px 0; border-bottom: 1px solid #ddd;"><strong>Project Type:</strong></td>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #ddd;">${projectType || 'Not specified'}</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #ddd;">${projectType ? he(projectType) : 'Not specified'}</td>
                 </tr>
                 <tr>
                   <td style="padding: 8px 0; border-bottom: 1px solid #ddd;"><strong>Project Size:</strong></td>
@@ -218,14 +227,14 @@ const handler = async (req: Request): Promise<Response> => {
                 </tr>
                 <tr>
                   <td style="padding: 8px 0; border-bottom: 1px solid #ddd;"><strong>Floor Plan:</strong></td>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #ddd;">${fileName || 'None uploaded'}</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #ddd;">${fileName ? he(fileName) : 'None uploaded'}</td>
                 </tr>
               </table>
               
               ${notes ? `
               <div style="margin-top: 20px; background: white; padding: 15px; border-radius: 8px;">
                 <h4 style="margin-top: 0; color: #666;">Additional Notes:</h4>
-                <p style="margin-bottom: 0;">${notes}</p>
+                <p style="margin-bottom: 0;">${he(notes)}</p>
               </div>
               ` : ''}
               
@@ -253,7 +262,7 @@ const handler = async (req: Request): Promise<Response> => {
   } catch (error: any) {
     console.error("Error in send-quote-email function:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: "An unexpected error occurred. Please try again." }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },
