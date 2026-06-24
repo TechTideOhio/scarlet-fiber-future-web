@@ -127,7 +127,7 @@ const handler = async (req: Request): Promise<Response> => {
           </div>
           
           <div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
-            <p style="font-size: 16px;">Hi <strong>${name}</strong>,</p>
+            <p style="font-size: 16px;">Hi <strong>${he(name)}</strong>,</p>
             
             <p>Thank you for reaching out to Buckeye DataCom! We've received your message and our team will review it promptly.</p>
             
@@ -135,10 +135,10 @@ const handler = async (req: Request): Promise<Response> => {
             
             <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #BB0000;">
               <h3 style="margin-top: 0; color: #BB0000;">Your Message Summary:</h3>
-              ${company ? `<p><strong>Company:</strong> ${company}</p>` : ''}
-              ${phone ? `<p><strong>Phone:</strong> ${phone}</p>` : ''}
+              ${company ? `<p><strong>Company:</strong> ${he(company)}</p>` : ''}
+              ${phone ? `<p><strong>Phone:</strong> ${he(phone)}</p>` : ''}
               <p><strong>Message:</strong></p>
-              <p style="color: #666;">${message.substring(0, 200)}${message.length > 200 ? '...' : ''}</p>
+              <p style="color: #666;">${he(message.substring(0, 200))}${message.length > 200 ? '...' : ''}</p>
             </div>
             
             <p>In the meantime, feel free to explore our services and past projects on our website.</p>
