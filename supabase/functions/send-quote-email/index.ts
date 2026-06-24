@@ -199,15 +199,15 @@ const handler = async (req: Request): Promise<Response> => {
               <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
                 <tr>
                   <td style="padding: 8px 0; border-bottom: 1px solid #ddd;"><strong>Name:</strong></td>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #ddd;">${name || 'Not provided'}</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #ddd;">${name ? he(name) : 'Not provided'}</td>
                 </tr>
                 <tr>
                   <td style="padding: 8px 0; border-bottom: 1px solid #ddd;"><strong>Email:</strong></td>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #ddd;">${email ? `<a href="mailto:${email}">${email}</a>` : 'Not provided'}</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #ddd;">${email ? `<a href="mailto:${he(email)}">${he(email)}</a>` : 'Not provided'}</td>
                 </tr>
                 <tr>
                   <td style="padding: 8px 0; border-bottom: 1px solid #ddd;"><strong>Phone:</strong></td>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #ddd;">${phone || 'Not provided'}</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #ddd;">${phone ? he(phone) : 'Not provided'}</td>
                 </tr>
               </table>
               
@@ -215,7 +215,7 @@ const handler = async (req: Request): Promise<Response> => {
               <table style="width: 100%; border-collapse: collapse;">
                 <tr>
                   <td style="padding: 8px 0; border-bottom: 1px solid #ddd;"><strong>Project Type:</strong></td>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #ddd;">${projectType || 'Not specified'}</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #ddd;">${projectType ? he(projectType) : 'Not specified'}</td>
                 </tr>
                 <tr>
                   <td style="padding: 8px 0; border-bottom: 1px solid #ddd;"><strong>Project Size:</strong></td>
@@ -227,14 +227,14 @@ const handler = async (req: Request): Promise<Response> => {
                 </tr>
                 <tr>
                   <td style="padding: 8px 0; border-bottom: 1px solid #ddd;"><strong>Floor Plan:</strong></td>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #ddd;">${fileName || 'None uploaded'}</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #ddd;">${fileName ? he(fileName) : 'None uploaded'}</td>
                 </tr>
               </table>
               
               ${notes ? `
               <div style="margin-top: 20px; background: white; padding: 15px; border-radius: 8px;">
                 <h4 style="margin-top: 0; color: #666;">Additional Notes:</h4>
-                <p style="margin-bottom: 0;">${notes}</p>
+                <p style="margin-bottom: 0;">${he(notes)}</p>
               </div>
               ` : ''}
               
