@@ -24,6 +24,15 @@ const quoteEmailSchema = z.object({
 
 type QuoteEmailRequest = z.infer<typeof quoteEmailSchema>;
 
+// HTML-escape user-provided values before interpolation into email templates
+const he = (s: string | null | undefined) =>
+  (s ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
 // Simple in-memory rate limiting
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 const RATE_LIMIT = 10; // requests per window
