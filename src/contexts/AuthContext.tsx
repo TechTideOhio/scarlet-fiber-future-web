@@ -29,16 +29,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     try {
       const { data, error } = await supabase
-        .rpc('has_role', { _user_id: user.id, _role: 'admin' });
-      
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+
       if (error) {
         console.error('Error checking admin status:', error);
         setIsAdmin(false);
         return false;
       }
 
-      setIsAdmin(!!data);
-      return !!data;
+      const adminFlag = !!data;
+      setIsAdmin(adminFlag);
+      return adminFlag;
     } catch (err) {
       console.error('Error checking admin status:', err);
       setIsAdmin(false);

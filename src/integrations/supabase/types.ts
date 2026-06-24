@@ -157,7 +157,6 @@ export type Database = {
           bio: string | null
           created_at: string
           display_order: number | null
-          email: string | null
           id: string
           image_url: string | null
           is_published: boolean | null
@@ -170,7 +169,6 @@ export type Database = {
           bio?: string | null
           created_at?: string
           display_order?: number | null
-          email?: string | null
           id?: string
           image_url?: string | null
           is_published?: boolean | null
@@ -183,7 +181,6 @@ export type Database = {
           bio?: string | null
           created_at?: string
           display_order?: number | null
-          email?: string | null
           id?: string
           image_url?: string | null
           is_published?: boolean | null
@@ -265,13 +262,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
+      [_ in never]: never
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
