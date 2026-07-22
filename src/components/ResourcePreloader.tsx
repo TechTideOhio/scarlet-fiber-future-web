@@ -35,29 +35,10 @@ const ResourcePreloader = () => {
     preloadResources();
     optimizeCriticalPath();
 
-    // Enhanced service worker registration with update handling
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js')
-        .then(registration => {
-          console.log('SW registered: ', registration);
-          
-          // Handle service worker updates
-          registration.addEventListener('updatefound', () => {
-            const newWorker = registration.installing;
-            if (newWorker) {
-              newWorker.addEventListener('statechange', () => {
-                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  // New service worker available, could show update notification
-                  console.log('New content available, refresh recommended');
-                }
-              });
-            }
-          });
-        })
-        .catch(registrationError => {
-          console.log('SW registration failed: ', registrationError);
-        });
-    }
+    // Service worker intentionally not registered.
+    // A kill-switch worker at /sw.js exists only to clean up the previous
+    // app-shell PWA registration for returning visitors.
+
 
     // Performance observer for Core Web Vitals tracking
     if ('PerformanceObserver' in window) {
