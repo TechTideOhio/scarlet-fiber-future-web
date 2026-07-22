@@ -162,7 +162,7 @@ const Navbar = () => {
               <button
                 onClick={handleMobileMenuToggle}
                 className={`p-2 min-w-11 min-h-11 flex items-center justify-center transition-colors ${
-                  isScrolled ? 'text-buckeye-gray hover:text-buckeye-scarlet' : 'text-white hover:text-gray-200'
+                  useSolidNav ? 'text-buckeye-gray hover:text-buckeye-scarlet' : 'text-white hover:text-gray-200'
                 }`}
                 aria-label="Toggle menu"
                 aria-expanded={isMenuOpen}
