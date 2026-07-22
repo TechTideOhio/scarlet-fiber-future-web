@@ -27,7 +27,7 @@ const Index = () => {
       <BreadcrumbSchema items={[{ name: 'Home', url: '/' }]} />
 
       <Navbar />
-      <ScrollIndicator />
+      
 
       <main id="main-content">
         <section id="hero-section" className="relative min-h-dvh">
