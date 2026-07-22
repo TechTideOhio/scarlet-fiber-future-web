@@ -9,6 +9,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2, Mail, Lock, ArrowLeft } from 'lucide-react';
 import { z } from 'zod';
 import SEO from '@/components/SEO';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 const emailSchema = z.string().email('Please enter a valid email address');
 const passwordSchema = z.string().min(6, 'Password must be at least 6 characters');
