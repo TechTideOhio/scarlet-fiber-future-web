@@ -21,7 +21,13 @@ const HeroAnimationSystem = () => {
       <HeroAnimationContent />
 
       {/* Vignette */}
-      <div className="absolute inset-0 pointer-events-none bg-radial-gradient from-transparent via-transparent to-black/50" />
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(circle at center, transparent 0%, transparent 50%, rgba(0,0,0,0.4) 100%)',
+        }}
+      />
     </div>
   );
 };
