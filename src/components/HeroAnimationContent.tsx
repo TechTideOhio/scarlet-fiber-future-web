@@ -1,15 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 const HeroAnimationContent = () => {
-  const [isButtonHovered, setIsButtonHovered] = useState(false);
-
   return (
     <div className="relative z-10 flex items-center justify-center min-h-screen px-4">
       <div className="text-center max-w-6xl mx-auto">
         <div className="mb-12">
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-10 tracking-tight leading-relaxed py-6">
             <span
-              className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-buckeye-scarlet to-white animate-text-shimmer bg-[length:200%_100%] pb-2"
+              className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-buckeye-scarlet to-white pb-2"
               style={{
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
@@ -18,7 +16,7 @@ const HeroAnimationContent = () => {
               Connecting the Future,
             </span>
             <span
-              className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-buckeye-scarlet to-white animate-text-shimmer bg-[length:200%_100%] pb-2"
+              className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-buckeye-scarlet to-white pb-2"
               style={{
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
@@ -35,8 +33,6 @@ const HeroAnimationContent = () => {
 
         <button
           className="relative px-12 py-5 font-medium overflow-hidden group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-buckeye-black"
-          onMouseEnter={() => setIsButtonHovered(true)}
-          onMouseLeave={() => setIsButtonHovered(false)}
           aria-label="Start your project — scroll to services"
           onClick={() => {
             const element = document.querySelector('#services-section');
@@ -47,25 +43,19 @@ const HeroAnimationContent = () => {
             }
           }}
         >
-          {/* Button background with enhanced contrast */}
-          <div className="absolute inset-0 bg-white/10 backdrop-blur-sm border-2 border-white/20 transition-all duration-300 group-hover:bg-white/15 group-hover:border-buckeye-scarlet/70" />
+          {/* Button background */}
+          <div className="absolute inset-0 bg-white/10 backdrop-blur-sm border-2 border-white/20 group-hover:bg-white/15 group-hover:border-buckeye-scarlet/70" />
 
-          {/* Button content with text glow to match the main title */}
+          {/* Button content with same static gradient glow as the headline */}
           <span
-            className="relative z-10 flex items-center gap-3 text-lg tracking-wider uppercase text-transparent bg-clip-text bg-gradient-to-r from-white via-buckeye-scarlet to-white animate-text-shimmer bg-[length:200%_100%]"
+            className="relative z-10 flex items-center gap-3 text-lg tracking-wider uppercase text-transparent bg-clip-text bg-gradient-to-r from-white via-buckeye-scarlet to-white"
             style={{
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
             }}
           >
             Start Your Project
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              className={`transform transition-transform duration-300 ${isButtonHovered ? 'translate-x-1' : ''}`}
-            >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <path
                 d="M5 12H19M19 12L12 5M19 12L12 19"
                 stroke="currentColor"
