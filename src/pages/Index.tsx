@@ -9,7 +9,7 @@ import TestimonialsHome from '../components/TestimonialsHome';
 import PortfolioTeaser from '../components/PortfolioTeaser';
 import SimpleCTA from '../components/SimpleCTA';
 import Footer from '../components/Footer';
-import ScrollIndicator from '../components/ScrollIndicator';
+
 import SEO from '../components/SEO';
 import { LocalBusinessSchema, BreadcrumbSchema } from '../components/StructuredData';
 import { SEO_CONFIG } from '../config/seo';
