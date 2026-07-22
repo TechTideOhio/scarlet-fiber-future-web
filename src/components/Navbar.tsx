@@ -90,7 +90,7 @@ const Navbar = () => {
               <span className="font-display text-xl md:text-2xl font-semibold text-buckeye-scarlet tracking-tight">
                 Buckeye
               </span>
-              <span className={`font-display text-xl md:text-2xl font-normal italic ml-1.5 ${isScrolled ? 'text-buckeye-black/70' : 'text-white/80'}`}>
+              <span className={`font-display text-xl md:text-2xl font-normal italic ml-1.5 ${useSolidNav ? 'text-buckeye-black/70' : 'text-white/80'}`}>
                 DataCom
               </span>
             </Link>
