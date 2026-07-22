@@ -34,6 +34,12 @@ const Navbar = () => {
   const [desktopServicesOpen, setDesktopServicesOpen] = useState(false);
   const location = useLocation();
 
+  // Only the home route has a dark hero behind a transparent navbar.
+  // Every other page has a light/white top area, so the navbar must render
+  // in its solid white state from the start or the links become invisible.
+  const isHome = location.pathname === '/';
+  const useSolidNav = !isHome || isScrolled;
+
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener('scroll', handleScroll);
@@ -66,15 +72,16 @@ const Navbar = () => {
     trackMobileMenuToggle(next ? 'open' : 'close');
   };
 
-  const linkColor = isScrolled ? 'text-buckeye-gray' : 'text-white';
+  const linkColor = useSolidNav ? 'text-buckeye-gray' : 'text-white';
   const linkHover = 'hover:text-buckeye-scarlet';
+
 
   return (
     <>
       <nav
         id="navigation"
         className={`fixed w-full z-50 transition-all duration-300 ${
-          isScrolled ? 'bg-white shadow-md py-3' : 'bg-transparent py-5'
+          useSolidNav ? 'bg-white shadow-md py-3' : 'bg-transparent py-5'
         }`}
       >
         <div className="container mx-auto px-4 lg:px-8">
@@ -83,7 +90,7 @@ const Navbar = () => {
               <span className="font-display text-xl md:text-2xl font-semibold text-buckeye-scarlet tracking-tight">
                 Buckeye
               </span>
-              <span className={`font-display text-xl md:text-2xl font-normal italic ml-1.5 ${isScrolled ? 'text-buckeye-black/70' : 'text-white/80'}`}>
+              <span className={`font-display text-xl md:text-2xl font-normal italic ml-1.5 ${useSolidNav ? 'text-buckeye-black/70' : 'text-white/80'}`}>
                 DataCom
               </span>
             </Link>
@@ -155,7 +162,7 @@ const Navbar = () => {
               <button
                 onClick={handleMobileMenuToggle}
                 className={`p-2 min-w-11 min-h-11 flex items-center justify-center transition-colors ${
-                  isScrolled ? 'text-buckeye-gray hover:text-buckeye-scarlet' : 'text-white hover:text-gray-200'
+                  useSolidNav ? 'text-buckeye-gray hover:text-buckeye-scarlet' : 'text-white hover:text-gray-200'
                 }`}
                 aria-label="Toggle menu"
                 aria-expanded={isMenuOpen}
