@@ -2,8 +2,15 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+// Publishable (anon) key and URL are safe to ship in the browser bundle;
+// Row Level Security protects the data. Inlined so the client never
+// initializes with undefined values if env injection fails at build.
+const SUPABASE_URL =
+  import.meta.env.VITE_SUPABASE_URL ||
+  'https://jejwgmqscdbvdpmygjde.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY =
+  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplandnbXFzY2RidmRwbXlnamRlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY3ODMyNjIsImV4cCI6MjA4MjM1OTI2Mn0.SitMB93g7tIWJHvuMfg47Wh2BHp_TGdJUoKcNp9u5-w';
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
