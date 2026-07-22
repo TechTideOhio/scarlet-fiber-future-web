@@ -121,13 +121,14 @@ const Login: React.FC = () => {
   }
 
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <SEO 
         title={isLogin ? 'Login' : 'Sign Up'}
         description="Access your Buckeye DataCom account"
         noIndex={true}
       />
-      <main id="main-content" className="min-h-screen flex flex-col items-center justify-center bg-muted/30 px-4">
+      <Navbar />
+      <main id="main-content" className="flex-1 flex flex-col items-center justify-center bg-muted/30 px-4 pt-28 pb-16">
         <h1 className="sr-only">{isLogin ? 'Sign in to Buckeye DataCom' : 'Create your Buckeye DataCom account'}</h1>
         <Link
           to="/"
