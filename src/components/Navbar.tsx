@@ -34,6 +34,12 @@ const Navbar = () => {
   const [desktopServicesOpen, setDesktopServicesOpen] = useState(false);
   const location = useLocation();
 
+  // Only the home route has a dark hero behind a transparent navbar.
+  // Every other page has a light/white top area, so the navbar must render
+  // in its solid white state from the start or the links become invisible.
+  const isHome = location.pathname === '/';
+  const useSolidNav = !isHome || isScrolled;
+
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener('scroll', handleScroll);
@@ -66,8 +72,9 @@ const Navbar = () => {
     trackMobileMenuToggle(next ? 'open' : 'close');
   };
 
-  const linkColor = isScrolled ? 'text-buckeye-gray' : 'text-white';
+  const linkColor = useSolidNav ? 'text-buckeye-gray' : 'text-white';
   const linkHover = 'hover:text-buckeye-scarlet';
+
 
   return (
     <>
