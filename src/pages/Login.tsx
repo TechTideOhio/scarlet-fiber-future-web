@@ -9,6 +9,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2, Mail, Lock, ArrowLeft } from 'lucide-react';
 import { z } from 'zod';
 import SEO from '@/components/SEO';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 const emailSchema = z.string().email('Please enter a valid email address');
 const passwordSchema = z.string().min(6, 'Password must be at least 6 characters');
@@ -119,13 +121,14 @@ const Login: React.FC = () => {
   }
 
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <SEO 
         title={isLogin ? 'Login' : 'Sign Up'}
         description="Access your Buckeye DataCom account"
         noIndex={true}
       />
-      <main id="main-content" className="min-h-screen flex flex-col items-center justify-center bg-muted/30 px-4">
+      <Navbar />
+      <main id="main-content" className="flex-1 flex flex-col items-center justify-center bg-muted/30 px-4 pt-28 pb-16">
         <h1 className="sr-only">{isLogin ? 'Sign in to Buckeye DataCom' : 'Create your Buckeye DataCom account'}</h1>
         <Link
           to="/"
@@ -245,7 +248,8 @@ const Login: React.FC = () => {
           </form>
         </Card>
       </main>
-    </>
+      <Footer />
+    </div>
   );
 };
 
