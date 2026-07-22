@@ -248,7 +248,8 @@ const Login: React.FC = () => {
           </form>
         </Card>
       </main>
-    </>
+      <Footer />
+    </div>
   );
 };
 
