@@ -10,7 +10,7 @@ const SimpleCTA = () => {
         </h2>
         <Link
           to="/contact"
-          className="inline-flex items-center justify-center min-h-11 bg-buckeye-scarlet hover:bg-buckeye-scarlet/90 text-white font-semibold py-4 px-8 rounded-md transition-all duration-300 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-buckeye-scarlet focus-visible:ring-offset-2"
+          className="inline-flex items-center justify-center min-h-11 bg-buckeye-scarlet hover:bg-buckeye-scarlet/90 text-white font-semibold py-4 px-8 rounded-md transition-all duration-200 active:scale-[0.97] hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-buckeye-scarlet focus-visible:ring-offset-2"
         >
           Get Started
         </Link>

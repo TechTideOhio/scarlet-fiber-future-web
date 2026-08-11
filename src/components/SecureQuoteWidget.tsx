@@ -397,7 +397,7 @@ const SecureQuoteWidget = () => {
             htmlFor="floorplan"
             className={cn(
               "flex items-center justify-center gap-2 p-4 border-2 border-dashed border-white rounded-lg cursor-pointer mt-1",
-              "text-white hover:bg-white/10 transition-colors",
+              "text-white hover:bg-white/10 transition-all duration-200 active:scale-[0.97]",
               fileError ? "border-red-300 bg-red-50/10" : "",
               isSubmitting ? "opacity-50 cursor-not-allowed" : ""
             )}

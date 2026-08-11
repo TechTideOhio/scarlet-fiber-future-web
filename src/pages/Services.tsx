@@ -374,7 +374,7 @@ const Services = () => {
       <div className={`fixed bottom-6 right-6 z-50 transition-all duration-300 ${
         showStickyButton ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-16 pointer-events-none'
       }`}>
-        <CTAButton variant="primary" size="lg" className="shadow-2xl">
+        <CTAButton variant="primary" size="lg" className="glow-brand shadow-2xl">
           Start Your Project
         </CTAButton>
       </div>

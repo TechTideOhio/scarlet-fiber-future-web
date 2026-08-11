@@ -161,7 +161,7 @@ const OurWork = () => {
           <p className="text-xl text-gray-200 mb-8 max-w-2xl mx-auto">
             Join our growing list of satisfied clients and transform your network infrastructure today.
           </p>
-          <CTAButton variant="primary" size="lg">
+          <CTAButton variant="primary" size="lg" className="glow-brand">
             Start Your Project
           </CTAButton>
         </div>

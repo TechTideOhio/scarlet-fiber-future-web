@@ -31,7 +31,7 @@ const ProjectModal = ({ project, isOpen, onClose }: ProjectModalProps) => {
         <button
           ref={closeButtonRef}
           onClick={onClose}
-          className="absolute right-2 top-2 inline-flex min-h-11 min-w-11 items-center justify-center rounded-md p-2 text-buckeye-gray hover:text-buckeye-scarlet active:text-buckeye-scarlet transition-colors z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-buckeye-scarlet focus-visible:ring-offset-2"
+          className="absolute right-2 top-2 inline-flex min-h-11 min-w-11 items-center justify-center rounded-md p-2 text-buckeye-gray hover:text-buckeye-scarlet active:text-buckeye-scarlet transition-all duration-200 active:scale-[0.97] z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-buckeye-scarlet focus-visible:ring-offset-2"
           aria-label="Close project details"
         >
           <X size={24} aria-hidden="true" />
@@ -80,7 +80,7 @@ const ProjectModal = ({ project, isOpen, onClose }: ProjectModalProps) => {
             <div className="pt-6 border-t border-gray-200">
               <p className="text-buckeye-gray text-center">
                 Interested in a similar project?
-                <Link to="/contact" className="text-buckeye-scarlet font-medium hover:underline ml-1" onClick={onClose}>
+                <Link to="/contact" className="text-buckeye-scarlet font-medium transition-colors duration-150 link-underline ml-1" onClick={onClose}>
                   Contact us today
                 </Link>
               </p>

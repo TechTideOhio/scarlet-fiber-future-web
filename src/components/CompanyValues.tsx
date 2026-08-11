@@ -85,7 +85,7 @@ const CompanyValues = () => {
             </p>
             <a 
               href="#contact"
-              className="inline-flex min-h-11 items-center justify-center bg-white text-buckeye-scarlet px-8 py-3 rounded-md font-medium hover:bg-gray-100 transition-all duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-buckeye-scarlet focus-visible:ring-offset-2"
+              className="inline-flex min-h-11 items-center justify-center bg-white text-buckeye-scarlet px-8 py-3 rounded-md font-medium glow-brand hover:bg-gray-100 transition-all duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-buckeye-scarlet focus-visible:ring-offset-2"
             >
               Start Your Project Today
             </a>
