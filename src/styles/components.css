@@ -15,24 +15,69 @@
   scroll-behavior: smooth;
 }
 
-/* Enhanced button with glow effects - optimized for performance */
-.cta-button {
-  @apply relative bg-[var(--cta-primary)] hover:bg-[var(--cta-hover)] text-white font-bold px-12 py-5 rounded-md transition-all duration-300 hover:translate-y-[-2px] shadow-lg hover:shadow-xl;
-  box-shadow: 0 4px 20px rgba(187, 0, 0, 0.3);
-  /* Performance: GPU acceleration for smooth animations */
-  transform: translate3d(0, 0, 0);
-  will-change: transform, box-shadow;
+/* ============================================================
+   Unified interaction language
+   Timing: cubic-bezier(0.4, 0, 0.2, 1)
+   150ms colour-only | 200ms buttons | 300ms cards + glow
+   ============================================================ */
+
+/* Primary glow - one CTA per view only. Built from the scarlet brand token. */
+.glow-brand {
+  box-shadow: 0 0 12px 2px rgba(187, 0, 0, 0.25);
+  transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.cta-button::before {
+.glow-brand:hover {
+  box-shadow: 0 0 20px 6px rgba(187, 0, 0, 0.35);
+}
+
+/* Scaled-down glow for the currently selected/highlighted surface */
+.glow-brand-subtle {
+  box-shadow: 0 0 0 2px rgba(187, 0, 0, 0.15);
+  transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Underline-from-center for every text link */
+.link-underline {
+  position: relative;
+}
+
+.link-underline::after {
   content: '';
   position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: var(--cta-primary);
-  opacity: 0.2;
-  animation: syncedPulse 2s ease-in-out infinite;
+  left: 0;
+  right: 0;
+  bottom: 0.125rem;
+  height: 2px;
+  background-color: #BB0000;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
-  /* Performance optimization */
-  transform: translate3d(0, 0, 0);
+}
+
+.link-underline:hover::after,
+.link-underline:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* Interactive card: transform-only lift, no layout shift */
+.card-interactive {
+  @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+}
+
+/* Press feedback shared by every interactive surface */
+.press-feedback {
+  @apply transition-all duration-200 active:scale-[0.97];
+}
+
+@media (hover: none) {
+  /* Touch devices: hover is never required, press feedback carries the state */
+  .link-underline:hover::after {
+    transform: scaleX(0);
+  }
+
+  .card-interactive:hover {
+    transform: none;
+  }
 }

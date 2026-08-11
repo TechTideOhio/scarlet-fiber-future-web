@@ -94,3 +94,9 @@ section {
 .animate-fade-in-delay-2 {
   transform: translateZ(0);
 }
+
+/* Unified interaction easing: every transition shares one curve unless a
+   utility class overrides the duration. */
+* {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
