@@ -27,22 +27,22 @@ const ProjectModal = ({ project, isOpen, onClose }: ProjectModalProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-white max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="bg-white overflow-y-auto max-sm:inset-0 max-sm:left-0 max-sm:top-0 max-sm:h-[100dvh] max-sm:max-h-[100dvh] max-sm:w-full max-sm:max-w-none max-sm:translate-x-0 max-sm:translate-y-0 max-sm:rounded-none max-sm:p-4 sm:max-w-4xl sm:max-h-[90dvh]">
         <button
           ref={closeButtonRef}
           onClick={onClose}
-          className="absolute right-4 top-4 p-2 text-buckeye-gray hover:text-buckeye-scarlet transition-colors z-10"
+          className="absolute right-2 top-2 inline-flex min-h-11 min-w-11 items-center justify-center rounded-md p-2 text-buckeye-gray hover:text-buckeye-scarlet active:text-buckeye-scarlet transition-colors z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-buckeye-scarlet focus-visible:ring-offset-2"
           aria-label="Close project details"
         >
           <X size={24} aria-hidden="true" />
         </button>
         
-        <div className="space-y-6">
+        <div className="space-y-6 pt-8 sm:pt-0">
           <div className="relative">
             <OptimizedImage
               src={imageUrl}
               alt={`${project.title} showcase image`}
-              className="w-full h-[400px] rounded-lg"
+              className="w-full h-56 sm:h-[400px] rounded-lg"
               width={800}
               priority
             />
@@ -55,11 +55,11 @@ const ProjectModal = ({ project, isOpen, onClose }: ProjectModalProps) => {
           
           <div className="space-y-4">
             <div>
-              <DialogTitle className="text-3xl font-bold text-buckeye-black">{project.title}</DialogTitle>
+              <DialogTitle className="text-2xl sm:text-3xl font-bold text-buckeye-black">{project.title}</DialogTitle>
               <p className="text-buckeye-scarlet font-medium">{project.industry}</p>
             </div>
             
-            <DialogDescription className="text-gray-600 leading-relaxed text-lg">
+            <DialogDescription className="text-gray-600 leading-relaxed text-base sm:text-lg">
               {project.details || project.description}
             </DialogDescription>
             

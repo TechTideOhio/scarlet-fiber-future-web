@@ -74,7 +74,7 @@ const OurWork = () => {
           <div className="flex flex-wrap justify-center gap-2">
             <button
               onClick={() => setActiveFilter('All')}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+              className={`inline-flex min-h-11 items-center px-4 py-2 rounded-full text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-buckeye-scarlet focus-visible:ring-offset-2 ${
                 activeFilter === 'All'
                   ? 'bg-buckeye-scarlet text-white'
                   : 'bg-white text-buckeye-gray hover:bg-buckeye-scarlet hover:text-white'
@@ -86,7 +86,7 @@ const OurWork = () => {
               <button
                 key={type}
                 onClick={() => setActiveFilter(type)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                className={`inline-flex min-h-11 items-center px-4 py-2 rounded-full text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-buckeye-scarlet focus-visible:ring-offset-2 ${
                   activeFilter === type
                     ? 'bg-buckeye-scarlet text-white'
                     : 'bg-white text-buckeye-gray hover:bg-buckeye-scarlet hover:text-white'
@@ -121,7 +121,7 @@ const OurWork = () => {
               <p className="text-red-600 mb-4">Failed to load projects</p>
               <button 
                 onClick={() => window.location.reload()}
-                className="text-buckeye-scarlet hover:underline"
+                className="inline-flex min-h-11 items-center text-buckeye-scarlet hover:underline"
               >
                 Try again
               </button>
@@ -132,7 +132,7 @@ const OurWork = () => {
               {activeFilter !== 'All' && (
                 <button 
                   onClick={() => setActiveFilter('All')}
-                  className="mt-4 text-buckeye-scarlet hover:underline"
+                  className="mt-4 inline-flex min-h-11 items-center text-buckeye-scarlet hover:underline"
                 >
                   View all projects
                 </button>
