@@ -56,7 +56,7 @@ const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
         
         {/* Expanded controls */}
         {isExpanded && (
-          <div className="bg-black/80 backdrop-blur-sm rounded-lg p-3 min-w-[200px]">
+          <div className="bg-buckeye-black/80 backdrop-blur-sm rounded-md p-3 min-w-[200px]">
             <div className="text-white text-sm mb-3 font-medium">
               Animation Settings
             </div>
@@ -67,7 +67,7 @@ const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
               <select
                 value={quality}
                 onChange={(e) => onQualityChange(e.target.value as any)}
-                className="w-full bg-white/10 text-white text-xs rounded px-2 py-1 border border-white/20"
+                className="w-full bg-white/10 text-white text-xs rounded-md px-2 py-1 border border-white/20"
                 disabled={prefersReducedMotion}
               >
                 <option value="high">High</option>
@@ -88,14 +88,14 @@ const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
             <div className="flex gap-2">
               <button
                 onClick={onTogglePause}
-                className="flex-1 bg-white/10 hover:bg-white/20 text-white text-xs rounded px-2 py-1 transition-colors"
+                className="flex-1 bg-white/10 hover:bg-white/20 text-white text-xs rounded-md px-2 py-1 transition-colors"
                 disabled={quality === 'static'}
               >
                 {isPaused ? 'Resume' : 'Pause'}
               </button>
               <button
                 onClick={() => onQualityChange('static')}
-                className="flex-1 bg-white/10 hover:bg-white/20 text-white text-xs rounded px-2 py-1 transition-colors"
+                className="flex-1 bg-white/10 hover:bg-white/20 text-white text-xs rounded-md px-2 py-1 transition-colors"
               >
                 Disable
               </button>
@@ -107,7 +107,7 @@ const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
         <div className="flex gap-2">
           <button
             onClick={onTogglePause}
-            className="bg-black/60 hover:bg-black/80 text-white p-2 rounded-full transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white/50"
+            className="bg-buckeye-black/80 hover:bg-buckeye-black text-white p-2 min-h-11 min-w-11 flex items-center justify-center rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-buckeye-scarlet focus-visible:ring-offset-2"
             aria-label={isPaused ? 'Resume animation' : 'Pause animation'}
             disabled={quality === 'static'}
           >
@@ -116,7 +116,7 @@ const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
           
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="bg-black/60 hover:bg-black/80 text-white p-2 rounded-full transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white/50"
+            className="bg-buckeye-black/80 hover:bg-buckeye-black text-white p-2 min-h-11 min-w-11 flex items-center justify-center rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-buckeye-scarlet focus-visible:ring-offset-2"
             aria-label="Animation settings"
           >
             <Settings size={16} />

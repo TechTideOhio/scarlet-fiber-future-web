@@ -366,7 +366,7 @@ const ContactFormMain = () => {
         
         <Button 
           type="submit" 
-          className="w-full bg-buckeye-scarlet text-white hover:bg-buckeye-scarlet/90 disabled:opacity-50"
+          className="w-full min-h-11 text-sm font-semibold rounded-md bg-buckeye-scarlet text-white hover:bg-buckeye-scarlet/90 transition-colors disabled:opacity-50"
           disabled={isSubmitting}
           aria-describedby="submit-help"
         >
