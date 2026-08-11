@@ -132,7 +132,7 @@ const Login: React.FC = () => {
         <h1 className="sr-only">{isLogin ? 'Sign in to Buckeye DataCom' : 'Create your Buckeye DataCom account'}</h1>
         <Link
           to="/"
-          className="mb-8 inline-flex min-h-11 items-center gap-2 text-buckeye-gray hover:text-buckeye-scarlet active:text-buckeye-scarlet transition-colors"
+          className="mb-8 inline-flex min-h-11 items-center gap-2 text-buckeye-gray hover:text-buckeye-scarlet active:text-buckeye-scarlet transition-colors duration-150 link-underline"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Home
@@ -224,7 +224,7 @@ const Login: React.FC = () => {
             <CardFooter className="flex flex-col gap-4">
               <Button 
                 type="submit" 
-                className="w-full min-h-11 text-sm font-semibold rounded-md bg-buckeye-scarlet text-white hover:bg-buckeye-scarlet/90 transition-colors disabled:opacity-50"
+                className="w-full min-h-11 text-sm font-semibold rounded-md bg-buckeye-scarlet text-white hover:bg-buckeye-scarlet/90 glow-brand disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isSubmitting}
               >
                 {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -239,7 +239,7 @@ const Login: React.FC = () => {
                     setIsLogin(!isLogin);
                     setErrors({});
                   }}
-                  className="inline-flex min-h-11 items-center text-buckeye-scarlet hover:underline active:underline font-medium transition-colors"
+                  className="inline-flex min-h-11 items-center text-buckeye-scarlet font-medium transition-colors duration-150 link-underline"
                 >
                   {isLogin ? 'Sign up' : 'Sign in'}
                 </button>
