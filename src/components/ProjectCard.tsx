@@ -18,7 +18,7 @@ const ProjectCard = ({ project, onClick }: ProjectCardProps) => {
   };
 
   return (
-    <article className="group bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2">
+    <article className="group bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 focus-within:ring-2 focus-within:ring-buckeye-scarlet focus-within:ring-offset-2">
       <button
         type="button"
         onClick={onClick}

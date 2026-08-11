@@ -24,7 +24,7 @@ const NotFound = () => {
       />
       
       <main id="main-content" className="text-center px-4 max-w-lg">
-        <h1 className="text-8xl md:text-9xl font-bold text-buckeye-scarlet mb-4 animate-pulse">
+        <h1 className="text-8xl md:text-9xl font-bold text-buckeye-scarlet mb-4">
           404
         </h1>
 
@@ -38,14 +38,15 @@ const NotFound = () => {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button asChild className="bg-buckeye-scarlet hover:bg-buckeye-scarlet/90 text-white">
+          <Button asChild className="min-h-11 text-sm font-semibold rounded-md bg-buckeye-scarlet hover:bg-buckeye-scarlet/90 text-white transition-colors">
             <Link to="/">
               <Home className="mr-2 h-4 w-4" />
               Back to Home
             </Link>
           </Button>
 
-          <Button variant="outline" asChild className="border-buckeye-gray text-white hover:bg-white/10">
+          <Button variant="outline" asChild className="min-h-11 text-sm font-semibold rounded-md bg-transparent border-2 border-buckeye-scarlet text-white hover:bg-buckeye-scarlet hover:text-white transition-colors">
+
             <Link to="/services">
               <Search className="mr-2 h-4 w-4" />
               View Services

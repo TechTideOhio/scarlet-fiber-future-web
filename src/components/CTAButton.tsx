@@ -48,13 +48,13 @@ const CTAButton = ({
   const getSizeClasses = () => {
     switch (size) {
       case 'sm':
-        return 'text-sm py-2 px-4';
+        return 'text-sm py-2 px-4 min-h-11';
       case 'md':
-        return 'text-base py-2.5 px-6';
+        return 'text-sm py-2.5 px-5 min-h-11';
       case 'lg':
-        return 'text-lg py-3 px-8';
+        return 'text-sm py-3 px-8 min-h-11';
       default:
-        return 'text-base py-2.5 px-6';
+        return 'text-sm py-2.5 px-5 min-h-11';
     }
   };
 
@@ -81,7 +81,7 @@ const CTAButton = ({
   return (
     <Button
       className={cn(
-        'transition-all duration-300 font-medium rounded-md',
+        'transition-all duration-300 font-semibold rounded-md focus-visible:ring-2 focus-visible:ring-buckeye-scarlet focus-visible:ring-offset-2',
         getVariantClasses(),
         getSizeClasses(),
         className
