@@ -197,15 +197,15 @@ const AdminDashboard: React.FC = () => {
             <Card>
               <CardContent className="pt-6">
                 <div className="flex items-center gap-4">
-                  <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900">
-                    <Mail className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                  <div className="p-2 rounded-md bg-buckeye-scarlet/10">
+                    <Mail className="h-5 w-5 text-buckeye-scarlet" />
                   </div>
                   <div>
                     <p className="text-2xl font-bold">{contacts?.length || 0}</p>
                     <p className="text-sm text-muted-foreground">Contacts</p>
                   </div>
                   {newContacts > 0 && (
-                    <Badge className="ml-auto bg-blue-500">{newContacts} new</Badge>
+                    <Badge className="ml-auto bg-buckeye-scarlet text-white">{newContacts} new</Badge>
                   )}
                 </div>
               </CardContent>
@@ -214,15 +214,15 @@ const AdminDashboard: React.FC = () => {
             <Card>
               <CardContent className="pt-6">
                 <div className="flex items-center gap-4">
-                  <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900">
-                    <FileText className="h-5 w-5 text-green-600 dark:text-green-400" />
+                  <div className="p-2 rounded-md bg-buckeye-scarlet/10">
+                    <FileText className="h-5 w-5 text-buckeye-scarlet" />
                   </div>
                   <div>
                     <p className="text-2xl font-bold">{quotes?.length || 0}</p>
                     <p className="text-sm text-muted-foreground">Quotes</p>
                   </div>
                   {newQuotes > 0 && (
-                    <Badge className="ml-auto bg-green-500">{newQuotes} new</Badge>
+                    <Badge className="ml-auto bg-buckeye-scarlet text-white">{newQuotes} new</Badge>
                   )}
                 </div>
               </CardContent>
@@ -231,8 +231,8 @@ const AdminDashboard: React.FC = () => {
             <Card>
               <CardContent className="pt-6">
                 <div className="flex items-center gap-4">
-                  <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-900">
-                    <Briefcase className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                  <div className="p-2 rounded-md bg-buckeye-scarlet/10">
+                    <Briefcase className="h-5 w-5 text-buckeye-scarlet" />
                   </div>
                   <div>
                     <p className="text-2xl font-bold">{projectsCount || 0}</p>
@@ -245,8 +245,8 @@ const AdminDashboard: React.FC = () => {
             <Card>
               <CardContent className="pt-6">
                 <div className="flex items-center gap-4">
-                  <div className="p-2 rounded-lg bg-orange-100 dark:bg-orange-900">
-                    <Users className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+                  <div className="p-2 rounded-md bg-buckeye-scarlet/10">
+                    <Users className="h-5 w-5 text-buckeye-scarlet" />
                   </div>
                   <div>
                     <p className="text-2xl font-bold">{teamCount || 0}</p>
