@@ -18,7 +18,7 @@ const ProjectCard = ({ project, onClick }: ProjectCardProps) => {
   };
 
   return (
-    <article className="group bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 focus-within:ring-2 focus-within:ring-buckeye-scarlet focus-within:ring-offset-2">
+    <article className="group bg-white rounded-lg shadow-md overflow-hidden card-interactive focus-within:ring-2 focus-within:ring-buckeye-scarlet focus-within:ring-offset-2">
       <button
         type="button"
         onClick={onClick}
@@ -42,7 +42,7 @@ const ProjectCard = ({ project, onClick }: ProjectCardProps) => {
         </div>
 
         <div className="p-6">
-          <h3 className="text-xl font-bold text-buckeye-black mb-2 group-hover:text-buckeye-scarlet transition-colors">
+          <h3 className="text-xl font-bold text-buckeye-black mb-2 group-hover:text-buckeye-scarlet transition-colors duration-150">
             {project.title}
           </h3>
           <p className="text-buckeye-gray text-sm mb-3">{project.industry}</p>

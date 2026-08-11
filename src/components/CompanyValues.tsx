@@ -56,7 +56,7 @@ const CompanyValues = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {values.map((value, index) => (
-            <div key={index} className="bg-white p-8 rounded-lg text-center hover:transform hover:-translate-y-2 transition-all duration-300">
+            <div key={index} className="bg-white p-8 rounded-lg text-center card-interactive">
               <div className="flex justify-center mb-4">
                 {value.icon}
               </div>
@@ -85,7 +85,7 @@ const CompanyValues = () => {
             </p>
             <a 
               href="#contact"
-              className="inline-block bg-white text-buckeye-scarlet px-8 py-3 rounded-md font-medium hover:bg-gray-100 transition-colors"
+              className="inline-flex min-h-11 items-center justify-center bg-white text-buckeye-scarlet px-8 py-3 rounded-md font-medium hover:bg-gray-100 transition-all duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-buckeye-scarlet focus-visible:ring-offset-2"
             >
               Start Your Project Today
             </a>
