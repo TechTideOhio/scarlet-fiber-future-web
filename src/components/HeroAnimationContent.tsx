@@ -13,7 +13,7 @@ const HeroAnimationContent = () => {
                 WebkitTextFillColor: 'transparent',
               }}
             >
-              Connecting the Future,
+              Fiber Optic Infrastructure
             </span>
             <span
               className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-buckeye-scarlet to-white pb-2"
@@ -22,7 +22,7 @@ const HeroAnimationContent = () => {
                 WebkitTextFillColor: 'transparent',
               }}
             >
-              Powering Tomorrow.
+              for Ohio Enterprise
             </span>
           </h1>
         </div>

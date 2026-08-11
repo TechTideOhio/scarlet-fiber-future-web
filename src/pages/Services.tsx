@@ -147,7 +147,7 @@ const Services = () => {
       {/* Header */}
       <section className="bg-buckeye-black text-white pt-32 pb-16">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">Our Services</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-6">Network Infrastructure &amp; Fiber Cabling Services</h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
             Comprehensive network infrastructure solutions designed to power your business forward
           </p>
