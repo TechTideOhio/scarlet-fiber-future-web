@@ -75,8 +75,11 @@ const Navbar = () => {
       ).filter((el) => el.offsetParent !== null);
     };
 
-    const firstLink = panel?.querySelector<HTMLElement>('nav a[href]');
-    (firstLink ?? focusables()[0])?.focus();
+    // The panel animates in, so wait for it to become visible before focusing.
+    const focusTimer = window.setTimeout(() => {
+      const firstLink = panel?.querySelector<HTMLElement>('nav a[href]');
+      (firstLink ?? focusables()[0])?.focus();
+    }, 350);
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -102,7 +105,10 @@ const Navbar = () => {
     };
 
     document.addEventListener('keydown', onKeyDown);
-    return () => document.removeEventListener('keydown', onKeyDown);
+    return () => {
+      window.clearTimeout(focusTimer);
+      document.removeEventListener('keydown', onKeyDown);
+    };
   }, [isMenuOpen]);
 
 
