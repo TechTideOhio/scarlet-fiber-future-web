@@ -53,6 +53,48 @@ const Navbar = () => {
     };
   }, [isMenuOpen]);
 
+  // Escape closes the drawer, focus moves in on open and back to the
+  // hamburger on close, and Tab stays trapped inside while open.
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    const panel = drawerRef.current;
+    const focusables = () =>
+      Array.from(
+        panel?.querySelectorAll<HTMLElement>('a[href], button:not([disabled])') ?? []
+      ).filter((el) => el.offsetParent !== null);
+
+    const first = focusables()[0];
+    first?.focus();
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setIsMenuOpen(false);
+        return;
+      }
+      if (event.key !== 'Tab') return;
+
+      const items = focusables();
+      if (items.length === 0) return;
+      const firstItem = items[0];
+      const lastItem = items[items.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+
+      if (event.shiftKey && (active === firstItem || !panel?.contains(active))) {
+        event.preventDefault();
+        lastItem.focus();
+      } else if (!event.shiftKey && active === lastItem) {
+        event.preventDefault();
+        firstItem.focus();
+      }
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [isMenuOpen]);
+
+
   const isActiveRoute = (href: string) => {
     if (href === '/' && location.pathname === '/') return true;
     if (href !== '/' && location.pathname.startsWith(href.split('#')[0])) return true;
