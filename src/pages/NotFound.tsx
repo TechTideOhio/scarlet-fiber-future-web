@@ -24,7 +24,7 @@ const NotFound = () => {
       />
       
       <main id="main-content" className="text-center px-4 max-w-lg">
-        <h1 className="text-8xl md:text-9xl font-bold text-buckeye-scarlet mb-4 animate-pulse">
+        <h1 className="text-8xl md:text-9xl font-bold text-buckeye-scarlet mb-4">
           404
         </h1>
 
