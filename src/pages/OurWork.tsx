@@ -76,7 +76,7 @@ const OurWork = () => {
               onClick={() => setActiveFilter('All')}
               className={`inline-flex min-h-11 items-center px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-buckeye-scarlet focus-visible:ring-offset-2 ${
                 activeFilter === 'All'
-                  ? 'bg-buckeye-scarlet text-white'
+                  ? 'bg-buckeye-scarlet text-white glow-brand-subtle'
                   : 'bg-white text-buckeye-gray hover:bg-buckeye-scarlet hover:text-white'
               }`}
             >
@@ -88,7 +88,7 @@ const OurWork = () => {
                 onClick={() => setActiveFilter(type)}
                 className={`inline-flex min-h-11 items-center px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-buckeye-scarlet focus-visible:ring-offset-2 ${
                   activeFilter === type
-                    ? 'bg-buckeye-scarlet text-white'
+                    ? 'bg-buckeye-scarlet text-white glow-brand-subtle'
                     : 'bg-white text-buckeye-gray hover:bg-buckeye-scarlet hover:text-white'
                 }`}
               >
