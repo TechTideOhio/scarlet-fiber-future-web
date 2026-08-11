@@ -75,8 +75,8 @@ const Navbar = () => {
       ).filter((el) => el.offsetParent !== null);
     };
 
-    const first = focusables()[0];
-    first?.focus();
+    const firstLink = panel?.querySelector<HTMLElement>('nav a[href]');
+    (firstLink ?? focusables()[0])?.focus();
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -140,7 +140,7 @@ const Navbar = () => {
       >
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex justify-between items-center gap-6">
-            <Link to="/" className="flex items-baseline shrink-0" onClick={() => handleNavClick('Logo')}>
+            <Link to="/" className="flex min-h-11 items-baseline shrink-0" onClick={() => handleNavClick('Logo')}>
               <span className="font-display text-xl md:text-2xl font-semibold text-buckeye-scarlet tracking-tight">
                 Buckeye
               </span>
