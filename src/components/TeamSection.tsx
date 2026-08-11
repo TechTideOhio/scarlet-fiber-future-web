@@ -93,7 +93,14 @@ const TeamSection = () => {
                 <TeamMemberCard key={member.id} member={member} />
               ))}
             </div>
-          ) : null}
+          ) : (
+            <div className="text-center py-12 border-t border-gray-200">
+              <p className="text-buckeye-gray text-lg mb-4">
+                Team profiles are being updated. Reach out and we'll introduce you to the right technician for your project.
+              </p>
+              <CTAButton variant="primary">Talk to our team</CTAButton>
+            </div>
+          )}
         </div>
       </section>
 
