@@ -47,7 +47,7 @@ const Services = () => {
           </div>
           <Link
             to="/services"
-            className="inline-flex min-h-11 items-center text-buckeye-scarlet font-medium border-b border-buckeye-scarlet/40 hover:border-buckeye-scarlet active:border-buckeye-scarlet pb-1 self-start md:self-end"
+            className="inline-flex min-h-11 items-center text-buckeye-scarlet font-medium border-b border-buckeye-scarlet/40 hover:border-buckeye-scarlet active:border-buckeye-scarlet pb-1 transition-colors duration-150 self-start md:self-end"
           >
             All services →
           </Link>
@@ -58,7 +58,7 @@ const Services = () => {
             <Link
               key={title}
               to={link}
-              className="group bg-white p-8 md:p-10 flex flex-col transition-colors hover:bg-buckeye-black hover:text-white"
+              className="group bg-white p-8 md:p-10 flex flex-col transition-all duration-300 hover:bg-buckeye-black hover:text-white hover:-translate-y-1"
             >
               <div className="flex items-start justify-between mb-10">
                 <Icon className="w-8 h-8 text-buckeye-scarlet" aria-hidden="true" />

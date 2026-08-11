@@ -43,7 +43,7 @@ const PortfolioTeaser = () => {
           </div>
           <Link
             to="/our-work"
-            className="inline-flex min-h-11 items-center text-buckeye-scarlet font-medium border-b border-buckeye-scarlet/40 hover:border-buckeye-scarlet active:border-buckeye-scarlet pb-1 self-start md:self-end whitespace-nowrap"
+            className="inline-flex min-h-11 items-center text-buckeye-scarlet font-medium border-b border-buckeye-scarlet/40 hover:border-buckeye-scarlet active:border-buckeye-scarlet pb-1 transition-colors duration-150 self-start md:self-end whitespace-nowrap"
           >
             View all work →
           </Link>
