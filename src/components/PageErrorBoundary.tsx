@@ -50,8 +50,8 @@ class PageErrorBoundary extends Component<Props, State> {
       return (
         <div className="min-h-[50vh] flex items-center justify-center p-8">
           <div className="max-w-sm w-full text-center space-y-4">
-            <div className="mx-auto w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center">
-              <AlertCircle className="h-6 w-6 text-amber-600" />
+            <div className="mx-auto w-12 h-12 bg-buckeye-scarlet/10 rounded-full flex items-center justify-center">
+              <AlertCircle className="h-6 w-6 text-buckeye-scarlet" />
             </div>
             
             <div className="space-y-1">
@@ -64,7 +64,7 @@ class PageErrorBoundary extends Component<Props, State> {
             </div>
 
             {import.meta.env.DEV && this.state.error && (
-              <div className="bg-muted p-3 rounded text-left">
+              <div className="bg-muted p-3 rounded-md text-left">
                 <p className="text-xs font-mono text-destructive">
                   {this.state.error.message}
                 </p>
