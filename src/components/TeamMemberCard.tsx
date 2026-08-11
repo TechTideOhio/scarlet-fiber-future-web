@@ -15,7 +15,7 @@ const TeamMemberCard = ({ member }: TeamMemberCardProps) => {
 
   return (
     <article 
-      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+      className="bg-white rounded-lg shadow-md overflow-hidden card-interactive"
       aria-label={`Team member: ${member.name}, ${member.role}`}
     >
       <div className="aspect-square overflow-hidden">
@@ -38,7 +38,7 @@ const TeamMemberCard = ({ member }: TeamMemberCardProps) => {
             href={member.linkedin_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 mt-3 text-buckeye-gray hover:text-buckeye-scarlet transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded"
+            className="inline-flex items-center gap-1 mt-3 text-buckeye-gray hover:text-buckeye-scarlet transition-colors duration-150 link-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-buckeye-scarlet focus-visible:ring-offset-2 rounded-md"
             aria-label={`Connect with ${member.name} on LinkedIn`}
           >
             <Linkedin size={18} aria-hidden="true" />

@@ -38,7 +38,7 @@ const NotFound = () => {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button asChild className="min-h-11 text-sm font-semibold rounded-md bg-buckeye-scarlet hover:bg-buckeye-scarlet/90 text-white transition-colors">
+          <Button asChild className="min-h-11 text-sm font-semibold rounded-md bg-buckeye-scarlet hover:bg-buckeye-scarlet/90 text-white glow-brand">
             <Link to="/">
               <Home className="mr-2 h-4 w-4" />
               Back to Home
@@ -57,13 +57,13 @@ const NotFound = () => {
         <nav aria-label="Popular pages" className="mt-12 pt-8 border-t border-gray-700">
           <p className="text-gray-200 text-sm mb-4">Popular pages:</p>
           <div className="flex flex-wrap justify-center gap-4 text-sm">
-            <Link to="/our-work" className="text-white hover:text-buckeye-scarlet transition-colors underline">
+            <Link to="/our-work" className="text-white hover:text-buckeye-scarlet transition-colors duration-150 link-underline">
               Our Work
             </Link>
-            <Link to="/about" className="text-white hover:text-buckeye-scarlet transition-colors underline">
+            <Link to="/about" className="text-white hover:text-buckeye-scarlet transition-colors duration-150 link-underline">
               About Us
             </Link>
-            <Link to="/contact" className="text-white hover:text-buckeye-scarlet transition-colors underline">
+            <Link to="/contact" className="text-white hover:text-buckeye-scarlet transition-colors duration-150 link-underline">
               Contact
             </Link>
           </div>

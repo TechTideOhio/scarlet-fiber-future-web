@@ -168,12 +168,12 @@ const Navbar = () => {
                     <Link
                       to={item.href}
                       onClick={() => handleNavClick(item.name)}
-                      className={`flex items-center gap-1 px-3 py-2 min-h-11 text-sm font-medium transition-colors ${linkColor} ${linkHover} ${
+                      className={`flex items-center gap-1 px-3 py-2 min-h-11 text-sm font-medium transition-colors duration-150 link-underline ${linkColor} ${linkHover} ${
                         isActiveRoute(item.href) ? 'text-buckeye-scarlet' : ''
                       }`}
                     >
                       {item.name}
-                      <ChevronDown size={16} className={`transition-transform ${desktopServicesOpen ? 'rotate-180' : ''}`} />
+                      <ChevronDown size={16} className={`transition-transform duration-200 ${desktopServicesOpen ? 'rotate-180' : ''}`} />
                     </Link>
                     {desktopServicesOpen && (
                       <div className="absolute top-full left-0 pt-2 w-64">
@@ -186,7 +186,7 @@ const Navbar = () => {
                                 trackSubmenuClick(item.name, sub.name);
                                 handleNavClick(sub.name);
                               }}
-                              className="block px-4 py-2 text-sm text-buckeye-gray hover:text-buckeye-scarlet hover:bg-gray-50 transition-colors"
+                              className="block px-4 py-2 text-sm text-buckeye-gray hover:text-buckeye-scarlet hover:bg-gray-50 active:bg-gray-100 transition-colors duration-150"
                             >
                               {sub.name}
                             </Link>
@@ -200,7 +200,7 @@ const Navbar = () => {
                     key={item.name}
                     to={item.href}
                     onClick={() => handleNavClick(item.name)}
-                    className={`px-3 py-2 min-h-11 inline-flex items-center text-sm font-medium transition-colors ${linkColor} ${linkHover} ${
+                    className={`px-3 py-2 min-h-11 inline-flex items-center text-sm font-medium transition-colors duration-150 link-underline ${linkColor} ${linkHover} ${
                       isActiveRoute(item.href) ? 'text-buckeye-scarlet' : ''
                     }`}
                   >
@@ -211,7 +211,7 @@ const Navbar = () => {
               <Link
                 to="/contact"
                 onClick={() => handleNavClick('Get a Quote')}
-                className="ml-3 inline-flex items-center px-5 py-2.5 min-h-11 bg-buckeye-scarlet text-white text-sm font-semibold rounded-md hover:bg-buckeye-scarlet/90 transition-colors"
+                className="ml-3 inline-flex items-center px-5 py-2.5 min-h-11 bg-buckeye-scarlet text-white text-sm font-semibold rounded-md hover:bg-buckeye-scarlet/90 transition-all duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-buckeye-scarlet focus-visible:ring-offset-2"
               >
                 Get a Quote
               </Link>
@@ -222,7 +222,7 @@ const Navbar = () => {
               <button
                 ref={hamburgerRef}
                 onClick={handleMobileMenuToggle}
-                className={`p-2 min-w-11 min-h-11 flex items-center justify-center transition-colors ${
+                className={`p-2 min-w-11 min-h-11 flex items-center justify-center transition-all duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-buckeye-scarlet focus-visible:ring-offset-2 ${
                   useSolidNav ? 'text-buckeye-gray hover:text-buckeye-scarlet' : 'text-white hover:text-gray-200'
                 }`}
                 aria-label={isMenuOpen ? "Close menu" : "Open menu"}
@@ -268,7 +268,7 @@ const Navbar = () => {
               </div>
               <button
                 onClick={closeMenu}
-                className="text-white hover:text-buckeye-scarlet active:text-buckeye-scarlet transition-colors p-2 min-w-11 min-h-11 flex items-center justify-center rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-buckeye-scarlet"
+                className="text-white hover:text-buckeye-scarlet active:text-buckeye-scarlet transition-all duration-200 active:scale-[0.97] p-2 min-w-11 min-h-11 flex items-center justify-center rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-buckeye-scarlet"
                 aria-label="Close menu"
               >
                 <X size={28} />
@@ -285,7 +285,7 @@ const Navbar = () => {
                           <Link
                             to={item.href}
                             onClick={() => handleNavClick(item.name)}
-                            className={`flex-1 py-4 px-2 text-xl font-medium transition-colors min-h-[48px] flex items-center ${
+                            className={`flex-1 py-4 px-2 text-xl font-medium transition-colors duration-150 min-h-[48px] flex items-center border-l-2 border-transparent active:border-buckeye-scarlet active:bg-white/5 ${
                               isActiveRoute(item.href)
                                 ? 'text-buckeye-scarlet border-l-4 border-buckeye-scarlet pl-4'
                                 : 'text-white hover:text-buckeye-scarlet active:text-buckeye-scarlet'
@@ -295,7 +295,7 @@ const Navbar = () => {
                           </Link>
                           <button
                             onClick={() => setIsServicesOpen(!isServicesOpen)}
-                            className="p-4 hover:text-buckeye-scarlet transition-colors min-h-[48px] min-w-11 flex items-center"
+                            className="p-4 hover:text-buckeye-scarlet transition-all duration-200 active:scale-[0.97] min-h-[48px] min-w-11 flex items-center"
                             aria-label="Toggle services submenu"
                           >
                             <ChevronDown
@@ -318,7 +318,7 @@ const Navbar = () => {
                                   trackSubmenuClick(item.name, sub.name);
                                   handleNavClick(sub.name);
                                 }}
-                                className="block py-3 px-4 text-lg transition-colors min-h-[48px] flex items-center text-gray-300 hover:text-white active:bg-gray-800/50 hover:bg-gray-800/50"
+                                className="block py-3 px-4 text-lg transition-colors duration-150 min-h-[48px] flex items-center text-gray-300 border-l-2 border-transparent active:border-buckeye-scarlet hover:text-white active:bg-gray-800/50 hover:bg-gray-800/50"
                               >
                                 {sub.name}
                               </Link>
@@ -330,7 +330,7 @@ const Navbar = () => {
                       <Link
                         to={item.href}
                         onClick={() => handleNavClick(item.name)}
-                        className={`block py-4 px-2 text-xl font-medium transition-colors min-h-[48px] flex items-center ${
+                        className={`block py-4 px-2 text-xl font-medium transition-colors duration-150 min-h-[48px] flex items-center border-l-2 border-transparent active:border-buckeye-scarlet active:bg-white/5 ${
                           isActiveRoute(item.href)
                             ? 'text-buckeye-scarlet border-l-4 border-buckeye-scarlet pl-4'
                             : 'text-white hover:text-buckeye-scarlet active:text-buckeye-scarlet'
@@ -344,7 +344,7 @@ const Navbar = () => {
                 <Link
                   to="/contact"
                   onClick={() => handleNavClick('Get a Quote')}
-                  className="block mt-6 py-4 px-6 text-lg font-semibold text-center bg-buckeye-scarlet text-white rounded-md hover:bg-buckeye-scarlet/90 active:bg-buckeye-scarlet/80 transition-colors min-h-[48px]"
+                  className="block mt-6 py-4 px-6 text-lg font-semibold text-center bg-buckeye-scarlet text-white rounded-md hover:bg-buckeye-scarlet/90 active:bg-buckeye-scarlet/80 transition-all duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-buckeye-scarlet focus-visible:ring-offset-2 min-h-[48px]"
                 >
                   Get a Quote
                 </Link>

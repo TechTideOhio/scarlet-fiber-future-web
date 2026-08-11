@@ -88,14 +88,14 @@ const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
             <div className="flex gap-2">
               <button
                 onClick={onTogglePause}
-                className="flex-1 bg-white/10 hover:bg-white/20 text-white text-xs rounded-md px-2 py-1 transition-colors"
+                className="flex-1 bg-white/10 hover:bg-white/20 text-white text-xs rounded-md px-2 py-1 transition-all duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-buckeye-scarlet focus-visible:ring-offset-2"
                 disabled={quality === 'static'}
               >
                 {isPaused ? 'Resume' : 'Pause'}
               </button>
               <button
                 onClick={() => onQualityChange('static')}
-                className="flex-1 bg-white/10 hover:bg-white/20 text-white text-xs rounded-md px-2 py-1 transition-colors"
+                className="flex-1 bg-white/10 hover:bg-white/20 text-white text-xs rounded-md px-2 py-1 transition-all duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-buckeye-scarlet focus-visible:ring-offset-2"
               >
                 Disable
               </button>
@@ -107,7 +107,7 @@ const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
         <div className="flex gap-2">
           <button
             onClick={onTogglePause}
-            className="bg-buckeye-black/80 hover:bg-buckeye-black text-white p-2 min-h-11 min-w-11 flex items-center justify-center rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-buckeye-scarlet focus-visible:ring-offset-2"
+            className="bg-buckeye-black/80 hover:bg-buckeye-black text-white p-2 min-h-11 min-w-11 flex items-center justify-center rounded-md transition-all duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-buckeye-scarlet focus-visible:ring-offset-2"
             aria-label={isPaused ? 'Resume animation' : 'Pause animation'}
             disabled={quality === 'static'}
           >
@@ -116,7 +116,7 @@ const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
           
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="bg-buckeye-black/80 hover:bg-buckeye-black text-white p-2 min-h-11 min-w-11 flex items-center justify-center rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-buckeye-scarlet focus-visible:ring-offset-2"
+            className="bg-buckeye-black/80 hover:bg-buckeye-black text-white p-2 min-h-11 min-w-11 flex items-center justify-center rounded-md transition-all duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-buckeye-scarlet focus-visible:ring-offset-2"
             aria-label="Animation settings"
           >
             <Settings size={16} />

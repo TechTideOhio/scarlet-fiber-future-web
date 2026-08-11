@@ -32,7 +32,7 @@ const HeroAnimationContent = () => {
         </p>
 
         <button
-          className="relative px-12 py-5 font-medium overflow-hidden group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-buckeye-black"
+          className="relative px-12 py-5 font-medium overflow-hidden group glow-brand transition-all duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-buckeye-black"
           aria-label="Start your project — scroll to services"
           onClick={() => {
             const element = document.querySelector('#services-section');
@@ -44,7 +44,7 @@ const HeroAnimationContent = () => {
           }}
         >
           {/* Button background */}
-          <div className="absolute inset-0 bg-white/10 backdrop-blur-sm border-2 border-white/20 group-hover:bg-white/15 group-hover:border-buckeye-scarlet/70" />
+          <div className="absolute inset-0 bg-white/10 backdrop-blur-sm border-2 border-white/20 transition-colors duration-200 group-hover:bg-white/15 group-hover:border-buckeye-scarlet/70" />
 
           {/* Button content with same static gradient glow as the headline */}
           <span
