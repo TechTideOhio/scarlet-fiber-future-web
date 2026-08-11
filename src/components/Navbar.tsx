@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { trackNavClick, trackMobileMenuToggle, trackSubmenuClick } from '@/lib/analytics';
@@ -33,6 +33,8 @@ const Navbar = () => {
   const [isServicesOpen, setIsServicesOpen] = useState(false);
   const [desktopServicesOpen, setDesktopServicesOpen] = useState(false);
   const location = useLocation();
+  const drawerRef = useRef<HTMLDivElement>(null);
+  const hamburgerRef = useRef<HTMLButtonElement>(null);
 
   // Only the home route has a dark hero behind a transparent navbar.
   // Every other page has a light/white top area, so the navbar must render
@@ -59,10 +61,12 @@ const Navbar = () => {
     if (!isMenuOpen) return;
 
     const panel = drawerRef.current;
-    const focusables = () =>
-      Array.from(
-        panel?.querySelectorAll<HTMLElement>('a[href], button:not([disabled])') ?? []
+    const focusables = (): HTMLElement[] => {
+      if (!panel) return [];
+      return Array.from(
+        panel.querySelectorAll<HTMLElement>('a[href], button:not([disabled])')
       ).filter((el) => el.offsetParent !== null);
+    };
 
     const first = focusables()[0];
     first?.focus();
@@ -70,7 +74,7 @@ const Navbar = () => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         event.preventDefault();
-        setIsMenuOpen(false);
+        closeMenu();
         return;
       }
       if (event.key !== 'Tab') return;
@@ -100,6 +104,12 @@ const Navbar = () => {
     if (href !== '/' && location.pathname.startsWith(href.split('#')[0])) return true;
     return false;
   };
+
+  const closeMenu = useCallback(() => {
+    setIsMenuOpen(false);
+    setIsServicesOpen(false);
+    hamburgerRef.current?.focus();
+  }, []);
 
   const handleNavClick = (name: string) => {
     trackNavClick(name, location.pathname);
@@ -202,11 +212,13 @@ const Navbar = () => {
             {/* Mobile hamburger */}
             <div className="flex items-center lg:hidden">
               <button
+                ref={hamburgerRef}
                 onClick={handleMobileMenuToggle}
                 className={`p-2 min-w-11 min-h-11 flex items-center justify-center transition-colors ${
                   useSolidNav ? 'text-buckeye-gray hover:text-buckeye-scarlet' : 'text-white hover:text-gray-200'
                 }`}
-                aria-label="Toggle menu"
+                aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+                aria-controls="mobile-menu"
                 aria-expanded={isMenuOpen}
               >
                 <div className="relative w-6 h-6">
@@ -228,9 +240,14 @@ const Navbar = () => {
       >
         <div
           className={`absolute inset-0 bg-black transition-opacity duration-500 ${isMenuOpen ? 'opacity-50' : 'opacity-0'}`}
-          onClick={() => setIsMenuOpen(false)}
+          onClick={closeMenu}
         />
         <div
+          id="mobile-menu"
+          ref={drawerRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Site navigation"
           className={`absolute inset-0 bg-buckeye-black text-white transform transition-all duration-500 ease-in-out ${
             isMenuOpen ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
           }`}
@@ -242,8 +259,8 @@ const Navbar = () => {
                 <span className="text-white/70 font-display text-xl font-normal italic ml-1.5">DataCom</span>
               </div>
               <button
-                onClick={() => setIsMenuOpen(false)}
-                className="text-white hover:text-buckeye-scarlet transition-colors p-2 min-w-11 min-h-11"
+                onClick={closeMenu}
+                className="text-white hover:text-buckeye-scarlet active:text-buckeye-scarlet transition-colors p-2 min-w-11 min-h-11 flex items-center justify-center rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-buckeye-scarlet"
                 aria-label="Close menu"
               >
                 <X size={28} />
@@ -263,7 +280,7 @@ const Navbar = () => {
                             className={`flex-1 py-4 px-2 text-xl font-medium transition-colors min-h-[48px] flex items-center ${
                               isActiveRoute(item.href)
                                 ? 'text-buckeye-scarlet border-l-4 border-buckeye-scarlet pl-4'
-                                : 'text-white hover:text-buckeye-scarlet'
+                                : 'text-white hover:text-buckeye-scarlet active:text-buckeye-scarlet'
                             }`}
                           >
                             {item.name}
@@ -293,7 +310,7 @@ const Navbar = () => {
                                   trackSubmenuClick(item.name, sub.name);
                                   handleNavClick(sub.name);
                                 }}
-                                className="block py-3 px-4 text-lg transition-colors min-h-[48px] flex items-center text-gray-300 hover:text-white hover:bg-gray-800/50"
+                                className="block py-3 px-4 text-lg transition-colors min-h-[48px] flex items-center text-gray-300 hover:text-white active:bg-gray-800/50 hover:bg-gray-800/50"
                               >
                                 {sub.name}
                               </Link>
@@ -308,7 +325,7 @@ const Navbar = () => {
                         className={`block py-4 px-2 text-xl font-medium transition-colors min-h-[48px] flex items-center ${
                           isActiveRoute(item.href)
                             ? 'text-buckeye-scarlet border-l-4 border-buckeye-scarlet pl-4'
-                            : 'text-white hover:text-buckeye-scarlet'
+                            : 'text-white hover:text-buckeye-scarlet active:text-buckeye-scarlet'
                         }`}
                       >
                         {item.name}
@@ -319,7 +336,7 @@ const Navbar = () => {
                 <Link
                   to="/contact"
                   onClick={() => handleNavClick('Get a Quote')}
-                  className="block mt-6 py-4 px-6 text-lg font-semibold text-center bg-buckeye-scarlet text-white rounded-md hover:bg-buckeye-scarlet/90 transition-colors min-h-[48px]"
+                  className="block mt-6 py-4 px-6 text-lg font-semibold text-center bg-buckeye-scarlet text-white rounded-md hover:bg-buckeye-scarlet/90 active:bg-buckeye-scarlet/80 transition-colors min-h-[48px]"
                 >
                   Get a Quote
                 </Link>
@@ -330,10 +347,10 @@ const Navbar = () => {
               <div className="space-y-3">
                 <p className="text-gray-400 text-sm font-medium">Get in touch</p>
                 <div className="space-y-2">
-                  <a href="tel:+16146792486" className="block text-white text-lg font-semibold hover:text-buckeye-scarlet transition-colors">
+                  <a href="tel:+16146792486" className="inline-flex min-h-11 items-center text-white text-lg font-semibold hover:text-buckeye-scarlet active:text-buckeye-scarlet transition-colors">
                     (614) 679-2486
                   </a>
-                  <a href="mailto:info@buckeyedatacom.com" className="block text-gray-300 hover:text-white transition-colors">
+                  <a href="mailto:info@buckeyedatacom.com" className="inline-flex min-h-11 items-center text-gray-300 hover:text-white active:text-white transition-colors">
                     info@buckeyedatacom.com
                   </a>
                   <p className="text-gray-400 text-sm">6057 Sweetleaf Ct, Galloway, OH 43119</p>
