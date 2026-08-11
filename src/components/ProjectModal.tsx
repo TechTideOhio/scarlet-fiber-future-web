@@ -27,7 +27,7 @@ const ProjectModal = ({ project, isOpen, onClose }: ProjectModalProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-white overflow-y-auto max-sm:inset-0 max-sm:left-0 max-sm:top-0 max-sm:h-[100dvh] max-sm:max-h-[100dvh] max-sm:w-full max-sm:max-w-none max-sm:translate-x-0 max-sm:translate-y-0 max-sm:rounded-none max-sm:p-4 sm:max-w-4xl sm:max-h-[90dvh]">
+      <DialogContent className="bg-white overflow-y-auto grid-cols-[minmax(0,1fr)] max-sm:inset-0 max-sm:left-0 max-sm:top-0 max-sm:h-[100dvh] max-sm:max-h-[100dvh] max-sm:w-full max-sm:max-w-none max-sm:translate-x-0 max-sm:translate-y-0 max-sm:rounded-none max-sm:p-4 sm:max-w-4xl sm:max-h-[90dvh]">
         <button
           ref={closeButtonRef}
           onClick={onClose}
@@ -43,7 +43,7 @@ const ProjectModal = ({ project, isOpen, onClose }: ProjectModalProps) => {
               src={imageUrl}
               alt={`${project.title} showcase image`}
               className="w-full h-56 sm:h-[400px] rounded-lg"
-              width={800}
+              sizes="(max-width: 640px) 100vw, 800px"
               priority
             />
             <div className="absolute top-4 left-4">
