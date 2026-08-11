@@ -1,75 +1,50 @@
+# Consistency Audit: Align the whole app to the landing page
 
-## Goal
-Make every CTA on the site reliably navigate, raise accessibility to AA across all routes, and produce a Lighthouse performance + SEO report with fixes applied for the highest-impact findings.
+## Consistency Spec (extracted from the landing page)
 
-## Scope (routes covered)
-`/`, `/services`, `/our-work`, `/about`, `/contact`, `/privacy`, `/terms`, `/login`, `/admin/*`, `/404`
+Source of truth: `Navbar.tsx`, `Footer.tsx`, `ProjectModal.tsx` (opened from `PortfolioTeaser`), plus the landing sections.
 
-## Workstream 1 — CTA & navigation audit
-Read every component that renders a button or link and verify it routes to the intended destination at mobile (375), tablet (768), and desktop (1280).
+**Tokens**
+- Colors only from `buckeye-scarlet`, `buckeye-black`, `buckeye-gray`, `white`, `gray-300/400/700/800`, and semantic tokens (`bg-background`, `text-foreground`, `muted`, `destructive`). No raw hex.
+- Type: display serif (Fraunces) for headings via global CSS, Inter body.
 
-Components to audit:
-- `Hero.tsx`, `EnhancedHero.tsx`, `AboutHero.tsx`
-- `CTAButton.tsx`, `SimpleCTA.tsx`
-- `Navbar.tsx` (desktop nav, mobile sheet, "Get a Quote")
-- `Footer.tsx` (all column links, legal links, social)
-- `Services.tsx`, `IndustriesStrip.tsx`, `WhyChooseUs.tsx`, `WhyChooseUsDetailed.tsx`
-- `PortfolioTeaser.tsx`, `ProjectCard.tsx`, `ProjectGallery.tsx`
-- `TestimonialsHome.tsx`, `Testimonials.tsx`
-- `CertificationsSection.tsx`, `CompanyValues.tsx`, `CompanyStory.tsx`, `TeamSection.tsx`
-- `ContactInfo.tsx`, `ContactMap.tsx`, `ServiceAreaMap.tsx`
+**Buttons / CTAs**
+- Primary: `bg-buckeye-scarlet text-white text-sm font-semibold rounded-md px-5 py-2.5 min-h-11 hover:bg-buckeye-scarlet/90 transition-colors`.
+- Text links: `text-gray-300 hover:text-white transition-colors` (dark) / `text-buckeye-gray hover:text-buckeye-scarlet transition-colors` (light).
+- Radius: `rounded-md` everywhere; `rounded-full` only for small badges/pills.
+- Motion: `transition-colors` or `transition-all duration-300` only. No scale, no pulse.
 
-For each CTA confirm: it is an `<a>`/`<Link>` (not a bare `<button>` masquerading as navigation), it points to a real route in `App.tsx`, it scrolls to top on navigation, and external links carry `target="_blank" rel="noopener noreferrer"`. Add missing `Link` wrappers or `onClick` handlers where buttons currently no-op. Phone/email CTAs use `tel:` / `mailto:`.
+**Nav**
+- Fixed, `z-50`, transparent on home hero, `bg-white shadow-md py-3` when scrolled or off-home; mobile overlay `bg-buckeye-black`, 500ms slide, body scroll lock, `aria-expanded`/`aria-label`.
 
-Verification: Playwright walk of each page at 375 and 1280 — click every visible CTA, assert resulting URL, screenshot.
+**Modal**
+- Custom overlay pattern: dark backdrop, close button `absolute right-4 top-4 p-2 text-buckeye-gray hover:text-buckeye-scarlet transition-colors`, media `rounded-lg`, pill badge `bg-buckeye-scarlet text-white text-sm px-3 py-1 rounded-full font-medium`, scroll lock + Escape close.
 
-## Workstream 2 — Accessibility audit + fixes
-Static read pass + Playwright + axe-core run on each route. Fix in priority order:
+**Footer / sections**
+- `bg-buckeye-black py-14`, container `px-4 lg:px-8`, section headings `text-sm font-semibold uppercase tracking-wider` with `border-l-2 border-buckeye-scarlet pl-2`.
 
-Critical
-- Icon-only buttons missing `aria-label` (Navbar hamburger, social icons, close buttons, theme/menu toggles)
-- Images missing meaningful `alt` (industry tiles, portfolio cards, team photos, hero decoration → `alt=""`)
-- Form inputs without associated labels (`SecureContactForm`, `SecureQuoteWidget`, `ContactFormMain`)
-- Non-interactive elements with `onClick` lacking role + keyboard handlers
-- Color-contrast failures from arbitrary Tailwind grays — replace with semantic tokens (`text-muted-foreground`, `text-foreground`)
-- Single `<main>` per route; verify landmark structure
-- Focus-visible rings on all interactive elements
+## Deviations found and fixes
 
-Warning
-- Heading order (one `h1` per page, no skipped levels)
-- Tap targets ≥ 44×44 on mobile (Navbar icon button, footer social)
-- `h-screen` → `h-dvh` where used for full-height sections
-- Skip-to-content link restored as a single visually-hidden anchor (since `SkipLinks.tsx` was removed)
-- `lang="en"` on `<html>`, `prefers-reduced-motion` respected by fiber animation (already partially handled — verify)
-- ARIA on Sheet/Dialog (shadcn already correct — confirm no custom widgets bypass)
+| Component | Deviation | Fix |
+|---|---|---|
+| `SimpleCTA.tsx` | Hardcoded `hover:bg-[#990000]`, `font-bold py-4 px-8` | Use spec primary button classes (`hover:bg-buckeye-scarlet/90`, `font-semibold`, `px-8 py-4` kept for hero-scale CTA) |
+| `Testimonials.tsx` | Raw hex `#BB0000` / `#E5E5E5` on stars; component is unused (dead file) | Delete the unused file (landing uses `TestimonialsHome`) |
+| `CTAButton.tsx` | Own size scale (`py-2.5 px-6`, `text-base/lg`), `font-medium`, `transition-all` | Normalize to spec: `text-sm font-semibold`, `min-h-11`, `transition-colors`, keep 3 variants |
+| `NotFound.tsx` | `animate-pulse` on the 404 numeral, `border-buckeye-gray text-white` outline button | Remove pulse; outline button matches spec outline variant |
+| `AccessibilityControls.tsx` | `hover:scale-105`, `focus:ring` (not `focus-visible`), `rounded` / `rounded-full`, `bg-black/80` | Align to spec: remove scale, `focus-visible:ring-2 focus-visible:ring-buckeye-scarlet`, `rounded-md`, `bg-buckeye-black/80` |
+| `Login.tsx` | shadcn defaults with `bg-muted/30`, `bg-primary/10` circle | Keep semantic tokens (they resolve to brand scarlet) but standardize submit button and back-link to spec classes |
+| `PageErrorBoundary.tsx`, `SecureQuoteWidget.tsx`, `ServiceAreaMap.tsx`, `ProjectCard.tsx`, `Services.tsx`, `OurWork.tsx` | Mixed `rounded-xl/2xl`, ad-hoc button paddings, `focus:` instead of `focus-visible:` | Normalize radii to `rounded-md` (media stays `rounded-lg`), buttons to spec, focus rings to `focus-visible:ring-2 ring-buckeye-scarlet ring-offset-2` |
+| Forms (`SecureContactForm`, `ContactFormMain`) | Submit button uses default shadcn sizing | Apply spec primary button classes; keep validation logic untouched |
 
-Verification: axe-core run via Playwright on every route; zero critical violations target.
+Data-table / dashboard surfaces in `pages/admin/Dashboard.tsx` inherit the closest spec patterns: `border-border`, `text-sm`, row hover `hover:bg-muted/50`, headings uppercase tracking-wider.
 
-## Workstream 3 — Lighthouse performance + SEO audit
-Run Lighthouse (mobile profile, simulated throttling) via Playwright + `lighthouse` CLI against each route on `localhost:8080`. Capture: Performance, Accessibility, Best Practices, SEO scores plus the failing audits.
+## Ambiguities and choices
+- Landing has both `transition-colors` (nav/footer) and `transition-all duration-300` (CTA). Chose `transition-colors` for links/icon buttons, `transition-all duration-300` for CTAs.
+- Landing modal is a custom overlay, not shadcn `Dialog`. Chose to keep the custom pattern as canonical rather than migrating to `DialogContent`, so no new behaviour is introduced.
+- Semantic tokens vs `buckeye-*` utilities: kept semantic tokens on auth/admin surfaces (they already map to scarlet) and `buckeye-*` on marketing pages, matching current landing usage.
 
-Report deliverable: a table per page with scores and the specific failing audits (LCP element, CLS sources, unused JS, image sizing, missing meta description, canonical, etc.).
+## Scope guardrails
+No new colors, spacing scales, animations, or interactions. Hero card and its colors untouched. Business logic, routing, and backend calls unchanged.
 
-Apply the highest-impact fixes:
-- LCP image preload (hero image) + `fetchpriority="high"`
-- Convert hero + industry tiles to AVIF/WebP via `vite-imagetools` if not already
-- Add explicit `width`/`height` to every `<img>` to eliminate CLS
-- Lazy-load below-the-fold images (`loading="lazy"`, `decoding="async"`)
-- Code-split admin routes and Three/WebGL fiber renderers
-- Ensure `SEO.tsx` emits unique `<title>`, meta description, canonical, `og:*`, `twitter:*`, JSON-LD per route — fill gaps on Privacy/Terms/Login/404
-- `robots.txt` + `sitemap.xml` sanity check (sitemap edge function already exists — verify routes listed)
-
-Out of scope: SEO content rewriting, new copy, redesign work, hero card or color changes.
-
-## Technical notes
-- All link routing through `react-router-dom` `<Link>` / `useNavigate`; never raw `window.location` for internal nav.
-- New `aria-label`s and alt text use existing copy tone; no design token changes.
-- Lighthouse run script lands in `/tmp/` (not committed). Findings summarized inline in chat.
-- No schema changes, no new dependencies beyond `lighthouse` + `axe-core` as dev-only audit tools (run from `/tmp/`, not added to `package.json`).
-
-## Deliverables
-1. CTA audit table (route × CTA × destination × pass/fail) + fixes applied
-2. a11y violations list (before/after) + fixes applied
-3. Lighthouse score table per route + applied perf/SEO fixes + remaining recommendations
-
-Plan Mode first — approve before I switch to build.
+## Output
+After the refactor: the spec above, the changed-file list with reasons, and the ambiguity decisions.
