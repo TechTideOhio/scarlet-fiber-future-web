@@ -55,9 +55,16 @@ const Navbar = () => {
     };
   }, [isMenuOpen]);
 
+  const closeMenu = useCallback(() => {
+    setIsMenuOpen(false);
+    setIsServicesOpen(false);
+    hamburgerRef.current?.focus();
+  }, []);
+
   // Escape closes the drawer, focus moves in on open and back to the
   // hamburger on close, and Tab stays trapped inside while open.
   useEffect(() => {
+
     if (!isMenuOpen) return;
 
     const panel = drawerRef.current;
