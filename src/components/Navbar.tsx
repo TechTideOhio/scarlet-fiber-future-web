@@ -112,13 +112,8 @@ const Navbar = () => {
     return false;
   };
 
-  const closeMenu = useCallback(() => {
-    setIsMenuOpen(false);
-    setIsServicesOpen(false);
-    hamburgerRef.current?.focus();
-  }, []);
-
   const handleNavClick = (name: string) => {
+
     trackNavClick(name, location.pathname);
     setIsMenuOpen(false);
     setIsServicesOpen(false);
