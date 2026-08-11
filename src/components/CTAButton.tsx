@@ -81,7 +81,7 @@ const CTAButton = ({
   return (
     <Button
       className={cn(
-        'transition-all duration-300 font-medium rounded-md',
+        'transition-all duration-300 font-semibold rounded-md focus-visible:ring-2 focus-visible:ring-buckeye-scarlet focus-visible:ring-offset-2',
         getVariantClasses(),
         getSizeClasses(),
         className
