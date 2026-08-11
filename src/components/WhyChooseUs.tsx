@@ -45,7 +45,7 @@ const WhyChooseUs = () => {
             </p>
             <Link
               to="/about"
-              className="inline-flex items-center gap-2 text-buckeye-scarlet font-medium border-b border-buckeye-scarlet/40 hover:border-buckeye-scarlet pb-1 transition-colors"
+              className="inline-flex min-h-11 items-center gap-2 text-buckeye-scarlet font-medium border-b border-buckeye-scarlet/40 hover:border-buckeye-scarlet active:border-buckeye-scarlet pb-1 transition-colors"
             >
               About our team
               <span aria-hidden>→</span>
