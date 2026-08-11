@@ -194,7 +194,7 @@ const AdminDashboard: React.FC = () => {
         <main className="container mx-auto px-4 py-8">
           {/* Stats Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <Card>
+            <Card className="card-interactive">
               <CardContent className="pt-6">
                 <div className="flex items-center gap-4">
                   <div className="p-2 rounded-md bg-buckeye-scarlet/10">
@@ -211,7 +211,7 @@ const AdminDashboard: React.FC = () => {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="card-interactive">
               <CardContent className="pt-6">
                 <div className="flex items-center gap-4">
                   <div className="p-2 rounded-md bg-buckeye-scarlet/10">
@@ -228,7 +228,7 @@ const AdminDashboard: React.FC = () => {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="card-interactive">
               <CardContent className="pt-6">
                 <div className="flex items-center gap-4">
                   <div className="p-2 rounded-md bg-buckeye-scarlet/10">
@@ -242,7 +242,7 @@ const AdminDashboard: React.FC = () => {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="card-interactive">
               <CardContent className="pt-6">
                 <div className="flex items-center gap-4">
                   <div className="p-2 rounded-md bg-buckeye-scarlet/10">
