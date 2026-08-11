@@ -230,6 +230,17 @@ const ContactFormMain = () => {
     }
   };
 
+  // On phones the on-screen keyboard can cover the focused field, so bring it
+  // into the middle of the visible viewport when it receives focus.
+  const handleFieldFocus = (
+    event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const target = event.currentTarget;
+    window.setTimeout(() => {
+      target.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }, 250);
+  };
+
   return (
     <div className="bg-white p-6 md:p-8 rounded-lg shadow-md">
       <h3 className="text-2xl font-bold mb-6 text-buckeye-black">Get a Quote</h3>
@@ -243,6 +254,7 @@ const ContactFormMain = () => {
             <Input
               id="name"
               name="name"
+              autoComplete="name" onFocus={handleFieldFocus}
               placeholder="Enter your name"
               required
               value={formData.name}
@@ -268,6 +280,7 @@ const ContactFormMain = () => {
             <Input
               id="email"
               name="email"
+              autoComplete="email" inputMode="email" onFocus={handleFieldFocus}
               type="email"
               placeholder="Enter your email"
               required
@@ -294,6 +307,7 @@ const ContactFormMain = () => {
             <Input
               id="phone"
               name="phone"
+              autoComplete="tel" inputMode="tel" onFocus={handleFieldFocus}
               type="tel"
               placeholder="Enter your phone number"
               value={formData.phone}
@@ -317,6 +331,7 @@ const ContactFormMain = () => {
             <Input
               id="company"
               name="company"
+              autoComplete="organization" onFocus={handleFieldFocus}
               placeholder="Enter your company name"
               value={formData.company}
               onChange={handleChange}
@@ -342,6 +357,7 @@ const ContactFormMain = () => {
           <Textarea
             id="message"
             name="message"
+            onFocus={handleFieldFocus}
             placeholder="Tell us about your project or requirements (minimum 10 characters)"
             rows={4}
             required

@@ -72,7 +72,7 @@ const Privacy = () => {
             <p>
               You may request access, correction, or deletion of personal information you have submitted by
               contacting us at{' '}
-              <a className="text-buckeye-scarlet" href="mailto:info@buckeyedatacom.com">
+              <a className="inline-flex min-h-11 items-center text-buckeye-scarlet hover:underline" href="mailto:info@buckeyedatacom.com">
                 info@buckeyedatacom.com
               </a>
               .
@@ -91,8 +91,8 @@ const Privacy = () => {
             <p>
               Buckeye DataCom<br />
               6057 Sweetleaf Ct, Galloway, OH 43119<br />
-              <a className="text-buckeye-scarlet" href="mailto:info@buckeyedatacom.com">info@buckeyedatacom.com</a><br />
-              <a className="text-buckeye-scarlet" href="tel:+16146792486">(614) 679-2486</a>
+              <a className="inline-flex min-h-11 items-center text-buckeye-scarlet hover:underline" href="mailto:info@buckeyedatacom.com">info@buckeyedatacom.com</a><br />
+              <a className="inline-flex min-h-11 items-center text-buckeye-scarlet hover:underline" href="tel:+16146792486">(614) 679-2486</a>
             </p>
           </div>
         </div>

@@ -70,7 +70,7 @@ const ContactInfo = () => {
                 href={method.link}
                 target={method.link.startsWith('http') ? '_blank' : undefined}
                 rel={method.link.startsWith('http') ? 'noopener noreferrer' : undefined}
-                className="text-buckeye-scarlet font-medium hover:underline"
+                className="inline-flex min-h-11 items-center text-buckeye-scarlet font-medium hover:underline"
               >
                 {method.content}
               </a>
@@ -137,7 +137,7 @@ const ContactInfo = () => {
                       href={social.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`text-buckeye-gray ${social.color} transition-colors p-2 rounded-lg hover:bg-gray-50`}
+                      className={`inline-flex min-h-11 min-w-11 items-center justify-center text-buckeye-gray ${social.color} transition-colors p-2 rounded-md hover:bg-gray-50 active:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-buckeye-scarlet focus-visible:ring-offset-2`}
                       aria-label={`Follow us on ${social.name}`}
                     >
                       {social.icon}

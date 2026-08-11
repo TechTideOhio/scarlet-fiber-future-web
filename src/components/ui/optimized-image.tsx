@@ -96,6 +96,8 @@ const OptimizedImage = ({
         aspectRatio: aspectRatio,
         width: width ? `${width}px` : undefined,
         height: height ? `${height}px` : undefined,
+        // Never let an intrinsic width push past the container on small screens.
+        maxWidth: '100%',
       }}
     >
       {/* Blur placeholder */}

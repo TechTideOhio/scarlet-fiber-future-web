@@ -132,7 +132,7 @@ const Login: React.FC = () => {
         <h1 className="sr-only">{isLogin ? 'Sign in to Buckeye DataCom' : 'Create your Buckeye DataCom account'}</h1>
         <Link
           to="/"
-          className="mb-8 flex items-center gap-2 text-buckeye-gray hover:text-buckeye-scarlet transition-colors"
+          className="mb-8 inline-flex min-h-11 items-center gap-2 text-buckeye-gray hover:text-buckeye-scarlet active:text-buckeye-scarlet transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Home
@@ -239,7 +239,7 @@ const Login: React.FC = () => {
                     setIsLogin(!isLogin);
                     setErrors({});
                   }}
-                  className="text-buckeye-scarlet hover:underline font-medium transition-colors"
+                  className="inline-flex min-h-11 items-center text-buckeye-scarlet hover:underline active:underline font-medium transition-colors"
                 >
                   {isLogin ? 'Sign up' : 'Sign in'}
                 </button>

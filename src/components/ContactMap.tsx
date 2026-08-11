@@ -45,7 +45,7 @@ const ContactMap = () => {
                     href="https://maps.google.com/?q=6057+Sweetleaf+Ct+Galloway+OH+43119"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center text-buckeye-scarlet hover:text-buckeye-scarlet/80 font-medium"
+                    className="inline-flex min-h-11 items-center text-buckeye-scarlet hover:text-buckeye-scarlet/80 active:text-buckeye-scarlet/80 font-medium"
                   >
                     <Navigation className="w-4 h-4 mr-2" />
                     Get Directions

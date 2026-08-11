@@ -47,7 +47,7 @@ const Services = () => {
           </div>
           <Link
             to="/services"
-            className="text-buckeye-scarlet font-medium border-b border-buckeye-scarlet/40 hover:border-buckeye-scarlet pb-1 self-start md:self-end"
+            className="inline-flex min-h-11 items-center text-buckeye-scarlet font-medium border-b border-buckeye-scarlet/40 hover:border-buckeye-scarlet active:border-buckeye-scarlet pb-1 self-start md:self-end"
           >
             All services →
           </Link>
