@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { optimizeImageUrl } from "@/utils/image-url";
 import { cn } from '@/lib/utils';
 
 interface OptimizedImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
@@ -65,24 +66,8 @@ const OptimizedImage = ({
     setIsLoaded(true);
   };
 
-  // Build optimized URL for Unsplash images
-  const getOptimizedSrc = (url: string): string => {
-    if (!url) return fallbackSrc;
-    
-    // Add WebP format and quality params for Unsplash
-    if (url.includes('unsplash.com')) {
-      const separator = url.includes('?') ? '&' : '?';
-      let optimizedUrl = `${url}${separator}auto=format&q=80`;
-      if (width) {
-        optimizedUrl += `&w=${width}`;
-      }
-      return optimizedUrl;
-    }
-    
-    return url;
-  };
 
-  const imageSrc = hasError ? fallbackSrc : getOptimizedSrc(src);
+  const imageSrc = hasError ? fallbackSrc : optimizeImageUrl(src, fallbackSrc, width);
 
   return (
     <div
