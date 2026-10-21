@@ -143,7 +143,7 @@ See [Security Guide](docs/security-guide.md) for detailed security documentation
 
 ### Known advisories
 
-- `braces` 3.0.3, [GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm) (stack-exhaustion denial of service through deeply nested patterns): known upstream advisory with no fixed release as of 2026-10-20. It enters `package-lock.json` only through `tailwindcss` 3.4 (`chokidar` and `micromatch`), which runs at build time and is not part of the browser bundle. No code-level mitigation exists in this repository; PR #1 and PR #3 (2026-10-19) recorded it as the only remaining `npm audit` finding, and the Dependabot alert is left open rather than dismissed. Dependency, secret, and CodeQL scanning are enabled for the repository.
+- `braces` 3.0.3, [GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm) (stack-exhaustion denial of service through deeply nested patterns): known upstream advisory with no fixed release as of 2026-10-20. It enters `package-lock.json` only through `tailwindcss` 3.4 (`chokidar` and `micromatch`), which runs at build time and is not part of the browser bundle. A local backport now bounds parser and recursive AST depth, using the same source-preserving patch maintained in Open-SEO-Clawli. npm overrides select the patched tarball for every consumer, and builds verify file hashes and security regressions before compiling. Run `npm run security:backport` independently. See [backport provenance](vendor/braces/BACKPORT.md). The upstream version remains 3.0.3, so version-based scanners may continue reporting the advisory; the Dependabot alert is left open rather than dismissed. Dependency, secret, and CodeQL scanning are enabled for the repository.
 
 ## 📧 Email Configuration
 
