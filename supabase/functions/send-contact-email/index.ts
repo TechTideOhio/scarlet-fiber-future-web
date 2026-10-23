@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
+import { getRateLimitIdentity } from "../_shared/client-identity.ts";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 const adminEmail = Deno.env.get("ADMIN_EMAIL");
@@ -61,10 +62,9 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  // Get client IP for rate limiting
-  const clientIP = req.headers.get("x-forwarded-for")?.split(",")[0] || 
-                   req.headers.get("cf-connecting-ip") || 
-                   "unknown";
+  // Rate-limit identity comes from the platform-set client IP header only;
+  // caller-supplied x-forwarded-for is never trusted (see _shared/client-identity.ts).
+  const clientIP = getRateLimitIdentity(req.headers);
   
   // Check rate limit
   const rateLimit = checkRateLimit(clientIP);
