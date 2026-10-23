@@ -132,6 +132,12 @@ const RATE_WINDOW = 60 * 1000;  // 1 minute
 // X-RateLimit-Reset: 45
 ```
 
+The quota key comes from `getRateLimitIdentity()` in `supabase/functions/_shared/client-identity.ts`. It reads only
+`cf-connecting-ip`, which the Cloudflare edge in front of Supabase Edge Functions sets to the connecting client address.
+Caller-supplied `x-forwarded-for` is never used, because a client can prepend any value to it. If `cf-connecting-ip` is
+missing or not a valid IP address, the request is counted against a single shared `global` bucket, so removing the header
+cannot create fresh quotas. The counters are per-isolate and in memory; they are a best-effort throttle, not a durable quota.
+
 ### Rate Limit Responses
 
 | Status | Meaning |

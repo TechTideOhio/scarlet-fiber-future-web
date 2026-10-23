@@ -26,3 +26,39 @@ test("only the exact Unsplash HTTPS image host receives optimization parameters"
   assert.equal(result.searchParams.get("w"), "200");
   assert.equal(result.hash, "#image");
 });
+
+const { getRateLimitIdentity, GLOBAL_RATE_LIMIT_BUCKET } = await import("../supabase/functions/_shared/client-identity.ts");
+const { readFileSync } = await import("node:fs");
+
+test("email quota identity ignores caller-supplied x-forwarded-for", () => {
+  const trusted = getRateLimitIdentity(new Headers({ "cf-connecting-ip": "203.0.113.7" }));
+  assert.equal(trusted, "ip:203.0.113.7");
+  for (const spoof of ["198.51.100.1", "10.0.0.1, 203.0.113.7", "attacker-chosen"]) {
+    assert.equal(
+      getRateLimitIdentity(new Headers({ "x-forwarded-for": spoof, "cf-connecting-ip": "203.0.113.7" })),
+      trusted,
+    );
+  }
+  assert.equal(getRateLimitIdentity(new Headers({ "cf-connecting-ip": "2001:DB8::1" })), "ip:2001:db8::1");
+});
+
+test("missing or malformed trusted client IP falls back to one global quota bucket", () => {
+  for (const headers of [
+    {},
+    { "x-forwarded-for": "198.51.100.1" },
+    { "x-real-ip": "198.51.100.2" },
+    { "cf-connecting-ip": "" },
+    { "cf-connecting-ip": "not-an-ip" },
+    { "cf-connecting-ip": "999.1.1.1" },
+  ]) {
+    assert.equal(getRateLimitIdentity(new Headers(headers)), GLOBAL_RATE_LIMIT_BUCKET);
+  }
+});
+
+test("email edge functions derive quota identity only from the shared trusted helper", () => {
+  for (const fn of ["send-contact-email", "send-quote-email"]) {
+    const source = readFileSync(new URL(`../supabase/functions/${fn}/index.ts`, import.meta.url), "utf8");
+    assert.match(source, /getRateLimitIdentity\(req\.headers\)/);
+    assert.doesNotMatch(source, /headers\.get\(\s*["']x-forwarded-for/i);
+  }
+});
