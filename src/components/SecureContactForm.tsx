@@ -47,7 +47,7 @@ const SecureContactForm = () => {
       newErrors.name = 'Name must be at least 2 characters long';
     } else if (!validateTextLength(sanitizedName, 50)) {
       newErrors.name = 'Name must be less than 50 characters';
-    } else if (!/^[a-zA-Z\s\-'\.]+$/.test(sanitizedName)) {
+    } else if (!/^[a-zA-Z\s\-'.]+$/.test(sanitizedName)) {
       newErrors.name = 'Name contains invalid characters';
     }
 

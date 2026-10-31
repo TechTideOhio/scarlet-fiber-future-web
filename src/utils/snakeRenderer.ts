@@ -1,5 +1,5 @@
 
-import { EnhancedSnakePath } from '../components/fiber/types/snakeTypes';
+import { EnhancedSnakePath, EnhancedSnakeNode } from '../components/fiber/types/snakeTypes';
 import { ANIMATION_TOKENS, FIBER_ANIMATION_TOKENS, COLOR_TOKENS, PERFORMANCE_TOKENS, logFiberToken } from '../constants';
 
 export const renderEnhancedPaths = (
@@ -163,7 +163,7 @@ export const renderEnhancedPath = (
 
 export const renderEnhancedNode = (
   ctx: CanvasRenderingContext2D, 
-  node: any, 
+  node: EnhancedSnakeNode, 
   path: EnhancedSnakePath,
   isMobile: boolean
 ) => {

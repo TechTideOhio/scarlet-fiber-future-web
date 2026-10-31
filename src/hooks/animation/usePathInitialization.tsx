@@ -6,10 +6,10 @@ export const usePathInitialization = ({
   canvasReady,
   pathGeneratorRef,
   pathCount,
-  setRenderError
+  setRenderError,
+  initializationAttemptRef,
+  updateAnimationState
 }: PathInitializationProps) => {
-  
-  const initializePaths = (initializationAttemptRef: React.MutableRefObject<number>, updateAnimationState: (updates: any) => void) => {
     useEffect(() => {
       if (canvasReady && pathGeneratorRef.current && pathCount > 0) {
         initializationAttemptRef.current++;
@@ -65,8 +65,5 @@ export const usePathInitialization = ({
           setRenderError(error instanceof Error ? error.message : 'Path generation failed');
         }
       }
-    }, [canvasReady, pathCount, pathGeneratorRef, setRenderError]);
-  };
-
-  return { initializePaths };
+    }, [canvasReady, pathCount, pathGeneratorRef, setRenderError, initializationAttemptRef, updateAnimationState]);
 };

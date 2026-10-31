@@ -1,5 +1,5 @@
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { AnimationState } from './types';
 
 export const useAnimationState = () => {
@@ -14,9 +14,10 @@ export const useAnimationState = () => {
   const lastTimeRef = useRef<number>(0);
   const initializationAttemptRef = useRef<number>(0);
 
-  const updateAnimationState = (updates: Partial<AnimationState>) => {
+  // Stable identity so effects can list it as a dependency without re-running every render.
+  const updateAnimationState = useCallback((updates: Partial<AnimationState>) => {
     setAnimationState(prev => ({ ...prev, ...updates }));
-  };
+  }, []);
 
   const resetAnimation = () => {
     setAnimationState({

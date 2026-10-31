@@ -25,6 +25,8 @@ export interface PathInitializationProps {
   pathGeneratorRef: React.RefObject<EnhancedSnakeGenerator>;
   pathCount: number;
   setRenderError: (error: string | null) => void;
+  initializationAttemptRef: React.MutableRefObject<number>;
+  updateAnimationState: (updates: Partial<AnimationState>) => void;
 }
 
 export interface AnimationLoopProps {
@@ -38,4 +40,6 @@ export interface AnimationLoopProps {
   setRenderError: (error: string | null) => void;
   animationState: AnimationState;
   setAnimationState: React.Dispatch<React.SetStateAction<AnimationState>>;
+  animationRef: React.MutableRefObject<number | undefined>;
+  lastTimeRef: React.MutableRefObject<number>;
 }

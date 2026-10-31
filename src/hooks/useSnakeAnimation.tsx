@@ -26,14 +26,19 @@ export const useSnakeAnimation = ({
     initializationAttemptRef
   } = useAnimationState();
 
-  const { initializePaths } = usePathInitialization({
+  // Initialize paths when dependencies change. Must run before the animation loop
+  // so effect order matches the previous implementation.
+  usePathInitialization({
     canvasReady,
     pathGeneratorRef,
     pathCount,
-    setRenderError
+    setRenderError,
+    initializationAttemptRef,
+    updateAnimationState
   });
 
-  const { startAnimationLoop } = useAnimationLoop({
+  // Start animation loop
+  useAnimationLoop({
     isVisible,
     canvasReady,
     renderError,
@@ -43,14 +48,10 @@ export const useSnakeAnimation = ({
     isMobile,
     setRenderError,
     animationState,
-    setAnimationState
+    setAnimationState,
+    animationRef,
+    lastTimeRef
   });
-
-  // Initialize paths when dependencies change
-  initializePaths(initializationAttemptRef, updateAnimationState);
-
-  // Start animation loop
-  startAnimationLoop(animationRef, lastTimeRef);
 
   return { paths: animationState.paths };
 };

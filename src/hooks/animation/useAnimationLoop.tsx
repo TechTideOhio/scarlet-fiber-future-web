@@ -14,10 +14,10 @@ export const useAnimationLoop = ({
   isMobile,
   setRenderError,
   animationState,
-  setAnimationState
+  setAnimationState,
+  animationRef,
+  lastTimeRef
 }: AnimationLoopProps) => {
-
-  const startAnimationLoop = (animationRef: React.MutableRefObject<number | undefined>, lastTimeRef: React.MutableRefObject<number>) => {
     useEffect(() => {
       if (!isVisible || !canvasReady || renderError || animationState.paths.length === 0) {
         if (animationRef.current) {
@@ -154,8 +154,5 @@ export const useAnimationLoop = ({
           animationRef.current = undefined;
         }
       };
-    }, [isVisible, heroGlowIntensity, canvasReady, renderError, isMobile, setRenderError, animationState.paths.length]);
-  };
-
-  return { startAnimationLoop };
+    }, [isVisible, heroGlowIntensity, canvasReady, renderError, isMobile, setRenderError, animationState.paths.length, animationRef, lastTimeRef, canvasRef, pathGeneratorRef, setAnimationState]);
 };

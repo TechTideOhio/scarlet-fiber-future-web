@@ -74,6 +74,6 @@ export const LAYOUT_TOKENS = {
   },
 } as const;
 
-export const logLayoutToken = (token: string, value: any) => {
+export const logLayoutToken = (token: string, value: unknown) => {
   console.log(`📐 Layout Token: ${token} = ${value}`);
 };

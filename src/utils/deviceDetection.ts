@@ -1,6 +1,6 @@
 import { PERFORMANCE_TOKENS, logPerformanceToken } from '../constants';
 
-interface DeviceCapabilities {
+export interface DeviceCapabilities {
   isMobile: boolean;
   isTablet: boolean;
   isDesktop: boolean;
@@ -20,7 +20,7 @@ export const detectDeviceCapabilities = (): DeviceCapabilities => {
   // Estimate RAM based on device memory API or user agent
   let ram = 4; // Default assumption
   if ('deviceMemory' in navigator) {
-    ram = (navigator as any).deviceMemory;
+    ram = (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? ram;
   } else if (isMobile) {
     // Estimate based on mobile device patterns
     if (/iPhone|iPad/.test(userAgent)) {

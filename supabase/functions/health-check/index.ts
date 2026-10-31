@@ -45,7 +45,7 @@ const handler = async (req: Request): Promise<Response> => {
         ...corsHeaders,
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Health check error:", error);
     return new Response(JSON.stringify({ status: "error" }), {
       status: 503,

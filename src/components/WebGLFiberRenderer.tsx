@@ -1,5 +1,6 @@
 
 import React, { useEffect, useRef, useCallback } from 'react';
+import type { BufferGeometry, Mesh, ShaderMaterial } from 'three';
 import { createWebGLScene, handleSceneResize, type SceneSetup } from '../utils/webglScene';
 import { createFiberCurve, createFiberGeometry } from '../utils/fiberGeometry';
 import { createFiberMaterial } from '../utils/shaderMaterials';
@@ -24,7 +25,7 @@ const WebGLFiberRenderer: React.FC<WebGLFiberRendererProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const sceneSetupRef = useRef<SceneSetup | null>(null);
-  const fibersRef = useRef<any[]>([]);
+  const fibersRef = useRef<Mesh<BufferGeometry, ShaderMaterial>[]>([]);
   const particlesRef = useRef<ParticleSystemData[]>([]);
   const animationIdRef = useRef<number>();
   const isAnimatingRef = useRef(false);

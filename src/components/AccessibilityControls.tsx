@@ -66,7 +66,7 @@ const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
               <label className="text-white text-xs mb-1 block">Quality Level</label>
               <select
                 value={quality}
-                onChange={(e) => onQualityChange(e.target.value as any)}
+                onChange={(e) => onQualityChange(e.target.value as AccessibilityControlsProps['quality'])}
                 className="w-full bg-white/10 text-white text-xs rounded-md px-2 py-1 border border-white/20"
                 disabled={prefersReducedMotion}
               >
