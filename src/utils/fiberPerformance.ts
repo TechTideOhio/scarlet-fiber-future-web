@@ -1,3 +1,4 @@
+import type { DeviceCapabilities } from './deviceDetection';
 import { FIBER_ANIMATION_TOKENS, PERFORMANCE_TOKENS, logPerformanceToken } from '../constants';
 
 export interface PerformanceConfig {
@@ -11,7 +12,7 @@ export interface PerformanceConfig {
 export const getPerformanceConfig = (
   quality: string,
   isMobile: boolean,
-  deviceCapabilities?: any
+  deviceCapabilities?: DeviceCapabilities
 ): PerformanceConfig => {
   const baseConfig: PerformanceConfig = {
     maxPaths: FIBER_ANIMATION_TOKENS.count.default.base,

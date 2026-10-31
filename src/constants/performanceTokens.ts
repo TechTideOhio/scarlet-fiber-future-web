@@ -62,6 +62,6 @@ export const PERFORMANCE_TOKENS = {
   },
 } as const;
 
-export const logPerformanceToken = (token: string, value: any) => {
+export const logPerformanceToken = (token: string, value: unknown) => {
   console.log(`⚡ Performance Token: ${token} = ${value}`);
 };

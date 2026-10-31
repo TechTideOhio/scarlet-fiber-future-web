@@ -259,7 +259,7 @@ const handler = async (req: Request): Promise<Response> => {
       status: 200,
       headers: { "Content-Type": "application/json", ...corsHeaders, ...rateLimitHeaders },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error in send-quote-email function:", error);
     return new Response(
       JSON.stringify({ error: "An unexpected error occurred. Please try again." }),

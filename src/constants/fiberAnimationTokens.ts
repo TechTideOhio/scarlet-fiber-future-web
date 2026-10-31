@@ -158,6 +158,6 @@ export const FIBER_ANIMATION_TOKENS = {
   },
 } as const;
 
-export const logFiberToken = (token: string, value: any) => {
+export const logFiberToken = (token: string, value: unknown) => {
   console.log(`🔆 Fiber Token: ${token} = ${value}`);
 };

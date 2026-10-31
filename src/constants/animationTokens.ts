@@ -138,7 +138,7 @@ export const ANIMATION_TOKENS = {
 } as const;
 
 // 📊 Logging helpers
-export const logAnimationToken = (token: string, value: any) => {
+export const logAnimationToken = (token: string, value: unknown) => {
   console.log(`🎬 Animation Token: ${token} = ${value}`);
 };
 

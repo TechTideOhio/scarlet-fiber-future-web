@@ -39,6 +39,6 @@ export const COLOR_TOKENS = {
   },
 } as const;
 
-export const logColorToken = (token: string, value: any) => {
+export const logColorToken = (token: string, value: unknown) => {
   console.log(`🎨 Color Token: ${token} = ${value}`);
 };
